@@ -12,12 +12,15 @@ logger.addHandler(fh)
 
 logger.setLevel(logging.DEBUG)
 
+
+# Driver to control an LED on a Raspberry Pi
+
 import asyncio
 import indipydriver as ipd
 
-# Simulates an LED with a simple global variable
+from gpiozero import LED
 
-LED = 'Off'
+led = LED(17)
 
 class LEDDriver(ipd.IPyDriver):
 
@@ -25,7 +28,6 @@ class LEDDriver(ipd.IPyDriver):
 
     async def rxevent(self, event):
         "On receiving data from the client, this is called"
-        global LED
 
         match event:
 
@@ -40,19 +42,29 @@ class LEDDriver(ipd.IPyDriver):
             case ipd.newSwitchVector(devicename="led",
                                      vectorname="ledvector") if 'ledmember' in event:
                 # a new value has been received from the client
-                LED = event["ledmember"]
+                ledvalue = event["ledmember"]
+                if ledvalue == "On":
+                    led.on()
+                elif ledvalue == "Off":
+                    led.off()
+                else:
+                    # not valid
+                    return
                 # and set this new value into the vector
-                event.vector["ledmember"] = LED
+                event.vector["ledmember"] = ledvalue
                 # send the updated vector back to the client
                 await event.vector.send_setVector()
+
 
 def make_driver():
     "Creates the driver"
 
+    ledvalue = "On" if led.is_lit else "Off"
+
     # create switch member
     ledmember = ipd.SwitchMember(name="ledmember",
                                  label="LED Value",
-                                 membervalue=LED)
+                                 membervalue=ledvalue)
     # set this member into a vector
     ledvector = ipd.SwitchVector(name="ledvector",
                                  label="LED",
@@ -62,10 +74,10 @@ def make_driver():
                                  state="Ok",
                                  switchmembers=[ledmember] )
     # create a Device with this vector
-    led = ipd.Device( devicename="led", properties=[ledvector])
+    leddevice = ipd.Device( devicename="led", properties=[ledvector])
 
     # Create the Driver containing this device
-    driver = LEDDriver([led])
+    driver = LEDDriver([leddevice])
 
     # and return the driver
     return driver
