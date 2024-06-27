@@ -9,7 +9,8 @@ example1.py Simulated thermostat driver.\
 example2.py Simulated thermostatwith settable target.\
 example3.py Window control snooping on thermostat.\
 logled.py Raspberry Pi LED driver with debugging logs enabled.\
-addexdriver.py IPyServer serving executable third part drivers.
+addexdriver.py IPyServer serving executable third part drivers.\
+temperatureclient.py client printing temperature as it is received
 
 #### snapshot
 Testing the use of the client snapshot with a threaded function.
