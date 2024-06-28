@@ -5,6 +5,14 @@
 import asyncio
 import indipyclient as ipc
 
+# uncomment to enable logging
+#
+# import logging
+# logger = logging.getLogger()
+# fh = logging.FileHandler("logfile.log")
+# logger.addHandler(fh)
+# logger.setLevel(logging.DEBUG)
+
 class MyClient(ipc.IPyClient):
 
     async def rxevent(self, event):

@@ -3,8 +3,15 @@
 # using something like "apt install indi-bin"
 
 
-
 import asyncio
+
+# uncomment to enable logging
+#
+# import logging
+# logger = logging.getLogger()
+# fh = logging.FileHandler("logfile.log")
+# logger.addHandler(fh)
+# logger.setLevel(logging.DEBUG)
 
 from indipydriver import IPyServer
 

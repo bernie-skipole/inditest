@@ -4,6 +4,14 @@
 import asyncio
 import indipydriver as ipd
 
+# uncomment to enable logging
+#
+# import logging
+# logger = logging.getLogger()
+# fh = logging.FileHandler("logfile.log")
+# logger.addHandler(fh)
+# logger.setLevel(logging.DEBUG)
+
 from gpiozero import LED
 
 led = LED(17)
