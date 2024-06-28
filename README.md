@@ -26,3 +26,9 @@ and receives and prints a number
 threadedclient.py Client which receives a number, takes a snapshot of\
 the client state and passes that to a threaded blocking function which\
 manipulates the number and sends it back to the driver.
+
+#### blobs
+
+Examples transmitting and receiving BLOBs
+
+sendblob.py Driver sending short files of measurements at regular intervals

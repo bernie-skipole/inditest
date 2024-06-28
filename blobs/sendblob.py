@@ -1,3 +1,10 @@
+"""
+Illustrates an instrument taking measurements, appending them to a BLOB
+and at regular intervals, sending to a client as BLOB .csv files.
+
+The indipyclient needs to have BLOBs enabled with a folder set where
+the BLOB files will be saved
+"""
 
 import asyncio, io, collections, math
 
@@ -7,11 +14,11 @@ import indipydriver as ipd
 
 # uncomment to enable logging
 #
-import logging
-logger = logging.getLogger()
-fh = logging.FileHandler("logfile.log")
-logger.addHandler(fh)
-logger.setLevel(logging.DEBUG)
+# import logging
+# logger = logging.getLogger()
+# fh = logging.FileHandler("logfile.log")
+# logger.addHandler(fh)
+# logger.setLevel(logging.DEBUG)
 
 
 class MakeBlobs:
@@ -45,6 +52,7 @@ class MakeBlobs:
             oldest = self.blobfiles.popleft()
         except IndexError:
             return
+        return oldest
 
 
     def appendlog(self, timestamp, value):
@@ -72,7 +80,7 @@ class MakeBlobs:
             await asyncio.sleep(2)
 
             # simulate a varying measurement
-            t += 1.0
+            t += 0.5
             value = 20.0 + 10*math.sin(t)
 
             # set the value and timestamp into the blobfile
