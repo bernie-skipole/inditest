@@ -1,4 +1,17 @@
 
+
+# for my own testing, please ignore
+# import sys
+# sys.path.insert(0, "/home/bernard/git/indipydriver")
+# sys.path.insert(0, "/home/bernard/git/indipyclient")
+
+# uncomment to enable logging
+# import logging
+# logger = logging.getLogger()
+# fh = logging.FileHandler("logfile.log")
+# logger.addHandler(fh)
+# logger.setLevel(logging.DEBUG)
+
 import asyncio
 
 from indipydriver import (IPyDriver, Device,
