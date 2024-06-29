@@ -154,4 +154,6 @@ if __name__ == "__main__":
 
     driver = make_driver()
     server = ipd.IPyServer(driver)
+    # alternatively, to accept remote connections
+    # server = ipd.IPyServer(driver, host="0.0.0.0")
     asyncio.run(server.asyncrun())
