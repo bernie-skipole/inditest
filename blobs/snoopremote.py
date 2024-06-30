@@ -41,7 +41,6 @@ class LightControl:
 
     def check_status(self):
         "If timer has elapsed, sets value to Alert"
-        current_time = time.time()
         elapsed_time = time.time() - self._update_time
         if elapsed_time > self.seconds:
             self.value = "Alert"
