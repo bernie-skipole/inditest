@@ -40,3 +40,9 @@ snoopremote.py Driver snooping on remote running sendblob.py
 Examples transmitting and receiving text
 
 txrxtext.py Driver transmitting text vector with multiple members
+
+#### lights
+
+Examples sending lights
+
+bincount.py Driver sending a vector with four lights binary counting
