@@ -15,7 +15,8 @@ example1.py Simulated thermostat driver.\
 example2.py Simulated thermostatwith settable target.\
 example3.py Window control snooping on thermostat.\
 addexdriver.py IPyServer serving executable third part drivers.\
-temperatureclient.py client printing temperature as it is received
+temperatureclient.py client printing temperature as it is received.\
+driverclient.py combining console client and driver in one script.
 
 #### snapshot
 Testing the use of the client snapshot with a threaded function.
