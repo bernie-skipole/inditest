@@ -90,7 +90,7 @@ class ThermoDriver(IPyDriver):
         thermalcontrol = self.driverdata["thermalcontrol"]
 
         vector = self['Thermostat']['temperaturevector']
-        while True:
+        while not self.stop:
             await asyncio.sleep(10)
             # Send the temperature every 10 seconds
             vector['temperature'] = thermalcontrol.temperature
