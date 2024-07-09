@@ -44,7 +44,7 @@ class CounterDriver(ipd.IPyDriver):
         counterval = 0
         vector = self['Counter']['txcount']
         # This vector has member name 'txvalue'
-        while True:
+        while not self.stop:
             await asyncio.sleep(2)
             # Update, print and send the countval every 2 seconds
             counterval += 1

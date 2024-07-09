@@ -24,7 +24,7 @@ class BinDriver(ipd.IPyDriver):
            and green lights for binary 0"""
 
         binvector = self['bincounter']['binvector']
-        while True:
+        while not self.stop:
             # send a new lights count every second
             for n in range(16):
                 await asyncio.sleep(1)

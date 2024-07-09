@@ -103,7 +103,7 @@ class InstrumentDriver(ipd.IPyDriver):
         # blobcontrol is a MakeBlobs object
 
         blobvector = self['instrument']['blobvector']
-        while True:
+        while not self.stop:
             # if a blobfile is available, send it as a BLOB
             blobfile = blobcontrol.get_blobfile()
             # this returns None if no blobfile is currently available

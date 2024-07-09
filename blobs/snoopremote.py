@@ -68,7 +68,7 @@ class SnoopBLOBDriver(ipd.IPyDriver):
         lightvector = self['light']['lightvector']
 
         # check lightcontrol
-        while True:
+        while not self.stop:
             lightcontrol.check_status()
             if lightcontrol.value == "Ok":
                 if lightvector['lightmember'] != "Ok":
