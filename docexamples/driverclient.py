@@ -1,7 +1,8 @@
 
-#import sys
-#sys.path.insert(0, "/home/bernard/git/indipydriver")
-#sys.path.insert(0, "/home/bernard/git/indipyclient")
+# for my own testing, please ignore
+# import sys
+# sys.path.insert(0, "/home/bernard/git/indipydriver")
+# sys.path.insert(0, "/home/bernard/git/indipyclient")
 
 import asyncio
 
@@ -11,8 +12,7 @@ from example1 import make_driver
 
 async def monitor(client, driver):
     "This monitors the client, if it shuts down, it shuts down the driver"
-    while not client.stop:
-        await asyncio.sleep(0.2)
+    await client.stopped.wait()
     # the client has stopped, shut down the driver
     driver.shutdown()
 
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     driver = make_driver()
     # set driver listening on localhost
     driver.listen()
-    # create a ConsoleClient listening on localhost
+    # create a ConsoleClient calling localhost
     client = ConsoleClient()
     # run them
     asyncio.run(main(client, driver))
