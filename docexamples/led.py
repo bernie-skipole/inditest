@@ -4,14 +4,6 @@
 import asyncio
 import indipydriver as ipd
 
-# uncomment to enable logging
-#
-# import logging
-# logger = logging.getLogger()
-# fh = logging.FileHandler("logfile.log")
-# logger.addHandler(fh)
-# logger.setLevel(logging.DEBUG)
-
 from gpiozero import LED
 
 led = LED(17)
@@ -71,7 +63,7 @@ def make_driver():
     leddevice = ipd.Device( devicename="led", properties=[ledvector])
 
     # Create the Driver containing this device
-    driver = LEDDriver([leddevice])
+    driver = LEDDriver(leddevice)
 
     # and return the driver
     return driver
@@ -80,5 +72,6 @@ def make_driver():
 if __name__ == "__main__":
 
     driver = make_driver()
-    server = ipd.IPyServer([driver], host="localhost", port=7624, maxconnections=5)
+    server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
     asyncio.run(server.asyncrun())
+

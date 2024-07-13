@@ -3,14 +3,6 @@ import asyncio
 
 import indipydriver as ipd
 
-# uncomment to enable logging
-#
-# import logging
-# logger = logging.getLogger()
-# fh = logging.FileHandler("logfile.log")
-# logger.addHandler(fh)
-# logger.setLevel(logging.DEBUG)
-
 
 class BinDriver(ipd.IPyDriver):
     """IPyDriver is subclassed here
