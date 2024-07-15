@@ -14,15 +14,6 @@ blob instrument.
 import asyncio, time
 import indipydriver as ipd
 
-# uncomment to enable logging
-#
-# import logging
-# logger = logging.getLogger()
-# fh = logging.FileHandler("logfile.log")
-# logger.addHandler(fh)
-# logger.setLevel(logging.DEBUG)
-
-
 class LightControl:
     "This times and sets the light value"
 

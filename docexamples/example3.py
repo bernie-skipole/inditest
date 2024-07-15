@@ -1,4 +1,3 @@
-
 import asyncio, time
 
 from indipydriver import (IPyServer, IPyDriver, Device,
@@ -91,11 +90,8 @@ class WindowDriver(IPyDriver):
                 windowcontrol.set_window(temperature)
 
 
-def make_driver():
+def make_driver(windowcontrol):
     "Creates the driver"
-
-    # make the instrument controlling object
-    windowcontrol = WindowControl()
 
     status = TextMember( name="status",
                          label="Window position",
@@ -113,11 +109,17 @@ def make_driver():
 
     # Make the WindowDriver containing this Device
     # and the window controlling object
-    windowdriver = WindowDriver( [window],
+    windowdriver = WindowDriver( window,
                                  windowcontrol=windowcontrol )
 
     # and return the driver
     return windowdriver
+
+
+async def main(thermalcontrol, server):
+    "Run the instrument and the server async tasks"
+    await asyncio.gather(thermalcontrol.run_thermostat(),
+                         server.asyncrun() )
 
 
 # Assuming the thermostat example is example2.py, these would be run with
@@ -126,8 +128,14 @@ if __name__ == "__main__":
 
     import example2
 
-    thermodriver = example2.make_driver()
-    windowdriver = make_driver()
+    # Make the thermalcontrol object
+    thermalcontrol = example2.ThermalControl()
+    # make a driver
+    thermodriver = example2.make_driver(thermalcontrol)
 
-    server = IPyServer([thermodriver, windowdriver])
-    asyncio.run(server.asyncrun())
+    # make the windowcontrol object
+    windowcontrol = WindowControl()
+    windowdriver = make_driver(windowcontrol)
+
+    server = IPyServer(thermodriver, windowdriver)
+    asyncio.run( main(thermalcontrol, server) )

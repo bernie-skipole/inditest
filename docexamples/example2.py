@@ -1,12 +1,3 @@
-
-
-# for my own testing, please ignore
-# import sys
-# sys.path.insert(0, "/home/bernard/git/indipydriver")
-# sys.path.insert(0, "/home/bernard/git/indipyclient")
-
-
-
 import asyncio
 
 from indipydriver import (IPyDriver, Device,
@@ -28,11 +19,15 @@ class ThermalControl:
         self.temperature = 20
         self.target = 15
         self.heater = "Off"
+        self.stop = False
+
+    def shutdown(self):
+        self.stop = True
 
     async def run_thermostat(self):
         """This simulates temperature increasing/decreasing, and turns
            on/off a heater if moving too far from the target."""
-        while True:
+        while not self.stop:
             await asyncio.sleep(2)
             if self.heater == "On":
                 # increasing temperature if the heater is on
@@ -101,11 +96,8 @@ class ThermoDriver(IPyDriver):
             await vector.send_setVector()
 
 
-def make_driver():
+def make_driver(thermalcontrol):
     "Returns an instance of the driver"
-
-    thermalcontrol = ThermalControl()
-    runthermo = thermalcontrol.run_thermostat()
 
     # create a vector with one number 'temperaturemember' as its member
     temperaturemember = NumberMember( name="temperature",
@@ -135,22 +127,29 @@ def make_driver():
     thermostat = Device( devicename="Thermostat",
                          properties=[temperaturevector, targetvector] )
 
-    # Create the Driver, containing this Device and instrument
-    # controlling objects
-    driver = ThermoDriver( [thermostat],
-                           runthermo,
+    # Create the Driver which will contain this Device,
+    #  and the instrument controlling object
+    driver = ThermoDriver( thermostat,
                            thermalcontrol=thermalcontrol )
+
 
     # and return the driver
     return driver
 
 
+async def main(thermalcontrol, server):
+    "Run the instrument and the server async tasks"
+    await asyncio.gather(thermalcontrol.run_thermostat(),
+                         server.asyncrun() )
+
+
 if __name__ == "__main__":
 
-    driver = make_driver()
-
-    server = IPyServer([driver], host="localhost",
-                                 port=7624,
-                                 maxconnections=5)
-
-    asyncio.run(server.asyncrun())
+    # Make an instance of the object controlling the instrument
+    thermalcontrol = ThermalControl()
+    # make a driver for the instrument
+    thermodriver = make_driver(thermalcontrol)
+    # and a server, which serves this driver
+    server = IPyServer(thermodriver)
+    # and run them together
+    asyncio.run( main(thermalcontrol, server) )

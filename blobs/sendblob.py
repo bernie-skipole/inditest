@@ -117,10 +117,8 @@ class InstrumentDriver(ipd.IPyDriver):
             await asyncio.sleep(1)
 
 
-def make_driver():
+def make_driver(blobcontrol):
     "Returns an instance of the driver"
-
-    blobcontrol = MakeBlobs(minutes=2) # create BLOBs every two minutes
 
     # create blobvector, there is no member value to set at this point
     blobmember = ipd.BLOBMember( name="blobmember",
@@ -137,23 +135,25 @@ def make_driver():
     instrument = ipd.Device( devicename="instrument",
                              properties=[blobvector] )
 
-    # set the coroutine to be run with the driver
-    pollingcoro = blobcontrol.poll_measurement()
-
     # Create the Driver, containing this device and
     # other objects needed to run the instrument
     driver = InstrumentDriver( instrument,                # the device
-                               pollingcoro,               # a coroutine to be awaited
                                blobcontrol=blobcontrol )  # MakeBlobs to place in driverdata
 
     # and return the driver
     return driver
 
 
+async def main(blobcontrol, server):
+    "Run the instrument and the server async tasks"
+    await asyncio.gather(blobcontrol.poll_measurement(),
+                         server.asyncrun() )
+
+
 if __name__ == "__main__":
 
-    driver = make_driver()
+    blobcontrol = MakeBlobs(minutes=2) # create BLOBs every two minutes
+    driver = make_driver(blobcontrol)
     server = ipd.IPyServer(driver)
-    # alternatively, to accept remote connections
-    # server = ipd.IPyServer(driver, host="0.0.0.0")
-    asyncio.run(server.asyncrun())
+    # and run them together
+    asyncio.run( main(blobcontrol, server) )
