@@ -6,14 +6,6 @@ Illustrates a driver receiving a file and saving it
 import asyncio
 import indipydriver as ipd
 
-# uncomment to enable logging
-#
-# import logging
-# logger = logging.getLogger()
-# fh = logging.FileHandler("logfile.log")
-# logger.addHandler(fh)
-# logger.setLevel(logging.DEBUG)
-
 
 class GetBLOBDriver(ipd.IPyDriver):
 

@@ -12,15 +12,6 @@ from datetime import datetime, timezone, timedelta
 
 import indipydriver as ipd
 
-# uncomment to enable logging
-#
-# import logging
-# logger = logging.getLogger()
-# fh = logging.FileHandler("logfile.log")
-# logger.addHandler(fh)
-# logger.setLevel(logging.DEBUG)
-
-
 class MakeBlobs:
     """This is a simulation containing variables only, normally it
        would take measurements from a sensor.
