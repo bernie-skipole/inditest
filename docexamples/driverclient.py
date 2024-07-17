@@ -42,4 +42,4 @@ if __name__ == "__main__":
     # create a ConsoleClient calling localhost
     client = ConsoleClient()
     # run all coroutines
-    asyncio.run( main(client, driver, thermalcontrol) )
+    asyncio.run( main(client, thermodriver, thermalcontrol) )
