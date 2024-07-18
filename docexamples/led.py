@@ -6,14 +6,17 @@ import indipydriver as ipd
 
 from gpiozero import LED
 
-led = LED(17)
 
 class LEDDriver(ipd.IPyDriver):
 
-    """IPyDriver is subclassed here."""
+    """IPyDriver is subclassed here to create an LED driver."""
 
     async def rxevent(self, event):
         "On receiving data from the client, this is called"
+
+        # get the object controlling the instrument, which is available
+        # in the class named arguments dictionary 'self.driverdata'.
+        led = self.driverdata["led"]
 
         match event:
 
@@ -29,6 +32,7 @@ class LEDDriver(ipd.IPyDriver):
                                      vectorname="ledvector") if 'ledmember' in event:
                 # a new value has been received from the client
                 ledvalue = event["ledmember"]
+                # turn on or off the led
                 if ledvalue == "On":
                     led.on()
                 elif ledvalue == "Off":
@@ -42,8 +46,12 @@ class LEDDriver(ipd.IPyDriver):
                 await event.vector.send_setVector()
 
 
-def make_driver():
+def make_driver(led):
     "Creates the driver"
+
+    # Note that “is_lit” is a property of the gpiozero LED
+    # object and is True if the LED is on, this is used to
+    # set up the initial value of ledmember.
 
     ledvalue = "On" if led.is_lit else "Off"
 
@@ -62,8 +70,9 @@ def make_driver():
     # create a Device with this vector
     leddevice = ipd.Device( devicename="led", properties=[ledvector])
 
-    # Create the Driver containing this device
-    driver = LEDDriver(leddevice)
+    # Create the Driver containing this device, and the actual
+    # LED object used for instrument control as a named argument
+    driver = LEDDriver(leddevice, led=led)
 
     # and return the driver
     return driver
@@ -71,7 +80,8 @@ def make_driver():
 
 if __name__ == "__main__":
 
-    driver = make_driver()
+    # set up the LED pin and create and serve the driver
+    led = LED(17)
+    driver = make_driver(led)
     server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
     asyncio.run(server.asyncrun())
-
