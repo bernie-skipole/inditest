@@ -3,15 +3,6 @@ import asyncio
 
 import indipydriver as ipd
 
-# uncomment to enable logging
-#
-# import logging
-# logger = logging.getLogger()
-# fh = logging.FileHandler("logfile.log")
-# logger.addHandler(fh)
-# logger.setLevel(logging.DEBUG)
-
-
 class CounterDriver(ipd.IPyDriver):
     """IPyDriver is subclassed here
        It prints and transmits an incrementing count to the client
