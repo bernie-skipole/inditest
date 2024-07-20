@@ -29,18 +29,21 @@ def numberdoubler(myclient, snapque):
     """get item from snapque, manipulate it, and send a value
        back to the driver.
        as a test, make this blocking and run it in a thread"""
-    while True:
-        try:
-            snap = snapque.popleft()
-        except IndexError:
-            time.sleep(0.1)
-            continue
-        # get the value sent by the driver
-        value = float(snap['Counter']['txcount']['txvalue'])
-        # manipulate it, in this example just multiply by two
-        # and transmit manipulated value back
-        myclient.send_newVector('Counter', 'rxvector',  members={'rxvalue':value * 2})
-
+    try:
+        while not myclient.stop:
+            try:
+                snap = snapque.popleft()
+            except IndexError:
+                time.sleep(0.1)
+                continue
+            # get the value sent by the driver
+            value = float(snap['Counter']['txcount']['txvalue'])
+            # manipulate it, in this example just multiply by two
+            # and transmit manipulated value back
+            myclient.send_newVector('Counter', 'rxvector',  members={'rxvalue':value * 2})
+    finally:
+        # if this stops, shutdown myclient
+        myclient.shutdown()
 
 
 if __name__ == "__main__":
