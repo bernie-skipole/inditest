@@ -1,19 +1,18 @@
 
 import asyncio
-
 import indipydriver as ipd
 
 
 class BinDriver(ipd.IPyDriver):
     """IPyDriver is subclassed here
-       It has device bincounter with a light binvector
-       with four members binvalue0 to binvalue3
+       It has device 'bincounter' with a light 'binvector'
+       with four members 'binvalue0' to 'binvalue3'
        which it populates with counting binary lights"""
 
     async def hardware(self):
-        """Sends the binvector with four members
-           showing red lights for binary 1
-           and green lights for binary 0"""
+        """Sends the counting binvector with four members
+           showing red lights (Alert) for binary 1
+           and green lights (Ok) for binary 0"""
 
         binvector = self['bincounter']['binvector']
         while not self.stop:
@@ -31,7 +30,7 @@ class BinDriver(ipd.IPyDriver):
 def make_driver():
     "Returns an instance of the driver"
 
-    # create a vector with multiple text members
+    # create multiple LightMembers
     binvalue0 = ipd.LightMember( name = "binvalue0",
                                  label = "Light 0" )
     binvalue1 = ipd.LightMember( name = "binvalue1",
@@ -41,6 +40,7 @@ def make_driver():
     binvalue3 = ipd.LightMember( name = "binvalue3",
                                  label = "Light 3" )
 
+    # create a vector containing these members
     binvector = ipd.LightVector( name="binvector",
                                  label="Light Counter",
                                  group="Values",
@@ -60,6 +60,7 @@ def make_driver():
 
 if __name__ == "__main__":
 
+    # serve the driver on localhost, port 7624
     driver = make_driver()
     server = ipd.IPyServer(driver)
     asyncio.run(server.asyncrun())
