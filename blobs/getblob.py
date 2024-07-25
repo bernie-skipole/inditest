@@ -27,8 +27,14 @@ class GetBLOBDriver(ipd.IPyDriver):
                                    vectorname="getvector") if 'getmember' in event:
                 # a new value has been received from the client
                 blobvalue = event["getmember"]
+                # sizeformat is (membersize, memberformat)
+                sizeformat = event.sizeformat["getmember"]
+                if sizeformat[1]:
+                    filename = "blobfile" + sizeformat[1]
+                else:
+                    filename = "blobfile"
                 # write this to a file
-                with open("blobfile", "wb") as fp:
+                with open(filename, "wb") as fp:
                     # Write bytes to file
                     fp.write(blobvalue)
                 # send vector back to the client but with no members, this just
