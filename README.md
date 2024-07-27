@@ -47,3 +47,9 @@ txrxtext.py Driver transmitting text vector with multiple members
 Examples sending lights
 
 bincount.py Driver sending a vector with four lights binary counting
+
+#### switches
+
+Examples transmitting and receiving switch information
+
+anyofmany.py Driver with one vector and multiple anyofmany switches
