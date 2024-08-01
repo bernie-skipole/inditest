@@ -34,12 +34,14 @@ Examples transmitting and receiving BLOBs
 
 sendblob.py Driver sending short files of measurements at regular intervals\
 getblob.py Driver to receive and save a BLOB file\
+multiblobs.py Driver receiving vector with up to three blob members\
 snoopremote.py Driver snooping on remote running sendblob.py
 
 #### text
 
 Examples transmitting and receiving text
 
+rwtext.py Driver with ten rw members, also sends values every ten seconds\
 txrxtext.py Driver transmitting text vector with multiple members
 
 #### lights
