@@ -30,22 +30,19 @@ class BinDriver(ipd.IPyDriver):
 def make_driver():
     "Returns an instance of the driver"
 
-    # create multiple LightMembers
-    binvalue0 = ipd.LightMember( name = "binvalue0",
-                                 label = "Light 0" )
-    binvalue1 = ipd.LightMember( name = "binvalue1",
-                                 label = "Light 1" )
-    binvalue2 = ipd.LightMember( name = "binvalue2",
-                                 label = "Light 2" )
-    binvalue3 = ipd.LightMember( name = "binvalue3",
-                                 label = "Light 3" )
+    # create four LightMembers, binvalue0 to binvalue3
+    members= []
+    for m in range(4):
+        members.append( ipd.LightMember( name = f"binvalue{m}",
+                                         label = f"Light {m}" )  )
+
 
     # create a vector containing these members
     binvector = ipd.LightVector( name="binvector",
                                  label="Light Counter",
                                  group="Values",
                                  state="Ok",
-                                 lightmembers=[binvalue0, binvalue1, binvalue2, binvalue3] )
+                                 lightmembers=members )
 
     # create a device with this vector
     bincounter = ipd.Device( devicename="bincounter",
