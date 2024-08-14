@@ -18,9 +18,8 @@ class CountDriver(ipd.IPyDriver):
             await asyncio.sleep(1)
             for m in range(4):
                 currentvalue = countvector[f"count{m}"]
-                currentfloat = self.indi_number_to_float(currentvalue)
                 # set new value, in this case controlling the format by setting to a string
-                countvector[f"count{m}"] = str( int(currentfloat) + 1 )
+                countvector[f"count{m}"] = str( int(currentvalue) + 1 )
             await countvector.send_setVector()
 
 
@@ -53,7 +52,7 @@ def make_driver():
         countmembers.append( ipd.NumberMember( name = f"count{m}",
                                                label = f"Counter {m}",
                                                format = "%d",
-                                               membervalue=m*2 )  )
+                                               membervalue=str(m*2) )  )
 
     # create a vector containing these members
     countvector = ipd.NumberVector( name="countvector",
