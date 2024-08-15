@@ -1,6 +1,6 @@
 
 """
-Illustrates a driver receiving three files and saving them
+Illustrates a driver receiving six files and saving them
 """
 
 import asyncio
@@ -42,9 +42,9 @@ class GetBLOBs(ipd.IPyDriver):
 def make_driver():
     "Creates the driver"
 
-    # create three members
+    # create members
     members = []
-    for m in range(3):
+    for m in range(6):
         members.append( ipd.BLOBMember(name=f"member{m}",
                                        label=f"BLOB file {m}") )
     # set these members into a vector
