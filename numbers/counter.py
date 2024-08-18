@@ -6,7 +6,7 @@ import indipydriver as ipd
 class CountDriver(ipd.IPyDriver):
     """IPyDriver is subclassed here
        It has device 'counter' with two vectors
-       a ro vector with four incrementing members
+       a ro vector with six incrementing members
        and a wo vector with ten members"""
 
     async def hardware(self):
@@ -16,7 +16,7 @@ class CountDriver(ipd.IPyDriver):
         while not self.stop:
             # send new counts every second
             await asyncio.sleep(1)
-            for m in range(4):
+            for m in range(6):
                 currentvalue = countvector[f"count{m}"]
                 # set new value, in this case controlling the format by setting to a string
                 countvector[f"count{m}"] = str( int(currentvalue) + 1 )
@@ -45,10 +45,10 @@ class CountDriver(ipd.IPyDriver):
 def make_driver():
     "Returns an instance of the driver"
 
-    # create four NumberMembers, count0 to count3
-    # with initial values 0,2,4,6
+    # create six NumberMembers, count0 to count5
+    # with initial values 0,2,4,6,8,10
     countmembers= []
-    for m in range(4):
+    for m in range(6):
         countmembers.append( ipd.NumberMember( name = f"count{m}",
                                                label = f"Counter {m}",
                                                format = "%d",
