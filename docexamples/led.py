@@ -14,8 +14,8 @@ class LEDDriver(ipd.IPyDriver):
     async def rxevent(self, event):
         "On receiving data from the client, this is called"
 
-        # get the object controlling the instrument, which is available
-        # in the class named arguments dictionary 'self.driverdata'.
+        # get the LED object controlling the instrument, which is
+        # available in the named arguments dictionary 'self.driverdata'
         led = self.driverdata["led"]
 
         match event:
@@ -63,7 +63,7 @@ def make_driver(led):
     ledvector = ipd.SwitchVector(name="ledvector",
                                  label="LED",
                                  group="Control Group",
-                                 perm="rw",
+                                 perm="wo",
                                  rule='AtMostOne',
                                  state="Ok",
                                  switchmembers=[ledmember] )

@@ -27,8 +27,8 @@ class LEDDriver(ipd.IPyDriver):
     async def rxevent(self, event):
         "On receiving data from the client, this is called"
 
-        # get the object controlling the instrument, which is available
-        # in the class named arguments dictionary 'self.driverdata'.
+        # get the LED object controlling the instrument, which is
+        # available in the named arguments dictionary 'self.driverdata'
         led = self.driverdata["led"]
 
         match event:
@@ -62,8 +62,8 @@ class LEDDriver(ipd.IPyDriver):
 def make_driver(led):
     "Creates the driver"
 
-    # Note that “is_lit” is a property of the gpiozero LED
-    # object and is True if the LED is on, this is used to
+    # Note that “is_lit” is a property of the LED object
+    # and is True if the LED is on, this is used to
     # set up the initial value of ledmember.
 
     ledvalue = "On" if led.is_lit else "Off"
@@ -76,7 +76,7 @@ def make_driver(led):
     ledvector = ipd.SwitchVector(name="ledvector",
                                  label="LED",
                                  group="Control Group",
-                                 perm="rw",
+                                 perm="wo",
                                  rule='AtMostOne',
                                  state="Ok",
                                  switchmembers=[ledmember] )
