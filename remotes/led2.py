@@ -1,11 +1,13 @@
 
-# Driver to control a (simulated) LED so this can be run
-# on a PC without gpiozero
+# Driver and server to control a (simulated) LED
+# This is set to listen on port 7626 instead of 7624
+# to test connections from serve_remotes.py enabling
+# multiple connected servers to be run on a single machine
 
 # for my own testing, please ignore
-import sys
-sys.path.insert(0, "/home/bernie/git/indipydriver")
-sys.path.insert(0, "/home/bernie/git/indipyclient")
+#import sys
+#sys.path.insert(0, "/home/bernard/git/indipydriver")
+#sys.path.insert(0, "/home/bernard/git/indipyclient")
 
 
 import asyncio

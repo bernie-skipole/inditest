@@ -2,11 +2,6 @@
 # Duplicate device names should
 # cause a failure
 
-# for my own testing, please ignore
-import sys
-sys.path.insert(0, "/home/bernie/git/indipydriver")
-sys.path.insert(0, "/home/bernie/git/indipyclient")
-
 import asyncio
 import indipydriver as ipd
 

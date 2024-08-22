@@ -1,13 +1,17 @@
 
 # for my own testing, please ignore
-import sys
-sys.path.insert(0, "/home/bernie/git/indipydriver")
-sys.path.insert(0, "/home/bernie/git/indipyclient")
+#import sys
+#sys.path.insert(0, "/home/bernard/git/indipydriver")
+#sys.path.insert(0, "/home/bernard/git/indipyclient")
 
+#import logging
+#logger = logging.getLogger()
+#fh = logging.FileHandler("logfile.log")
+#logger.addHandler(fh)
+#logger.setLevel(logging.DEBUG)
 
 import asyncio
 import indipydriver as ipd
-
 
 
 if __name__ == "__main__":
