@@ -1,18 +1,8 @@
 
-# for my own testing, please ignore
-import sys
-sys.path.insert(0, "/home/bernie/git/indipydriver")
-sys.path.insert(0, "/home/bernie/git/indipyclient")
-
-import logging
-logger = logging.getLogger("indipydriver")
-fh = logging.FileHandler("logfile.log")
-logger.addHandler(fh)
-logger.setLevel(logging.DEBUG)
-
-
-
-
+"""
+Same as simulated_led.py with an additional
+message sent every two seconds
+"""
 
 import asyncio
 import indipydriver as ipd
@@ -102,6 +92,7 @@ def make_driver(led):
     # and return the driver
     return driver
 
+
 async def sendmessage(server, message):
     "Sends a message every two seconds"
     while True:
@@ -120,5 +111,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-

@@ -11,6 +11,7 @@ https://github.com/bernie-skipole/indipyclient
 The examples used in indipydriver readthedocs documentation
 
 led.py Raspberry Pi LED driver.\
+simulated\_led.py Simulates gpiozero.LED so can be run without an actual LED\
 example1.py Simulated thermostat driver.\
 example2.py Simulated thermostatwith settable target.\
 example3.py Window control snooping on thermostat.\
@@ -22,7 +23,7 @@ driverclient.py combining console client and driver in one script.
 Testing the use of the client snapshot with a threaded function.
 
 simpledriver.py Driver prints and sends an incrementing number\
-and receives and prints a number
+and receives and prints a number.
 
 threadedclient.py Client which receives a number, takes a snapshot of\
 the client state and passes that to a threaded blocking function which\
@@ -61,3 +62,36 @@ anyofmany.py Driver with one vector and multiple anyofmany switches
 Examples transmitting and receiving numbers
 
 counter.py Driver transmitting incrementing integers, and receiving floats.
+
+#### messages
+
+led\_message.py As simulated\_led.py with an additional message sent every two seconds
+
+only_message.py Server with no drivers, but sending a message every two seconds.
+
+#### remotes
+
+led1.py As simulated\_led.py but set to listen on port 7625 and with devicename led1
+
+led2.py As simulated\_led.py but set to listen on port 7626 and with devicename led2
+
+serve\_remotes.py Connects to two remote servers led1.py and led2.py\
+Rather than using remote machines, these three services are all on\
+one machine using different ports.
+
+#### invalid
+
+Duplicate devicenames are not allowed, these tests check if they are detected
+
+duplicatedevice1.py Two drivers, both with the same devicename
+
+duplicatedevice2.py One driver but with two devices with the same name
+
+led1.py As simulated\_led.py but set to listen on port 7625 and with devicename led
+
+led2.py As simulated\_led.py but set to listen on port 7626 and with devicename led
+
+serve\_remotes.py Connects to two remote servers led1.py and led2.py\
+Rather than using remote machines, these three services are all on\
+one machine using different ports. The duplicate names on the remote connections\
+should be detected and cause the calling server to shutdown

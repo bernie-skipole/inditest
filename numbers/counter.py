@@ -1,3 +1,7 @@
+"""Two NumberVectors each with multiple members
+   one ro which transmits incrementing numbers
+   one wo which receives numbers set by the client"""
+
 
 import asyncio
 import indipydriver as ipd
@@ -75,7 +79,7 @@ def make_driver():
                                  label="Values to send",
                                  group="Values",
                                  state="Ok",
-                                 perm="rw",
+                                 perm="wo",
                                  numbermembers=rxmembers )
 
     # create a device with these vectors

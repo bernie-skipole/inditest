@@ -1,4 +1,7 @@
 
+
+"One driver but with two devices with the same name"
+
 # Duplicate device names should
 # cause a failure
 

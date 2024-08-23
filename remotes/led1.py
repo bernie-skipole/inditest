@@ -1,13 +1,9 @@
 
-# Driver and server to control a (simulated) LED
-# This is set to listen on port 7625 instead of 7624
-# to test connections from serve_remotes.py enabling
-# multiple connected servers to be run on a single machine
-
-# for my own testing, please ignore
-#import sys
-#sys.path.insert(0, "/home/bernard/git/indipydriver")
-#sys.path.insert(0, "/home/bernard/git/indipyclient")
+"""Driver and server to control a (simulated) LED
+   with devicename led1
+   This is set to listen on port 7625 instead of 7624
+   to test connections from serve_remotes.py enabling
+   multiple connected servers to be run on a single machine"""
 
 
 import asyncio

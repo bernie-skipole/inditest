@@ -1,14 +1,7 @@
 
-# for my own testing, please ignore
-#import sys
-#sys.path.insert(0, "/home/bernard/git/indipydriver")
-#sys.path.insert(0, "/home/bernard/git/indipyclient")
-
-#import logging
-#logger = logging.getLogger()
-#fh = logging.FileHandler("logfile.log")
-#logger.addHandler(fh)
-#logger.setLevel(logging.DEBUG)
+"""Set to connect to two remote servers led1.py and led2.py
+   Rather than using remote machines, these three services are all on
+   one machine using different ports"""
 
 import asyncio
 import indipydriver as ipd

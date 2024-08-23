@@ -1,4 +1,6 @@
 
+"TextVector with ten members, reading and writing"
+
 import asyncio
 
 import indipydriver as ipd

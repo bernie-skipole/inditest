@@ -1,4 +1,6 @@
 
+"SwitchVector with ten members which can be set by the client"
+
 import asyncio
 
 import indipydriver as ipd
