@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+#     "gpiozero",
+# ]
+# ///
 
 # Driver to control an LED on a Raspberry Pi
 
@@ -84,4 +92,5 @@ if __name__ == "__main__":
     led = LED(17)
     driver = make_driver(led)
     server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

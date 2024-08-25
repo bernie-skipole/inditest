@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
 """
 Illustrates an instrument taking measurements, appending them to a BLOB
 and at regular intervals, sending to a client as BLOB .csv files.
@@ -147,4 +155,5 @@ if __name__ == "__main__":
     driver = make_driver(blobcontrol)
     server = ipd.IPyServer(driver)
     # and run them together
+    print(f"Running {__file__}")
     asyncio.run( main(blobcontrol, server) )

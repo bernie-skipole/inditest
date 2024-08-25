@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
+
 """Two NumberVectors each with multiple members
    one ro which transmits incrementing numbers
    one wo which receives numbers set by the client"""
@@ -98,4 +107,5 @@ if __name__ == "__main__":
     # serve the driver on localhost, port 7624
     driver = make_driver()
     server = ipd.IPyServer(driver)
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

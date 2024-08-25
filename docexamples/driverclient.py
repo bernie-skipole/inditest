@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
 
 import asyncio
 

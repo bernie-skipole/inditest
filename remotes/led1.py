@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
 
 """Driver and server to control a (simulated) LED
    with devicename led1
@@ -102,4 +110,5 @@ if __name__ == "__main__":
     driver = make_driver(led)
     # set port at 7625 instead of 7624
     server = ipd.IPyServer(driver, host="localhost", port=7625, maxconnections=5)
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

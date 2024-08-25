@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
+
 import asyncio, time
 
 from indipydriver import (IPyServer, IPyDriver, Device,
@@ -138,4 +147,5 @@ if __name__ == "__main__":
     windowdriver = make_driver(windowcontrol)
 
     server = IPyServer(thermodriver, windowdriver)
+    print(f"Running {__file__}")
     asyncio.run( main(thermalcontrol, server) )

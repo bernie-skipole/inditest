@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
 
 "Two drivers, both with the same devicename"
 
@@ -84,4 +92,5 @@ if __name__ == "__main__":
     driver1 = make_driver(LED(17))
     driver2 = make_driver(LED(18))
     server = ipd.IPyServer(driver1, driver2, host="localhost", port=7624, maxconnections=5)
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

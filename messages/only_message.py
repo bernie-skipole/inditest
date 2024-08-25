@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
 
 
 import asyncio
@@ -18,4 +25,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    print(f"Running {__file__}")
     asyncio.run(main())

@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
+
 import asyncio
 
 from indipydriver import (IPyDriver, Device,
@@ -152,4 +161,5 @@ if __name__ == "__main__":
     # and a server, which serves this driver
     server = IPyServer(thermodriver)
     # and run them together
+    print(f"Running {__file__}")
     asyncio.run( main(thermalcontrol, server) )

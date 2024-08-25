@@ -1,6 +1,14 @@
-# This illustrates IPyServer working with executable drivers
-# and requires these simulator drivers to be installed
-# using something like "apt install indi-bin"
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
+"""This illustrates IPyServer working with executable drivers
+   and requires these simulator drivers to be installed
+   using something like "apt install indi-bin"""
 
 
 import asyncio
@@ -13,4 +21,5 @@ server = IPyServer(host="localhost",
 
 server.add_exdriver("indi_simulator_telescope")
 server.add_exdriver("indi_simulator_ccd")
+print(f"Running {__file__}")
 asyncio.run(server.asyncrun())

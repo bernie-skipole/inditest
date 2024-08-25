@@ -1,3 +1,9 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+# ]
+# ///
 
 import asyncio, collections, threading, time
 
@@ -56,6 +62,6 @@ if __name__ == "__main__":
     # run numberdoubler in its own thread
     clientapp = threading.Thread(target=numberdoubler, args=(myclient, snapque),)
     clientapp.start()
-
+    print(f"Running {__file__}")
     # run myclient.asyncrun()
     asyncio.run(myclient.asyncrun())

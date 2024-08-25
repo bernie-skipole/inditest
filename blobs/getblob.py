@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
 
 """
 Illustrates a driver receiving a file and saving it
@@ -69,4 +76,5 @@ if __name__ == "__main__":
 
     driver = make_driver()
     server = ipd.IPyServer(driver)
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

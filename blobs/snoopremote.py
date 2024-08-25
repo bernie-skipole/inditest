@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
 
 """
 sendblob.py should be running on a remote device,
@@ -141,5 +148,5 @@ if __name__ == "__main__":
                       port=7624,
                       blob_enable="Also",
                       debug_enable=True)
-
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

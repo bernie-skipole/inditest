@@ -7,6 +7,23 @@ https://github.com/bernie-skipole/indipydriver
 
 https://github.com/bernie-skipole/indipyclient
 
+
+Note these examples have Inline script metadata defining their\\
+dependencies on indipydriver and indipyclient, and so if copied\\
+to your own machine, and if you have a tool such as uv, which\\
+will automatically pull in dependencies, you should be able to\\
+very simply run the scripts with:
+
+uv run examplescript.py
+
+and a client console with
+
+uvx indipyclient
+
+Any client example using the console will not run on windows,\\
+as these use the curses package.
+
+
 #### docexamples
 The examples used in indipydriver readthedocs documentation
 

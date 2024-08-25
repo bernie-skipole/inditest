@@ -1,7 +1,10 @@
-# for my own testing, please ignore
-# import sys
-# sys.path.insert(0, "/home/bernard/git/indipydriver")
-# sys.path.insert(0, "/home/bernard/git/indipyclient")
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
 
 # uncomment to enable logging
 # import logging
@@ -142,4 +145,5 @@ if __name__ == "__main__":
     # and a server, which serves this driver
     server = IPyServer(thermodriver)
     # and run them together
+    print(f"Running {__file__}")
     asyncio.run( main(thermalcontrol, server) )

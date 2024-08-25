@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
 
 "TextVector with ten members, reading and writing"
 
@@ -74,4 +82,5 @@ if __name__ == "__main__":
 
     driver = make_driver()
     server = ipd.IPyServer(driver)
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

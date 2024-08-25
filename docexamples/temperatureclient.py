@@ -1,6 +1,6 @@
 
-# Connects to the driver of example1 and prints
-# the temperature as it is received
+"""Connects to the driver of example1 and prints
+   the temperature as it is received"""
 
 import asyncio
 import indipyclient as ipc

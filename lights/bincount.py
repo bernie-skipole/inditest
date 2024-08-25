@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+#     "indipydriver",
+# ]
+# ///
+
 "sends a vector with four lights binary counting"
 
 
@@ -62,4 +70,5 @@ if __name__ == "__main__":
     # serve the driver on localhost, port 7624
     driver = make_driver()
     server = ipd.IPyServer(driver)
+    print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
