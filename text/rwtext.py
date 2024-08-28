@@ -24,9 +24,6 @@ class RWDriver(ipd.IPyDriver):
 
         match event:
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newTextVector(devicename='rwtext',
                                    vectorname='rwvector'):
                 # get the received values

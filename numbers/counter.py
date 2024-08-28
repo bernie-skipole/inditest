@@ -41,9 +41,6 @@ class CountDriver(ipd.IPyDriver):
 
         match event:
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newNumberVector(devicename='counter',
                                      vectorname='rxvector'):
                 # get the received values

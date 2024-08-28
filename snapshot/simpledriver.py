@@ -21,9 +21,6 @@ class CounterDriver(ipd.IPyDriver):
 
         match event:
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newNumberVector(devicename='Counter',
                                  vectorname='rxvector') if 'rxvalue' in event:
                 # Print the received value

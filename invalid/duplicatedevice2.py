@@ -41,9 +41,6 @@ class LEDDriver(ipd.IPyDriver):
 
         match event:
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newSwitchVector(devicename="led",
                                      vectorname="ledvector") if 'ledmember' in event:
                 # a new value has been received from the client

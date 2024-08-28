@@ -25,9 +25,6 @@ class TxRxDriver(ipd.IPyDriver):
 
         match event:
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newTextVector(devicename='txrxtext',
                                    vectorname='rxvector') if 'rxvalue' in event:
                 # get the received value

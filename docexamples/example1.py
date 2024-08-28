@@ -17,7 +17,7 @@ import asyncio
 
 from indipydriver import (IPyDriver, Device,
                           NumberVector, NumberMember,
-                          getProperties, IPyServer
+                          IPyServer
                          )
 
 # Other vectors, members and events are available,
@@ -61,29 +61,8 @@ class ThermalControl:
 
 class ThermoDriver(IPyDriver):
 
-    """IPyDriver is subclassed here, with methods created to handle incoming events
-       and to transmit the temperature to the client"""
-
-    async def rxevent(self, event):
-        """On receiving data from the client this is called, and should handle any
-           necessary actions.
-           The event object has property 'vector' which is the propertyvector being
-           updated or requested by the client.
-           Different types of event could be produced, in this case only getProperties
-           is expected, in which the client is asking for driver information.
-           """
-
-        # Using match - case is ideal for this situation,
-        # but requires Python v3.10 or later
-
-        match event:
-            case getProperties():
-                # this event is raised for each vector when a client wants to learn about
-                # the device and its properties. This getProperties event should always be
-                # handled as all clients normally start by requesting driver properties.
-                # In response, the coroutine event.vector.send_defVector() should be awaited,
-                # which sends the vector definition back to the client
-                await event.vector.send_defVector()
+    """IPyDriver is subclassed here, with a method
+       to transmit the temperature to the client"""
 
 
     async def hardware(self):

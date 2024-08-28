@@ -27,9 +27,6 @@ class GetBLOBDriver(ipd.IPyDriver):
             # event.vector is the vector being requested or altered
             # event[membername] is the new value
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newBLOBVector(devicename="getblob",
                                    vectorname="getvector") if 'getmember' in event:
                 # a new value has been received from the client

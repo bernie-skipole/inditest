@@ -24,9 +24,6 @@ class GetBLOBs(ipd.IPyDriver):
 
         match event:
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newBLOBVector(devicename="blobdevice",
                                    vectorname="blobvector"):
                 # this vector has multiple members

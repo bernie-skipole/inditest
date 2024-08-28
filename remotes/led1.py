@@ -48,11 +48,6 @@ class LEDDriver(ipd.IPyDriver):
             # event.vector is the vector being requested or altered
             # event[membername] is the new value
 
-            case ipd.getProperties():
-                # An event of type 'getProperties' is a client request
-                # to define a property. Send back a property definition
-                await event.vector.send_defVector()
-
             case ipd.newSwitchVector(devicename="led1",
                                      vectorname="ledvector") if 'ledmember' in event:
                 # a new value has been received from the client

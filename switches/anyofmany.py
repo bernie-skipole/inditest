@@ -22,9 +22,6 @@ class Driver(ipd.IPyDriver):
 
         match event:
 
-            case ipd.getProperties():
-                await event.vector.send_defVector()
-
             case ipd.newSwitchVector(devicename='switch',
                                      vectorname='vector'):
                 # get the received values and set them into the vector

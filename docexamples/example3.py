@@ -11,7 +11,7 @@ import asyncio, time
 
 from indipydriver import (IPyServer, IPyDriver, Device,
                           TextVector, TextMember,
-                          getProperties, setNumberVector
+                          setNumberVector
                          )
 
 # Other vectors, members and events are available, this example only imports those used.
@@ -41,12 +41,6 @@ class WindowDriver(IPyDriver):
 
     """IPyDriver is subclassed here"""
 
-    async def rxevent(self, event):
-        """On receiving data from the client, this is called,
-           Only a 'getProperties' is expected."""
-        match event:
-            case getProperties():
-                await event.vector.send_defVector()
 
     async def hardware(self):
         "Update client with window status"
