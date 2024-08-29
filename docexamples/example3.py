@@ -32,15 +32,11 @@ class WindowControl:
             self.window = "Open"
         if temperature < 18:
             self.window = "Closed"
-        # An update time is recorded to ensure the received
-        # temperature is regularly obtained.
-        self.update_time = time.time()
 
 
 class WindowDriver(IPyDriver):
 
     """IPyDriver is subclassed here"""
-
 
     async def hardware(self):
         "Update client with window status"
@@ -56,16 +52,6 @@ class WindowDriver(IPyDriver):
         while not self.stop:
             # every ten seconds send an update on window position
             await asyncio.sleep(10)
-            now_time = time.time()
-            if now_time - windowcontrol.update_time > 20.0:
-                # No new temperature has been received for longer than 20 seconds
-                # the thermostat could have been disconnected. Send another
-                # getProperties just in case it is reconnected
-                await self.send_getProperties(devicename="Thermostat",
-                                              vectorname="temperaturevector")
-                # It would also be possible to set an alarm
-                # to indicate the failure of received temperature
-
             # get the current window status
             statusvector['status'] = windowcontrol.window
             # and transmit it to the client
@@ -89,7 +75,6 @@ class WindowDriver(IPyDriver):
                     # ignore an incoming invalid number
                     return
                 # this updates windowcontrol which opens or closes the widow
-                # and also updates its update_time
                 windowcontrol.set_window(temperature)
 
 
@@ -114,6 +99,11 @@ def make_driver(windowcontrol):
     # and the window controlling object
     windowdriver = WindowDriver( window,
                                  windowcontrol=windowcontrol )
+
+    # This driver wants copies of data sent from the thermostat
+    windowdriver.snoop(devicename="Thermostat",
+                       vectorname="temperaturevector",
+                       timeout=30)
 
     # and return the driver
     return windowdriver
