@@ -23,8 +23,7 @@ class WindowControl:
         "Set initial value of window"
         self.window = "Open"
         # window should be "Open" or 'Closed'
-        self.update_time = time.time()
-        # Set whenever a temperature update is requested
+
 
     def set_window(self, temperature):
         """Gets new temperature, sets window accordingly"""
@@ -40,12 +39,6 @@ class WindowDriver(IPyDriver):
 
     async def hardware(self):
         "Update client with window status"
-
-        # Send an initial getProperties to snoop on Thermostat
-        # This is necessary to inform IPyServer that this driver
-        # wants copies of data sent from the thermostat
-        await self.send_getProperties(devicename="Thermostat",
-                                      vectorname="temperaturevector")
 
         windowcontrol = self.driverdata["windowcontrol"]
         statusvector = self['Window']['windowstatus']
