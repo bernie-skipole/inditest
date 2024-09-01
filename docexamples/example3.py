@@ -7,6 +7,12 @@
 # ///
 
 
+## ignore these, used for development
+#import sys
+#sys.path.insert(0, "/home/bernard/git/indipydriver")
+#sys.path.insert(0, "/home/bernard/git/indipyclient")
+
+
 import asyncio, time
 
 from indipydriver import (IPyServer, IPyDriver, Device,

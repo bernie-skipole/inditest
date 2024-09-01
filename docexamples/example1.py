@@ -13,6 +13,11 @@
 # logger.addHandler(fh)
 # logger.setLevel(logging.DEBUG)
 
+import sys
+
+sys.path.insert(0, "/home/bernard/git/indipydriver")
+sys.path.insert(0, "/home/bernard/git/indipyclient")
+
 import asyncio
 
 from indipydriver import (IPyDriver, Device,
