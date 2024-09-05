@@ -6,14 +6,15 @@
 # ]
 # ///
 
+"""Driver and server to control a (simulated) LED
+   This is set to listen on port 7625 instead of 7624
+   to test connections from serve_remotes.py enabling
+   multiple connected servers to be run on a single machine
 
+   In this case the devicename is set to led to be duplicate
+   with the device in led2.py, this being a test to ensure
+   the server detects a duplicate devicename"""
 
-"""
-Same as simulated_led.py with an additional
-global message sent every two seconds and also
-an extra message sent back to the client when
-the led is switched
-"""
 
 import asyncio
 import indipydriver as ipd
@@ -49,24 +50,22 @@ class LEDDriver(ipd.IPyDriver):
             # event.vector is the vector being requested or altered
             # event[membername] is the new value
 
-            case ipd.newSwitchVector(devicename="led",
+            case ipd.newSwitchVector(devicename="led1",
                                      vectorname="ledvector") if 'ledmember' in event:
                 # a new value has been received from the client
                 ledvalue = event["ledmember"]
                 # turn on or off the led
                 if ledvalue == "On":
                     led.on()
-                    message = "The switch has been turned On"
                 elif ledvalue == "Off":
                     led.off()
-                    message = "The switch has been turned Off"
                 else:
                     # not valid
                     return
                 # and set this new value into the vector
                 event.vector["ledmember"] = ledvalue
-                # send the updated vector back to the client, with a message
-                await event.vector.send_setVector(message=message)
+                # send the updated vector back to the client
+                await event.vector.send_setVector()
 
 
 def make_driver(led):
@@ -91,6 +90,7 @@ def make_driver(led):
                                  state="Ok",
                                  switchmembers=[ledmember] )
     # create a Device with this vector
+    # note the devicename led will duplicate that set in led2.py
     leddevice = ipd.Device( devicename="led", properties=[ledvector])
 
     # Create the Driver containing this device, and the actual
@@ -101,24 +101,12 @@ def make_driver(led):
     return driver
 
 
-async def sendmessage(server):
-    "Sends a message every two seconds"
-    count = 0
-    while True:
-        await asyncio.sleep(2)
-        await server.send_message(f"count is {count}" )
-        count += 1
+if __name__ == "__main__":
 
-
-async def main():
-    "set up the LED pin and create and serve the driver with a repeating message"
+    # set up the LED pin and create and serve the driver
     led = LED(17)
     driver = make_driver(led)
-    server = ipd.IPyServer(driver)
-    await asyncio.gather( server.asyncrun(), sendmessage(server) )
-
-
-
-if __name__ == "__main__":
+    # set port at 7625 instead of 7624
+    server = ipd.IPyServer(driver, host="localhost", port=7625, maxconnections=5)
     print(f"Running {__file__}")
-    asyncio.run(main())
+    asyncio.run(server.asyncrun())

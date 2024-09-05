@@ -82,7 +82,7 @@ counter.py Driver transmitting incrementing integers, and receiving floats.
 
 #### messages
 
-led\_message.py As simulated\_led.py with an additional message sent every two seconds
+led\_message.py As simulated\_led.py with an additional messages
 
 only_message.py Server with no drivers, but sending a message every two seconds.
 
