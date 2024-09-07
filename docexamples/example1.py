@@ -1,7 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipyclient",
 #     "indipydriver",
 # ]
 # ///
@@ -13,10 +12,7 @@
 # logger.addHandler(fh)
 # logger.setLevel(logging.DEBUG)
 
-import sys
 
-sys.path.insert(0, "/home/bernard/git/indipydriver")
-sys.path.insert(0, "/home/bernard/git/indipyclient")
 
 import asyncio
 

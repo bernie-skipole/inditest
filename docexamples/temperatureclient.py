@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+# ]
+# ///
+
 
 """Connects to the driver of example1 and prints
    the temperature as it is received"""
