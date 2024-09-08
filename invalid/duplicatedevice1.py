@@ -1,7 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipyclient",
 #     "indipydriver",
 # ]
 # ///
@@ -86,6 +85,7 @@ def make_driver(led):
 if __name__ == "__main__":
 
     # serve two drivers with duplicate device names
+    # this should fail to run
     driver1 = make_driver(LED(17))
     driver2 = make_driver(LED(18))
     server = ipd.IPyServer(driver1, driver2, host="localhost", port=7624, maxconnections=5)

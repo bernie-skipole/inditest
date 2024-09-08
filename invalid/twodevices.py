@@ -6,9 +6,9 @@
 # ///
 
 
-# This is to be compared with twodevices.py
-# this has duplicate device names and fails
-# whereas twodevices.py works
+# This is to be compared with duplicatedevice2.py
+# this has two separate device names and works
+# whereas duplicatedevice2.py should fail
 
 "One driver with two LED devices"
 
@@ -118,8 +118,7 @@ def make_driver(led1, led2):
 if __name__ == "__main__":
 
     # serve a driver containing two devices
-    # both of these will have the same name which causes failure
-    driver = make_driver(LED(17), LED(17))
+    driver = make_driver(LED(17), LED(18))
 
     server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
     print(f"Running {__file__}")

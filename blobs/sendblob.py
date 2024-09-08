@@ -1,7 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipyclient",
 #     "indipydriver",
 # ]
 # ///
@@ -38,7 +37,7 @@ class MakeBlobs:
         self.blobfiles = collections.deque(maxlen=4)
         # self.blobfiles is a deque containing a number of io.BytesIO objects
         # with the number limited to 4
-        # the older buffers can be sent to the client,
+        # the older objects can be sent to the client,
         # or if not taken off, will be discarded.
 
         # measurements will be set in self.currentblob

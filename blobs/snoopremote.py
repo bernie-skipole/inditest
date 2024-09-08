@@ -1,14 +1,13 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipyclient",
 #     "indipydriver",
 # ]
 # ///
 
 """
 sendblob.py should be running on a remote device,
-'raspberrypi' in this example, which needs its ipyserver host
+('raspberrypi' in this example), which needs its ipyserver host
 to be set at 0.0.0.0 so that a connection can be made to it.
 This program makes a connection to the remote, and
 snoops on the BLOBs it is sending, and saves its own
