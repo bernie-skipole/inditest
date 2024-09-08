@@ -1,7 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipyclient",
 #     "indipydriver",
 # ]
 # ///
@@ -20,7 +19,7 @@ class GetBLOBDriver(ipd.IPyDriver):
 
     async def rxevent(self, event):
         """On receiving data from the client, this is called
-           It writes received BLOB data to file blobfile"""
+           It writes received BLOB data to a file"""
 
         match event:
 
@@ -32,18 +31,21 @@ class GetBLOBDriver(ipd.IPyDriver):
                 # a new value has been received from the client
                 blobvalue = event["getmember"]
                 # sizeformat is (membersize, memberformat)
-                sizeformat = event.sizeformat["getmember"]
-                if sizeformat[1]:
-                    filename = "blobfile" + sizeformat[1]
+                membersize, memberformat = event.sizeformat["getmember"]
+                # make filename from timestamp
+                if event.timestamp:
+                    filename = "blobfile_" + event.timestamp.strftime('%Y%m%d_%H_%M_%S')
                 else:
                     filename = "blobfile"
+                if memberformat:
+                    filename = filename + memberformat
                 # write this to a file
                 with open(filename, "wb") as fp:
                     # Write bytes to file
                     fp.write(blobvalue)
                 # send vector back to the client but with no members, this just
                 # sets the state to ok to inform the client it has been received
-                await event.vector.send_setVectorMembers(state="Ok")
+                await event.vector.send_setVectorMembers(state="Ok", message=f"Saved as {filename}")
 
 
 def make_driver():

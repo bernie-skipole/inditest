@@ -1,7 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipyclient",
 #     "indipydriver",
 # ]
 # ///
@@ -26,21 +25,27 @@ class GetBLOBs(ipd.IPyDriver):
 
             case ipd.newBLOBVector(devicename="blobdevice",
                                    vectorname="blobvector"):
+                if event.timestamp:
+                    timestamp = event.timestamp.strftime('%Y%m%d_%H_%M_%S')
+                else:
+                    timestamp = ""
                 # this vector has multiple members
                 for membername, blobvalue in event.items():
                     # Each membername is of the format "member1", "member2" etc
                     filename = "blobfile" + membername[-1]
+                    if timestamp:
+                        filename += "_" + timestamp
                     # sizeformat is (membersize, memberformat), where memberformat is the file extension
-                    sizeformat = event.sizeformat[membername]
-                    if sizeformat[1]:
-                        filename += sizeformat[1]
+                    membersize, memberformat = event.sizeformat[membername]
+                    if memberformat:
+                        filename += memberformat
                     # write blobvalue to a file with this name
                     with open(filename, "wb") as fp:
                         # Write bytes to file
                         fp.write(blobvalue)
                 # send vector back to the client but with no members, this just
                 # sets the state to ok to inform the client the vector has been received
-                await event.vector.send_setVectorMembers(state="Ok")
+                await event.vector.send_setVectorMembers(state="Ok", message=f"Saved {timestamp}")
 
 
 def make_driver():
