@@ -1,7 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipyclient",
 #     "indipydriver",
 # ]
 # ///
@@ -50,7 +49,7 @@ class LEDDriver(ipd.IPyDriver):
             # event.vector is the vector being requested or altered
             # event[membername] is the new value
 
-            case ipd.newSwitchVector(devicename="led1",
+            case ipd.newSwitchVector(devicename="led",
                                      vectorname="ledvector") if 'ledmember' in event:
                 # a new value has been received from the client
                 ledvalue = event["ledmember"]
