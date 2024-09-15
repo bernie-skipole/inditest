@@ -8,7 +8,7 @@
 #import sys
 #sys.path.insert(0, "/home/bernard/git/indipyclient")
 
-import asyncio, collections, threading, time
+import asyncio
 
 import indipyclient as ipc
 
