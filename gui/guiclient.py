@@ -2,5 +2,6 @@
 
 
 
-def rungui(snapque, txqueue):
-    "snapque is the queue holding event data"
+def rungui(txque, rxque):
+    """txque is the queue to transmit data
+       rxque is the queue of received data"""
