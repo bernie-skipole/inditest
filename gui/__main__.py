@@ -2,7 +2,7 @@
 import asyncio, queue, threading, collections
 
 import sys
-sys.path.insert(0, "/home/bernard/git/indipyclient")
+sys.path.insert(0, "/home/bernie/git/indipyclient")
 
 import indipyclient as ipc
 
@@ -73,7 +73,7 @@ class QueClient(ipc.IPyClient):
             if item[2] in ("Never", "Also", "Only"):
                 await self.send_enableBLOB(item[2], item[0], item[1])
             else:
-                await self.send_newVector(item[0], item[1], members=item[2]):
+                await self.send_newVector(item[0], item[1], members=item[2])
 
 
 if __name__ == "__main__":
