@@ -16,7 +16,7 @@ class QueClient(ipc.IPyClient):
 
     """Overrides IPyClient
        On receiving an event, appends a snapshot into self.rxque
-       Gets contents of self.txque """
+       Gets contents of self.txque and transmits updates"""
 
 
     def __init__(self, indihost="localhost", indiport=7624):
