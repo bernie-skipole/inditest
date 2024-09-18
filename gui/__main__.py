@@ -2,7 +2,7 @@
 import asyncio, queue, threading, collections
 
 import sys
-sys.path.insert(0, "/home/bernie/git/indipyclient")
+sys.path.insert(0, "/home/bernard/git/indipyclient")
 
 import indipyclient as ipc
 
@@ -26,7 +26,14 @@ class QueClient(ipc.IPyClient):
         # create queue of things to send
         self.txque = queue.SimpleQueue()
 
+
     async def rxevent(self, event):
+        """Add event type and snapshot to self.rxque"""
+        item = EventItem(event.eventtype, event.devicename, event.vectorname, event.timestamp, self.snapshot())
+        self.rxque.put(item)
+
+
+    async def optionrxevent(self, event):
         """Add event type and snapshot to self.rxque"""
         if event.eventtype == "Define":
             item = EventItem(event.eventtype, event.devicename, event.vectorname, event.timestamp, event.vector.snapshot())
@@ -69,7 +76,7 @@ class QueClient(ipc.IPyClient):
                 return
             if len(item) != 3:
                 # invalid item
-                continue            
+                continue
             if item[2] in ("Never", "Also", "Only"):
                 await self.send_enableBLOB(item[2], item[0], item[1])
             else:
