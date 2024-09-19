@@ -28,10 +28,14 @@ class QueClient(ipc.IPyClient):
            snapshot
            """
         item = EventItem(event.eventtype, event.devicename, event.vectorname, event.timestamp, self.snapshot())
-        try:
-            self.clientdata['rxque'].put_nowait(item)
-        except queue.Full:
-            await asyncio.sleep(0.02)
+        while not self._stop:
+            try:
+                self.clientdata['rxque'].put_nowait(item)
+            except queue.Full:
+                await asyncio.sleep(0.02)
+            else:
+                break
+
 
     async def hardware(self):
         """Read txque and send data to server
@@ -49,6 +53,17 @@ class QueClient(ipc.IPyClient):
                 # A None in the queue is a shutdown indicator
                 self.shutdown()
                 return
+            if item == "snapshot":
+                # The queue is requesting a snapshot
+                item = EventItem(None, None, None, None, self.snapshot())
+                while not self._stop:
+                    try:
+                        self.clientdata['rxque'].put_nowait(item)
+                    except queue.Full:
+                        await asyncio.sleep(0.02)
+                    else:
+                        break
+                continue
             if len(item) != 3:
                 # invalid item
                 continue
