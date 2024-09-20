@@ -126,11 +126,17 @@ class MessageScreen(ParentScreen):
     def __init__(self, txque, rxque, root, applicationframe):
         super().__init__(txque, rxque, root, applicationframe)
         # top frame
-        ttk.Label(self.tframe, text="Messages").grid(column=0, row=0, sticky=W)
+        mtitle = ttk.Label(self.tframe, text="Messages")
+        mtitle.grid(column=0, row=0, sticky=W)
+
+        # get a bold font by obtaining the font from the mtitle label
+        # this will be used to set the title bold, and also message labels bold
+        self.bold_font = font.Font(root, mtitle.cget("font"))
+        self.bold_font.configure(weight=font.BOLD)
+        mtitle.configure(font=self.bold_font)
+
         self.status = ttk.Label(self.tframe, text="Not connected")
         self.status.grid(column=0, row=1)
-        self.bold_font = font.Font(root, self.status.cget("font"))
-        self.bold_font.configure(weight="bold")
 
         # main frame
         self.message_widgets = []
@@ -139,7 +145,9 @@ class MessageScreen(ParentScreen):
             m.grid(column=0, row=r, sticky=W)
             self.message_widgets.append(m)
 
-        self.message_widgets[7].configure(font=self.bold_font)
+        # reverse the widget order so when messages added, the current one is at the bottom
+        self.message_widgets.reverse()
+        self.message_widgets[0].configure(font=self.bold_font)
 
 
         # set last row of mainframe to expand
@@ -169,7 +177,7 @@ class MessageScreen(ParentScreen):
             # messages is a list of (Timestamp, message) tuples
             mlist = [ localtimestring(t) + "  " + m for t,m in messages ]
             if mlist:
-                 for index,lbl in enumerate(self.mainframe.grid_slaves()):
+                 for index,lbl in enumerate(self.message_widgets):
                     try:
                         lbl['text'] = mlist[index]
                     except IndexError:
