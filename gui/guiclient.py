@@ -67,7 +67,7 @@ class ParentScreen:
 
 
     def middleframe(self, applicationframe):
-        frame = ttk.Frame(applicationframe, padding="3 3 12 12", borderwidth=5, relief='groove')
+        frame = ttk.Frame(applicationframe, padding="3 3 3 12", borderwidth=5, relief='groove')
         frame.grid(column=0, row=1, sticky=(N, W, E, S))
         return frame
 
@@ -147,16 +147,19 @@ class MessageScreen(ParentScreen):
         self.message_widgets = []
         for r in range(8):
             m = ttk.Label(self.mainframe, text="")
-            m.grid(column=0, row=r, sticky=W)
+            m.grid(column=0, row=r, pady=3, sticky=W)
             self.message_widgets.append(m)
 
         # reverse the widget order so when messages added, the current one is at the bottom
         self.message_widgets.reverse()
         self.message_widgets[0].configure(font=self.bold_font)
 
+        ttk.Separator(self.mainframe, orient=HORIZONTAL).grid(column=0, row=9, pady=20, sticky=(W, E))
+        ttk.Label(self.mainframe, text="hello").grid(column=0, row=11)
 
-        # set last row of mainframe to expand
-        self.mainframe.rowconfigure(8, weight=1)
+        # set mainframe grid to expand
+        self.mainframe.columnconfigure(0, weight=1)
+        self.mainframe.rowconfigure(12, weight=1)
 
         # button frame
         # remove messages and vectors buttons
