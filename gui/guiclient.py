@@ -27,7 +27,7 @@ def appframe(root):
 
 class ParentScreen:
 
-    def __init__(self, txque, rxque, root, applicationframe):
+    def __init__(self, txque, rxque, root, applicationframe, snapshot=None):
         self.txque = txque
         self.rxque = rxque
         self.root = root
@@ -36,6 +36,11 @@ class ParentScreen:
         self.mainframe = self.middleframe(applicationframe)
         self.butframe = self.buttonframe(applicationframe)
         self.rxrecieved = None
+        # This is the current working snapshot of the client
+        self.snapshot = snapshot
+        if snapshot is None:
+            # request a snapshot
+            self.tx_data('snapshot')
 
 
     def readrxque(self):
@@ -123,8 +128,8 @@ class ParentScreen:
 
 class MessageScreen(ParentScreen):
 
-    def __init__(self, txque, rxque, root, applicationframe):
-        super().__init__(txque, rxque, root, applicationframe)
+    def __init__(self, txque, rxque, root, applicationframe, snapshot=None):
+        super().__init__(txque, rxque, root, applicationframe, snapshot)
         # top frame
         mtitle = ttk.Label(self.tframe, text="Messages")
         mtitle.grid(column=0, row=0, sticky=W)
@@ -161,6 +166,9 @@ class MessageScreen(ParentScreen):
         # initially disable Devices button
         self.disable_button("Devices")
 
+        self.connected = False
+        self.enable = False
+
         # and start the checking readrxque
         self.readrxque()
 
@@ -168,10 +176,39 @@ class MessageScreen(ParentScreen):
     def updatescreen(self):
         "To handle received messages"
         # recieved item has attributes 'eventtype', 'devicename', 'vectorname', 'timestamp', 'snapshot'
-        if self.rxrecieved.snapshot.connected:
-            self.status['text'] = "Connected"
+
+        if self.snapshot is None:
+            self.snapshot = self.rxrecieved.snapshot
+            self.connected = self.snapshot.connected
+            self.enable = self.snapshot.enable
+            if self.connected:
+                self.status['text'] = "Connected"
+            else:
+                self.status['text'] = "Not Connected"
+            if self.enable:
+                self.enable_button("Devices")
+            else:
+                self.disable_button("Devices")
         else:
-            self.status['text'] = "Not Connected"
+            connected = self.rxrecieved.snapshot.connected
+            enable = self.rxrecieved.snapshot.enable
+            if self.connected != connected:
+                # connected state has changed
+                self.connected = connected
+                if connected:
+                    self.status['text'] = "Connected"
+                else:
+                    self.status['text'] = "Not Connected"
+            if self.enable != enable:
+                # enabled devices has changed
+                self.enable = enable
+                if enable:
+                    self.enable_button("Devices")
+                else:
+                    self.disable_button("Devices")
+            # and set self.snapshot equal to the current received snapshot
+            self.snapshot = self.rxrecieved.snapshot
+
         if self.rxrecieved.eventtype == "Message" and self.rxrecieved.devicename is None:
             messages = self.rxrecieved.snapshot.messages
             # messages is a list of (Timestamp, message) tuples
