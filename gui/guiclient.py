@@ -44,11 +44,11 @@ class ParentScreen:
             try:
                 item = self.rxque.get_nowait()
             except queue.Empty:
-                self.root.after(100, self.readrxque) # 100 ms
+                pass
             else:
                 self.rxrecieved = item
                 self.updatescreen()
-                self.root.after(100, self.readrxque) # 100 ms
+        self.root.after(100, self.readrxque) # 100 ms
 
     def updatescreen(self):
         "To be overridden by child widgets"
@@ -129,10 +129,18 @@ class MessageScreen(ParentScreen):
         ttk.Label(self.tframe, text="Messages").grid(column=0, row=0, sticky=W)
         self.status = ttk.Label(self.tframe, text="Not connected")
         self.status.grid(column=0, row=1)
+        self.bold_font = font.Font(root, self.status.cget("font"))
+        self.bold_font.configure(weight="bold")
 
         # main frame
+        self.message_widgets = []
         for r in range(8):
-            ttk.Label(self.mainframe, text="").grid(column=0, row=r, sticky=W)
+            m = ttk.Label(self.mainframe, text="")
+            m.grid(column=0, row=r, sticky=W)
+            self.message_widgets.append(m)
+
+        self.message_widgets[7].configure(font=self.bold_font)
+
 
         # set last row of mainframe to expand
         self.mainframe.rowconfigure(8, weight=1)
@@ -164,14 +172,6 @@ class MessageScreen(ParentScreen):
                  for index,lbl in enumerate(self.mainframe.grid_slaves()):
                     try:
                         lbl['text'] = mlist[index]
-                        if not index:
-                            bold_font = font.Font(lbl, lbl.cget("font"))
-                            bold_font.configure(weight="bold")
-                            lbl.configure(font=bold_font)
-                        else:
-                            norm_font = font.Font(lbl, lbl.cget("font"))
-                            norm_font.configure(weight="normal")
-                            lbl.configure(font=norm_font)
                     except IndexError:
                         lbl['text'] = ""
         self.rxrecieved = None
