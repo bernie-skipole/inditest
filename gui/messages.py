@@ -8,8 +8,8 @@ from .parent import ParentScreen, localtimestring
 
 class MessageScreen(ParentScreen):
 
-    def __init__(self, txque, rxque, root, snapshot=None):
-        super().__init__(txque, rxque, root, snapshot)
+    def __init__(self, txque, rxque, root, sc, snapshot=None):
+        super().__init__(txque, rxque, root, sc, snapshot)
         # top frame
         mtitle = ttk.Label(self.tframe, text="Messages")
         mtitle.grid(column=0, row=0, sticky=W)
@@ -53,7 +53,7 @@ class MessageScreen(ParentScreen):
         self.hide_button("Vectors")
 
         # initially disable Devices button
-        self.disable_button("Devices")
+        #self.disable_button("Devices")
 
         self.connected = False
         self.enable = False
@@ -71,10 +71,10 @@ class MessageScreen(ParentScreen):
                 self.status['text'] = "Connected"
             else:
                 self.status['text'] = "Not Connected"
-            if self.enable:
-                self.enable_button("Devices")
-            else:
-                self.disable_button("Devices")
+         #   if self.enable:
+         #       self.enable_button("Devices")
+         #   else:
+         #       self.disable_button("Devices")
         else:
             connected = self.rxrecieved.snapshot.connected
             enable = self.rxrecieved.snapshot.enable
@@ -88,10 +88,10 @@ class MessageScreen(ParentScreen):
             if self.enable != enable:
                 # enabled devices has changed
                 self.enable = enable
-                if enable:
-                    self.enable_button("Devices")
-                else:
-                    self.disable_button("Devices")
+          #      if enable:
+          #          self.enable_button("Devices")
+          #      else:
+          #          self.disable_button("Devices")
             # and set self.snapshot equal to the current received snapshot
             self.snapshot = self.rxrecieved.snapshot
 

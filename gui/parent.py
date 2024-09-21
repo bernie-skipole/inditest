@@ -13,10 +13,25 @@ def localtimestring(t):
     return f"{localtime.strftime('%H:%M:%S')}.{ms:0>2d}"
 
 
+class ScreenChooser:
+
+    def __init__(self):
+        self.screens = {}
+
+    def addscreens(self, screens):
+        self.screens = screens
+
+    def setscreen(self, name):
+        if name in self.screens:
+            screen = self.screens[name]
+            screen.applicationframe.tkraise()
+
+
 
 class ParentScreen:
 
-    def __init__(self, txque, rxque, root, snapshot=None):
+    def __init__(self, txque, rxque, root, sc, snapshot=None):
+        self.sc = sc
         self.txque = txque
         self.rxque = rxque
         self.root = root
@@ -63,16 +78,15 @@ class ParentScreen:
         frame.grid(column=0, row=1, sticky=(N, W, E, S))
         return frame
 
-
     def buttonframe(self):
         frame = ttk.Frame(self.applicationframe, padding="3 3 3 3", borderwidth=5)
         frame.grid(column=0, row=2, sticky=(N, W, E, S))
         # Create buttons and set them in the frame
-        self.m_butt = ttk.Button(frame, text="Messages")
+        self.m_butt = ttk.Button(frame, text="Messages", command=lambda : self.sc.setscreen("Messages"))
         self.m_butt.grid(column=1, row=0)
-        self.d_butt = ttk.Button(frame, text="Devices")
+        self.d_butt = ttk.Button(frame, text="Devices", command=lambda : self.sc.setscreen("Devices"))
         self.d_butt.grid(column=2, row=0)
-        self.v_butt = ttk.Button(frame, text="Vectors")
+        self.v_butt = ttk.Button(frame, text="Vectors", command=lambda : self.sc.setscreen("Vectors"))
         self.v_butt.grid(column=3, row=0)
         self.q_butt = ttk.Button(frame, text="Quit", command=self.quit)
         self.q_butt.grid(column=4, row=0)
@@ -85,7 +99,6 @@ class ParentScreen:
         return frame
 
     def quit(self):
-        #self.txque.put(None)
         # destroy root
         self.root.destroy()
 
