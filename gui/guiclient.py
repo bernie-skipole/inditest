@@ -14,7 +14,7 @@ def localtimestring(t):
 
 def appframe(root):
     root.title("Indi Client")
-    root.minsize(600, 400)  # width, height
+    root.minsize(600, 450)  # width, height
     frame = ttk.Frame(root, padding="3 3 3 3")
     frame.grid(column=0, row=0, sticky=(N, W, E, S))
     root.columnconfigure(0, weight=1)
@@ -143,23 +143,29 @@ class MessageScreen(ParentScreen):
         self.status = ttk.Label(self.tframe, text="Not connected")
         self.status.grid(column=0, row=1)
 
-        # main frame
+        # main frame  This has two columns, uses columnspan=2
         self.message_widgets = []
         for r in range(8):
             m = ttk.Label(self.mainframe, text="")
-            m.grid(column=0, row=r, pady=3, sticky=W)
+            m.grid(column=0, row=r, columnspan=2, pady=3, sticky=W)
             self.message_widgets.append(m)
 
         # reverse the widget order so when messages added, the current one is at the bottom
         self.message_widgets.reverse()
         self.message_widgets[0].configure(font=self.bold_font)
 
-        ttk.Separator(self.mainframe, orient=HORIZONTAL).grid(column=0, row=9, pady=20, sticky=(W, E))
-        ttk.Label(self.mainframe, text="hello").grid(column=0, row=11)
+        ttk.Separator(self.mainframe, orient=HORIZONTAL).grid(column=0, row=9, columnspan=2, pady=20, sticky=(W, E))
+
+        self.bloblabel = ttk.Label(self.mainframe, text="Enable BLOBs:")
+        self.bloblabel.grid(column=0, row=10, padx=3, sticky=E)
+
+        self.blobbutton = ttk.Button(self.mainframe, text="Enable")
+        self.blobbutton.grid(column=1, row=10, padx=3, sticky=W)
 
         # set mainframe grid to expand
         self.mainframe.columnconfigure(0, weight=1)
-        self.mainframe.rowconfigure(12, weight=1)
+        self.mainframe.columnconfigure(1, weight=1)
+        self.mainframe.rowconfigure(9, weight=1)
 
         # button frame
         # remove messages and vectors buttons
