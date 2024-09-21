@@ -16,14 +16,17 @@ def localtimestring(t):
 
 class ParentScreen:
 
-    def __init__(self, txque, rxque, root, applicationframe, snapshot=None):
+    def __init__(self, txque, rxque, root, snapshot=None):
         self.txque = txque
         self.rxque = rxque
         self.root = root
-        self.applicationframe = applicationframe
-        self.tframe = self.topframe(applicationframe)
-        self.mainframe = self.middleframe(applicationframe)
-        self.butframe = self.buttonframe(applicationframe)
+        self.applicationframe = ttk.Frame(root, padding="3 3 3 3")
+        self.applicationframe.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.applicationframe.columnconfigure(0, weight=1)
+        self.applicationframe.rowconfigure(1, weight=1)
+        self.tframe = self.topframe()
+        self.mainframe = self.middleframe()
+        self.butframe = self.buttonframe()
         self.rxrecieved = None
         # This is the current working snapshot of the client
         self.snapshot = snapshot
@@ -48,21 +51,21 @@ class ParentScreen:
         "To be overridden by child widgets"
         self.rxrecieved = None
 
-    def topframe(self, applicationframe):
-        frame = ttk.Frame(applicationframe, padding="3 3 12 12", borderwidth=5)
+    def topframe(self):
+        frame = ttk.Frame(self.applicationframe, padding="3 3 12 12", borderwidth=5)
         frame.grid(column=0, row=0, sticky=(N, W, E))
         frame.columnconfigure(0, weight=1)
         return frame
 
 
-    def middleframe(self, applicationframe):
-        frame = ttk.Frame(applicationframe, padding="3 3 3 12", borderwidth=5, relief='groove')
+    def middleframe(self):
+        frame = ttk.Frame(self.applicationframe, padding="3 3 3 12", borderwidth=5, relief='groove')
         frame.grid(column=0, row=1, sticky=(N, W, E, S))
         return frame
 
 
-    def buttonframe(self, applicationframe):
-        frame = ttk.Frame(applicationframe, padding="3 3 3 3", borderwidth=5)
+    def buttonframe(self):
+        frame = ttk.Frame(self.applicationframe, padding="3 3 3 3", borderwidth=5)
         frame.grid(column=0, row=2, sticky=(N, W, E, S))
         # Create buttons and set them in the frame
         self.m_butt = ttk.Button(frame, text="Messages")

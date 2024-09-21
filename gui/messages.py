@@ -8,8 +8,8 @@ from .parent import ParentScreen, localtimestring
 
 class MessageScreen(ParentScreen):
 
-    def __init__(self, txque, rxque, root, applicationframe, snapshot=None):
-        super().__init__(txque, rxque, root, applicationframe, snapshot)
+    def __init__(self, txque, rxque, root, snapshot=None):
+        super().__init__(txque, rxque, root, snapshot)
         # top frame
         mtitle = ttk.Label(self.tframe, text="Messages")
         mtitle.grid(column=0, row=0, sticky=W)
