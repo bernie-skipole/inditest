@@ -58,11 +58,6 @@ class MessageScreen(ParentScreen):
         self.connected = False
         self.enable = False
 
-        # and start the checking readrxque
-        self.readrxque()
-
-
-
 
     def updatescreen(self):
         "To handle received messages"
