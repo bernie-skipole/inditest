@@ -18,11 +18,12 @@ def rungui(txque, rxque):
     root.minsize(600, 450)  # width, height
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
+    load_window = Toplevel(root)
     schooser = ScreenChooser()
     # create screens
     screens = {
-                "Devices": DevicesScreen(txque, rxque, root, schooser),
-                "Messages": MessageScreen(txque, rxque, root, schooser),
+                "Devices": DevicesScreen(txque, rxque, load_window, schooser),
+                "Messages": MessageScreen(txque, rxque, load_window, schooser),
               }
     schooser.addscreens(screens)
 
