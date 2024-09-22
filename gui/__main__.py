@@ -73,6 +73,11 @@ class QueClient(ipc.IPyClient):
                 await self.send_newVector(item[0], item[1], members=item[2])
 
 
+def start(client):
+    "Run the QueClient"
+    asyncio.run(client.asyncrun())
+
+
 if __name__ == "__main__":
 
     # create two queues
@@ -83,8 +88,11 @@ if __name__ == "__main__":
 
     # create a QueClient object
     client = QueClient(indihost="localhost", indiport=7624, txque=txque, rxque=rxque)
-    # rungui in its own thread
-    clientapp = threading.Thread(target=rungui, args=(txque, rxque))
+    # run the client in its own thread
+    clientapp = threading.Thread(target=start, args=(client,))
     clientapp.start()
+    # run the gui in this thread
     print(f"Running {__file__}")
-    asyncio.run(client.asyncrun())
+    rungui(txque, rxque)
+    # and wait for the clientapp thread to stop
+    clientapp.join()

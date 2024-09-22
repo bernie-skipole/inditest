@@ -24,21 +24,20 @@ class ScreenChooser:
     def setscreen(self, name):
         if name in self.screens:
             screen = self.screens[name]
-            screen.applicationframe.tkraise()
+            screen.tframe.tkraise()
+            screen.mainframe.tkraise()
+            screen.butframe.tkraise()
 
 
 
 class ParentScreen:
 
-    def __init__(self, txque, rxque, root, sc, snapshot=None):
+    def __init__(self, txque, rxque, root, applicationframe, sc, snapshot=None):
         self.sc = sc
         self.txque = txque
         self.rxque = rxque
         self.root = root
-        self.applicationframe = ttk.Frame(root, padding="3 3 3 3")
-        self.applicationframe.grid(column=0, row=0, sticky=(N, W, E, S))
-        self.applicationframe.columnconfigure(0, weight=1)
-        self.applicationframe.rowconfigure(1, weight=1)
+        self.applicationframe = applicationframe
         self.tframe = self.topframe()
         self.mainframe = self.middleframe()
         self.butframe = self.buttonframe()
@@ -48,19 +47,6 @@ class ParentScreen:
         if snapshot is None:
             # request a snapshot
             self.tx_data('snapshot')
-
-    def readrxque(self):
-        "Read rxque, and if something available, set it into self.rxrecieved"
-        if self.rxrecieved is None:
-            try:
-                item = self.rxque.get_nowait()
-            except queue.Empty:
-                pass
-            else:
-                self.rxrecieved = item
-                self.updatescreen()
-        self.root.after(100, self.readrxque) # 100 ms
-
 
     def updatescreen(self):
         "To be overridden by child widgets"
@@ -130,3 +116,15 @@ class ParentScreen:
 
     def tx_data(self, data):
         self.txque.put(data)
+
+    def readrxque(self):
+        "Read rxque, and if something available, set it into self.rxrecieved"
+        if self.rxrecieved is None:
+            try:
+                item = self.rxque.get_nowait()
+            except queue.Empty:
+                pass
+            else:
+                self.rxrecieved = item
+                self.updatescreen()
+        self.root.after(100, self.readrxque) # 100 ms
