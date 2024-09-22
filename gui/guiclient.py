@@ -25,15 +25,15 @@ def rungui(txque, rxque):
     applicationframe.rowconfigure(1, weight=1)
 
 
-    schooser = ScreenChooser()
+    schooser = ScreenChooser(root, txque, rxque)
     # create screens
     screens = {
                 "Devices": DevicesScreen(txque, rxque, root, applicationframe, schooser),
                 "Messages": MessageScreen(txque, rxque, root, applicationframe, schooser),
               }
     schooser.addscreens(screens)
-
-    screens["Messages"].readrxque()
+    schooser.setscreen("Messages")
+    schooser.readrxque()
 
     root.mainloop()
     txque.put(None)

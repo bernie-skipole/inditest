@@ -15,24 +15,48 @@ def localtimestring(t):
 
 class ScreenChooser:
 
-    def __init__(self):
+    def __init__(self, root, txque, rxque):
         self.screens = {}
+        self.screen = None
+        self.root = root
+        self.rxque = rxque
+        # This is the current working snapshot of the client
+        self.snapshot = None
+        # request a snapshot
+        txque.put('snapshot')
 
     def addscreens(self, screens):
         self.screens = screens
 
     def setscreen(self, name):
         if name in self.screens:
-            screen = self.screens[name]
-            screen.tframe.tkraise()
-            screen.mainframe.tkraise()
-            screen.butframe.tkraise()
+            self.screen = self.screens[name]
+            self.screen.tframe.tkraise()
+            self.screen.mainframe.tkraise()
+            self.screen.butframe.tkraise()
+            self.screen.show()
+
+
+    def readrxque(self):
+        "Read rxque, and if something available, set it into self.screen.rxrecieved"
+        if self.screen is None:
+            self.root.after(100, self.readrxque) # 100 ms
+            return
+        if self.screen.rxrecieved is None:
+            try:
+                item = self.rxque.get_nowait()
+            except queue.Empty:
+                pass
+            else:
+                self.screen.rxrecieved = item
+                self.screen.updatescreen()
+        self.root.after(100, self.readrxque) # 100 ms
 
 
 
 class ParentScreen:
 
-    def __init__(self, txque, rxque, root, applicationframe, sc, snapshot=None):
+    def __init__(self, txque, rxque, root, applicationframe, sc):
         self.sc = sc
         self.txque = txque
         self.rxque = rxque
@@ -42,14 +66,15 @@ class ParentScreen:
         self.mainframe = self.middleframe()
         self.butframe = self.buttonframe()
         self.rxrecieved = None
-        # This is the current working snapshot of the client
-        self.snapshot = snapshot
-        if snapshot is None:
-            # request a snapshot
-            self.tx_data('snapshot')
+
+
+    def show(self):
+        "To be overridden by child screens"
+        self.rxrecieved = None
+
 
     def updatescreen(self):
-        "To be overridden by child widgets"
+        "To be overridden by child screens"
         self.rxrecieved = None
 
     def topframe(self):
@@ -116,15 +141,3 @@ class ParentScreen:
 
     def tx_data(self, data):
         self.txque.put(data)
-
-    def readrxque(self):
-        "Read rxque, and if something available, set it into self.rxrecieved"
-        if self.rxrecieved is None:
-            try:
-                item = self.rxque.get_nowait()
-            except queue.Empty:
-                pass
-            else:
-                self.rxrecieved = item
-                self.updatescreen()
-        self.root.after(100, self.readrxque) # 100 ms

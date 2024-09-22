@@ -8,8 +8,8 @@ from .parent import ParentScreen, localtimestring
 
 class MessageScreen(ParentScreen):
 
-    def __init__(self, txque, rxque, root, applicationframe, sc, snapshot=None):
-        super().__init__(txque, rxque, root, applicationframe, sc, snapshot)
+    def __init__(self, txque, rxque, root, applicationframe, sc):
+        super().__init__(txque, rxque, root, applicationframe, sc)
         # top frame
         mtitle = ttk.Label(self.tframe, text="Messages")
         mtitle.grid(column=0, row=0, sticky=W)
@@ -59,16 +59,46 @@ class MessageScreen(ParentScreen):
         self.enable = False
 
 
+    def show(self):
+        "To be overridden by child screens"
+        if self.sc.snapshot is None:
+            # no data
+            self.rxrecieved = None
+            return
+        self.connected = self.sc.snapshot.connected
+        self.enable = self.sc.snapshot.enable
+
+        if self.connected:
+            self.status['text'] = "Connected"
+        else:
+            self.status['text'] = "Not Connected"
+
+  #      if self.enable:
+  #          self.enable_button("Devices")
+  #      else:
+  #          self.disable_button("Devices")
+
+        messages = self.sc.snapshot.messages
+        # messages is a list of (Timestamp, message) tuples
+        mlist = [ localtimestring(t) + "  " + m for t,m in messages ]
+        if mlist:
+             for index,lbl in enumerate(self.message_widgets):
+                try:
+                    lbl['text'] = mlist[index]
+                except IndexError:
+                    lbl['text'] = ""
+        self.rxrecieved = None
+
 
 
     def updatescreen(self):
         "To handle received messages"
         # recieved item has attributes 'eventtype', 'devicename', 'vectorname', 'timestamp', 'snapshot'
 
-        if self.snapshot is None:
-            self.snapshot = self.rxrecieved.snapshot
-            self.connected = self.snapshot.connected
-            self.enable = self.snapshot.enable
+        if self.sc.snapshot is None:
+            self.sc.snapshot = self.rxrecieved.snapshot
+            self.connected = self.sc.snapshot.connected
+            self.enable = self.sc.snapshot.enable
             if self.connected:
                 self.status['text'] = "Connected"
             else:
@@ -94,8 +124,9 @@ class MessageScreen(ParentScreen):
           #          self.enable_button("Devices")
           #      else:
           #          self.disable_button("Devices")
-            # and set self.snapshot equal to the current received snapshot
-            self.snapshot = self.rxrecieved.snapshot
+
+            # and set self.sc.snapshot equal to the current received snapshot
+            self.sc.snapshot = self.rxrecieved.snapshot
 
         if self.rxrecieved.eventtype == "Message" and self.rxrecieved.devicename is None:
             messages = self.rxrecieved.snapshot.messages
