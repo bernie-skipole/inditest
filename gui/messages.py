@@ -60,10 +60,10 @@ class MessageScreen(ParentScreen):
 
 
     def show(self):
-        "To be overridden by child screens"
+        "This updates this screen when it is first shown"
+
         if self.sc.snapshot is None:
             # no data
-            self.rxrecieved = None
             return
         self.connected = self.sc.snapshot.connected
         self.enable = self.sc.snapshot.enable
@@ -87,18 +87,18 @@ class MessageScreen(ParentScreen):
                     lbl['text'] = mlist[index]
                 except IndexError:
                     lbl['text'] = ""
-        self.rxrecieved = None
 
 
 
-    def updatescreen(self):
-        "To handle received messages"
+
+    def updatescreen(self, item):
+        "To handle received item"
         # recieved item has attributes 'eventtype', 'devicename', 'vectorname', 'timestamp', 'snapshot'
 
         if self.sc.snapshot is None:
-            self.sc.snapshot = self.rxrecieved.snapshot
-            self.connected = self.sc.snapshot.connected
-            self.enable = self.sc.snapshot.enable
+            self.sc.snapshot = item.snapshot
+            self.connected = item.snapshot.connected
+            self.enable = item.snapshot.enable
             if self.connected:
                 self.status['text'] = "Connected"
             else:
@@ -108,8 +108,8 @@ class MessageScreen(ParentScreen):
          #   else:
          #       self.disable_button("Devices")
         else:
-            connected = self.rxrecieved.snapshot.connected
-            enable = self.rxrecieved.snapshot.enable
+            connected = item.snapshot.connected
+            enable = item.snapshot.enable
             if self.connected != connected:
                 # connected state has changed
                 self.connected = connected
@@ -125,11 +125,12 @@ class MessageScreen(ParentScreen):
           #      else:
           #          self.disable_button("Devices")
 
-            # and set self.sc.snapshot equal to the current received snapshot
-            self.sc.snapshot = self.rxrecieved.snapshot
 
-        if self.rxrecieved.eventtype == "Message" and self.rxrecieved.devicename is None:
-            messages = self.rxrecieved.snapshot.messages
+        # and set self.sc.snapshot equal to the current received snapshot
+        self.sc.snapshot = item.snapshot
+
+        if item.eventtype == "Message" and item.devicename is None:
+            messages = item.snapshot.messages
             # messages is a list of (Timestamp, message) tuples
             mlist = [ localtimestring(t) + "  " + m for t,m in messages ]
             if mlist:
@@ -138,4 +139,3 @@ class MessageScreen(ParentScreen):
                         lbl['text'] = mlist[index]
                     except IndexError:
                         lbl['text'] = ""
-        self.rxrecieved = None

@@ -42,14 +42,12 @@ class ScreenChooser:
         if self.screen is None:
             self.root.after(100, self.readrxque) # 100 ms
             return
-        if self.screen.rxrecieved is None:
-            try:
-                item = self.rxque.get_nowait()
-            except queue.Empty:
-                pass
-            else:
-                self.screen.rxrecieved = item
-                self.screen.updatescreen()
+        try:
+            item = self.rxque.get_nowait()
+        except queue.Empty:
+            pass
+        else:
+            self.screen.updatescreen(item)
         self.root.after(100, self.readrxque) # 100 ms
 
 
@@ -65,7 +63,6 @@ class ParentScreen:
         self.tframe = self.topframe()
         self.mainframe = self.middleframe()
         self.butframe = self.buttonframe()
-        self.rxrecieved = None
 
 
     def show(self):
@@ -73,9 +70,9 @@ class ParentScreen:
         self.rxrecieved = None
 
 
-    def updatescreen(self):
+    def updatescreen(self, item):
         "To be overridden by child screens"
-        self.rxrecieved = None
+        pass
 
     def topframe(self):
         frame = ttk.Frame(self.applicationframe, padding="3 3 12 12", borderwidth=5)
