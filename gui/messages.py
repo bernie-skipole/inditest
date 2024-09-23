@@ -47,6 +47,7 @@ class MessageScreen(ParentScreen):
         self.mainframe.columnconfigure(1, weight=1)
         self.mainframe.rowconfigure(9, weight=1)
 
+
         # button frame
         # remove messages and vectors buttons
         self.hide_button("Messages")
@@ -87,7 +88,6 @@ class MessageScreen(ParentScreen):
                     lbl['text'] = mlist[index]
                 except IndexError:
                     lbl['text'] = ""
-
 
 
 
@@ -139,3 +139,5 @@ class MessageScreen(ParentScreen):
                         lbl['text'] = mlist[index]
                     except IndexError:
                         lbl['text'] = ""
+
+

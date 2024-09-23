@@ -2,7 +2,7 @@
 import asyncio, queue, threading, collections
 
 import sys
-sys.path.insert(0, "/home/bernard/git/indipyclient")
+sys.path.insert(0, "/home/bernie/git/indipyclient")
 
 import indipyclient as ipc
 

@@ -15,7 +15,7 @@ def rungui(txque, rxque):
        rxque is the queue of received data"""
     root = Tk()
     root.title("Indi Client")
-    root.minsize(600, 10)#450)  # width, height
+    #root.minsize(600, 450)  # width, height
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 

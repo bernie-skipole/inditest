@@ -54,7 +54,6 @@ class DevicesScreen(ParentScreen):
                 rownumber += 1
 
 
-
     def updatescreen(self, item):
         "To handle received item"
         # recieved item has attributes 'eventtype', 'devicename', 'vectorname', 'timestamp', 'snapshot'
@@ -95,3 +94,4 @@ class DevicesScreen(ParentScreen):
 
         # and set self.sc.snapshot equal to the current received snapshot
         self.sc.snapshot = item.snapshot
+

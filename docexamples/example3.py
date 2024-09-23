@@ -14,6 +14,10 @@
 
 import asyncio, time
 
+import sys
+sys.path.insert(0, "/home/bernie/git/indipydriver")
+
+
 from indipydriver import (IPyServer, IPyDriver, Device,
                           TextVector, TextMember,
                           setNumberVector
