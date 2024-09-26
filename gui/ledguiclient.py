@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+# ]
+# ///
+
 """An example tkinter gui which can be used to
    connect to the server created by simulated_led.py
    and displays the LED switch
