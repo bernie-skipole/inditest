@@ -1,9 +1,6 @@
 
 import asyncio, queue, threading
 
-import sys
-sys.path.insert(0, "/home/bernie/git/indipyclient")
-
 from indipyclient.queclient import runqueclient
 
 from .guiclient import rungui
