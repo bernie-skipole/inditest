@@ -1,20 +1,11 @@
-"""An example tkinter gui which can be used to
-   connect to the server created by simulated_led.py
-   and displays the LED switch
-
-   simulated_led.py should be set running from another
-   command prompt.
-"""
-
-import queue, threading
 
 from tkinter import *
 from tkinter import ttk
 
-# import the function runqueclient which can
-# be run in a thread to operate a QueClient
 
-from indipyclient.queclient import runqueclient
+import queue
+
+
 
 
 class LEDWindow:
@@ -148,24 +139,3 @@ def rungui(txque, rxque):
     root.mainloop()
     # When the loop ends, transmit a None value to shut down the queclient
     txque.put(None)
-
-
-
-if __name__ == "__main__":
-
-    # create two queues
-    # rxque giving received data
-    rxque = queue.Queue(maxsize=4)
-    # txque transmit data
-    txque = queue.Queue(maxsize=4)
-
-    # run the queclient in its own thread
-    clientthread = threading.Thread(target=runqueclient, args=(txque, rxque))
-    # The args argument could also have hostname and port specified
-    # if the LED server is running elsewhere
-    clientthread.start()
-
-    # run the gui code, which writes and reads items on these queues
-    rungui(txque, rxque)
-    # and wait for the clientthread to stop
-    clientthread.join()
