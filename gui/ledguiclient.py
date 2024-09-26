@@ -1,13 +1,7 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipyclient",
-# ]
-# ///
 
-"""An example tkinter gui which can be used to
-   connect to the server created by simulated_led.py
-   and displays the LED switch
+"""An example tkinter gui which connects
+   to the server created by simulated_led.py
+   and displays the LED status and a toggle switch
 
    simulated_led.py should be set running from another
    command prompt.
@@ -96,10 +90,6 @@ class LEDWindow:
         elif self.ledval["text"] == "Off":
             self.txque.put( ("led", "ledvector", {"ledmember": "On"}) )
 
-        # If current value is not On or Off, cannot toggle
-        return
-
-
 
     def setLED(self):
         "Reads the snapshot and sets the LED value"
@@ -123,10 +113,13 @@ class LEDWindow:
             pass
         else:
             self.update(item)
-        self.root.after(100, self.readrxque) # 100 ms
+        # and read again after 100ms
+        self.root.after(100, self.readrxque)
 
 
     def update(self, item):
+        """Called on receiving an update,
+           Get the snapshot and set the displayed LED value"""
         self.snapshot = item.snapshot
         # check if connected
         if not self.checkconnected():
@@ -137,7 +130,8 @@ class LEDWindow:
 
 
 def rungui(txque, rxque):
-    """txque is the queue to transmit data
+    """Creates the tkinter window and runs the gui loop
+       txque is the queue to transmit data
        rxque is the queue of received data"""
     root = Tk()
     root.title("LED Client")
@@ -157,7 +151,6 @@ def rungui(txque, rxque):
     txque.put(None)
 
 
-
 if __name__ == "__main__":
 
     # create two queues
@@ -172,7 +165,8 @@ if __name__ == "__main__":
     # if the LED server is running elsewhere
     clientthread.start()
 
-    # run the gui code, which writes and reads items on these queues
+    # run the gui code, which displays the window and
+    # writes and reads items on these queues
     rungui(txque, rxque)
     # and wait for the clientthread to stop
     clientthread.join()
