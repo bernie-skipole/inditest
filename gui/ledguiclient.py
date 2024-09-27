@@ -60,6 +60,9 @@ class LEDWindow:
         self.ledswitch.grid(column=0, row=2)
         self.ledswitch.state(['disabled'])
 
+        # bind the return key to invoke the self.ledswitch command
+        self.root.bind('<Return>', lambda e: self.ledswitch.invoke())
+
 
     def checkconnected(self):
         "Return True if connected, otherwise False"
