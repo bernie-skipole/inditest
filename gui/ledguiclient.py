@@ -15,6 +15,9 @@ from tkinter import ttk
 # import the function runqueclient which can
 # be run in a thread to operate a QueClient
 
+import sys
+sys.path.insert(0, "/home/bernard/git/indipyclient")
+
 from indipyclient.queclient import runqueclient
 
 
