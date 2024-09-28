@@ -150,8 +150,6 @@ def rungui(txque, rxque):
 
     # run the gui loop
     root.mainloop()
-    # When the loop ends, transmit a None value to shut down the queclient
-    txque.put(None)
 
 
 if __name__ == "__main__":
@@ -171,5 +169,7 @@ if __name__ == "__main__":
     # run the gui code, which displays the window and
     # writes and reads items on these queues
     rungui(txque, rxque)
+    # When the loop ends, transmit a None value to shut down the queclient
+    txque.put(None)
     # and wait for the clientthread to stop
     clientthread.join()
