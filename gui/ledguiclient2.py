@@ -1,5 +1,5 @@
 
-"""An example tkinter gui which connects
+"""An example pygtk3 gui which connects
    to the server created by simulated_led.py
    and displays the LED status and a toggle switch
 
@@ -9,8 +9,9 @@
 
 import queue, threading
 
-from tkinter import *
-from tkinter import ttk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GLib
 
 # import the function runqueclient which can
 # be run in a thread to operate a QueClient
@@ -20,78 +21,70 @@ from indipyclient.queclient import runqueclient
 
 class LEDWindow:
 
-    def __init__(self, root, txque, rxque):
+    def __init__(self, topwin, txque, rxque):
 
-        self.root = root
+        self.topwin = topwin
         self.rxque = rxque
         self.txque = txque
-
-        # create a frame
-        self.applicationframe = ttk.Frame(self.root, padding="3 3 3 3")
-        self.applicationframe.grid(column=0, row=0, sticky=(N, W, E, S))
-        self.applicationframe.columnconfigure(0, weight=1)
-
-        # row 0 will hold the 'connected' label, and will not exapand
-        # row 1 will hold the LED status label, and will expand
-        # row 2 will hold the switch, and will expand
-        self.applicationframe.rowconfigure(1, weight=1)
-        self.applicationframe.rowconfigure(2, weight=1)
 
         # request a snapshot
         self.txque.put('snapshot')
         # This is the current working snapshot of the client
         self.snapshot = None
 
-        # create the frame contents:
+        # create the topwin contents:
+
+        self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.topwin.add(self.box)
 
         # connected label, on row 0
-        self.clabel = ttk.Label(self.applicationframe, text="Not Connected")
-        self.clabel.grid(column=0, row=0)
+        self.clabel = Gtk.Label(label="Not Connected")
+        self.box.pack_start(self.clabel, True, True, 0)
 
         # The LED value, on row 1
-        self.ledval = ttk.Label(self.applicationframe, text="Unknown")
-        self.ledval.grid(column=0, row=1)
+        self.ledval = Gtk.Label(label="Unknown")
+        self.box.pack_start(self.ledval, True, True, 0)
+
 
         # The LED switch, on row 2
-        self.ledswitch = ttk.Button(self.applicationframe, text="Toggle LED", command=self.toggle)
-        self.ledswitch.grid(column=0, row=2)
-        self.ledswitch.state(['disabled'])
-
-        # bind the return key to invoke the self.ledswitch command
-        self.root.bind('<Return>', lambda e: self.ledswitch.invoke())
+        self.ledswitch = Gtk.Button.new_with_label("Toggle LED")
+        self.ledswitch.set_halign(Gtk.Align.CENTER)
+        self.ledswitch.set_sensitive(False)
+        self.ledswitch.connect("clicked", self.toggle)
+        self.box.pack_start(self.ledswitch, True, False, 0)
 
 
     def checkconnected(self):
         "Return True if connected, otherwise False"
         if (self.snapshot is None) or (not self.snapshot.connected):
-            if self.clabel["text"] == "Not Connected":
+            if self.clabel.get_text() == "Not Connected":
                 # no change
                 return False
             # so previously was connected, change the labels
-            self.clabel["text"] = "Not Connected"
-            self.ledval["text"] = "Unknown"
-            self.ledswitch.state(['disabled'])
+            self.clabel.set_text("Not Connected")
+            self.ledval.set_text("Unknown")
+            self.ledswitch.set_sensitive(False)
             return False
         # So a snapshot is available and this is connected:
-        if self.clabel["text"] == "Connected":
+        if self.clabel.get_text() == "Connected":
             # no change
             return True
         # so previously was not connected, change the label
-        self.clabel["text"] = "Connected"
+        self.clabel.set_text("Connected")
         self.setLED()
-        self.ledswitch.state(['!disabled'])
+        self.ledswitch.set_sensitive(True)
         return True
 
 
-    def toggle(self):
+    def toggle(self, button):
         "Called when the button is clicked"
         if not self.checkconnected():
             # Not connected, nothing to do
             return
         # send instruction to toggle
-        if self.ledval["text"] == "On":
+        if self.ledval.get_text() == "On":
             self.txque.put( ("led", "ledvector", {"ledmember": "Off"}) )
-        elif self.ledval["text"] == "Off":
+        elif self.ledval.get_text() == "Off":
             self.txque.put( ("led", "ledvector", {"ledmember": "On"}) )
 
 
@@ -102,11 +95,11 @@ class LEDWindow:
         except:
             # in case these values are not available
             return
-        current_state = self.ledval["text"]
+        current_state = self.ledval.get_text()
         if led == "On" and current_state != "On":
-            self.ledval["text"] = "On"
+            self.ledval.set_text("On")
         elif led == "Off" and current_state != "Off":
-            self.ledval["text"] = "Off"
+            self.ledval.set_text("Off")
 
 
     def readrxque(self):
@@ -117,8 +110,8 @@ class LEDWindow:
             pass
         else:
             self.update(item)
-        # and read again after 100ms
-        self.root.after(100, self.readrxque)
+        # as this is a timeout call, return True to continue calling
+        return True
 
 
     def update(self, item):
@@ -134,23 +127,23 @@ class LEDWindow:
 
 
 def rungui(txque, rxque):
-    """Creates the tkinter window and runs the gui loop
+    """Creates the Gtk window and runs the gui loop
        txque is the queue to transmit data
        rxque is the queue of received data"""
-    root = Tk()
-    root.title("LED Client")
-    root.minsize(200, 100)  # width, height
-    root.columnconfigure(0, weight=1)
-    root.rowconfigure(0, weight=1)
+
+    topwin = Gtk.Window(title="LED Client")
+    topwin.set_default_size(200, 100)  # width, height
+    topwin.connect("destroy", Gtk.main_quit)
 
     # create the application window
-    ledwindow = LEDWindow(root, txque, rxque)
+    ledwindow = LEDWindow(topwin, txque, rxque)
 
-    # start checking the rxque
-    ledwindow.readrxque()
+    # every 100ms call ledwindow.readrxque
+    timeout_id = GLib.timeout_add(100, ledwindow.readrxque)
 
+    topwin.show_all()
     # run the gui loop
-    root.mainloop()
+    Gtk.main()
 
 
 if __name__ == "__main__":
