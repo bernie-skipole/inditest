@@ -5,7 +5,7 @@
 # ]
 # ///
 
-import asyncio, time
+import asyncio
 
 import indipydriver as ipd
 
