@@ -13,26 +13,22 @@
 # logger.setLevel(logging.DEBUG)
 
 
-
 import asyncio
 
-from indipydriver import (IPyDriver, Device,
-                          NumberVector, NumberMember,
-                          IPyServer
-                         )
-
-# Other vectors, members and events are available,
-# this example only imports those used.
+import indipydriver as ipd
 
 class ThermalControl:
     """This is a simulation containing variables only, normally it
        would control a real heater, and take temperature measurements
        from a sensor."""
 
-    def __init__(self):
+    def __init__(self, devicename, target=15):
         """Set start up values"""
+        # It is useful to give this controlling object the devicename
+        # reference, so it can be identified throughout the code
+        self.devicename = devicename
+        self.target = target
         self.temperature = 20
-        self.target = 15
         self.heater = "Off"
         self.stop = False
 
@@ -60,21 +56,24 @@ class ThermalControl:
                 self.heater = "On"
 
 
-class ThermoDriver(IPyDriver):
+class _ThermoDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here, with a method
-       to transmit the temperature to the client"""
-
+       to run the thermalcontrol.run_thermostat() method 
+       and to transmit the temperature to the client"""
 
     async def hardware(self):
-        """This is a continuously running coroutine which is used
-           to transmit the temperature to connected clients."""
+        """This coroutine starts when the driver starts."""
 
         # get the object controlling the instrument, which is available
         # in the named arguments dictionary 'self.driverdata'.
         thermalcontrol = self.driverdata["thermalcontrol"]
+        devicename = thermalcontrol.devicename
 
-        vector = self['Thermostat']['temperaturevector']
+        # set the thermalcontrol instrument running
+        controltask = asyncio.create_task(thermalcontrol.run_thermostat())
+
+        vector = self[devicename]['temperaturevector']
         while not self.stop:
             await asyncio.sleep(10)
             # Send the temperature every 10 seconds
@@ -82,48 +81,55 @@ class ThermoDriver(IPyDriver):
             # and transmit it to the client
             await vector.send_setVector()
 
+        # the loop above has finished, so stop the controltask
+        thermalcontrol.shutdown()
+        # and wait for it to stop
+        await controltask
 
-def make_driver(thermalcontrol):
+
+def make_driver(devicename, target):
     "Returns an instance of the driver"
 
+    # Make an instance of the object controlling the instrument
+    thermalcontrol = ThermalControl(devicename, target)
+
     # Make a NumberMember holding the temperature value
-    temperaturemember = NumberMember( name="temperature",
-                                      format='%3.1f', min=-50, max=99,
-                                      membervalue=thermalcontrol.temperature )
+    temperaturemember = ipd.NumberMember( name="temperature",
+                                          format='%3.1f', min=-50, max=99,
+                                          membervalue=thermalcontrol.temperature )
     # Make a NumberVector instance, containing the member.
-    temperaturevector = NumberVector( name="temperaturevector",
-                                      label="Temperature",
-                                      group="Values",
-                                      perm="ro",
-                                      state="Ok",
-                                      numbermembers=[temperaturemember] )
+    temperaturevector = ipd.NumberVector( name="temperaturevector",
+                                          label="Temperature",
+                                          group="Values",
+                                          perm="ro",
+                                          state="Ok",
+                                          numbermembers=[temperaturemember] )
     # Make a Device with temperaturevector as its only property
-    thermostat = Device( devicename="Thermostat",
-                         properties=[temperaturevector] )
+    # and with the given devicename
+    thermostat = ipd.Device( devicename=devicename,
+                             properties=[temperaturevector] )
 
     # Create the Driver which will contain this Device,
-    #  and the instrument controlling object
-    driver = ThermoDriver( thermostat,
-                           thermalcontrol=thermalcontrol )
+    # and the instrument controlling object
+    driver = _ThermoDriver( thermostat,
+                            thermalcontrol=thermalcontrol )
 
     # and return the driver
     return driver
 
 
-async def main(thermalcontrol, server):
-    "Run the instrument and the server async tasks"
-    await asyncio.gather(thermalcontrol.run_thermostat(),
-                         server.asyncrun() )
-
 
 if __name__ == "__main__":
 
-    # Make an instance of the object controlling the instrument
-    thermalcontrol = ThermalControl()
+    # create and serve the driver
+    # the devicename has to be unique in a network of devices,
+    # and this name and target could come from script arguments
+
+    # in this case the devicename is "Thermostat", target 15
+
     # make a driver for the instrument
-    thermodriver = make_driver(thermalcontrol)
+    thermodriver = make_driver("Thermostat", 15)
     # and a server, which serves this driver
-    server = IPyServer(thermodriver)
-    # and run them together
+    server = ipd.IPyServer(thermodriver)
     print(f"Running {__file__}")
-    asyncio.run( main(thermalcontrol, server) )
+    asyncio.run(server.asyncrun())
