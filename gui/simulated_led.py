@@ -98,7 +98,7 @@ def make_driver(devicename, pin):
 
 if __name__ == "__main__":
 
-    # set up the LED pin and create and serve the driver
+    # create and serve the driver
     # the devicename has to be unique in a network of devices,
     # and this name and pin could come from script arguments
 
