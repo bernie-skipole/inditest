@@ -6,12 +6,6 @@
 # ]
 # ///
 
-import sys
-
-sys.path.insert(0, "/home/bernard/git/indipydriver")
-sys.path.insert(0, "/home/bernard/git/indipyclient")
-
-
 import asyncio
 
 from indipyclient.console import ConsoleClient
