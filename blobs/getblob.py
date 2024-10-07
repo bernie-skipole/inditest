@@ -13,7 +13,7 @@ import asyncio
 import indipydriver as ipd
 
 
-class GetBLOBDriver(ipd.IPyDriver):
+class _GetBLOBDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here."""
 
@@ -21,14 +21,12 @@ class GetBLOBDriver(ipd.IPyDriver):
         """On receiving data from the client, this is called
            It writes received BLOB data to a file"""
 
-        match event:
+        # event.vector is the vector being requested or altered
+        # event[membername] is the new value
 
-            # event.vector is the vector being requested or altered
-            # event[membername] is the new value
-
-            case ipd.newBLOBVector(devicename="getblob",
-                                   vectorname="getvector") if 'getmember' in event:
-                # a new value has been received from the client
+        if isinstance( event, ipd.newBLOBVector ):
+            if event.vectorname == "getvector" and 'getmember' in event:
+                # a new BLOB has been received from the client
                 blobvalue = event["getmember"]
                 # sizeformat is (membersize, memberformat)
                 membersize, memberformat = event.sizeformat["getmember"]
@@ -48,7 +46,7 @@ class GetBLOBDriver(ipd.IPyDriver):
                 await event.vector.send_setVectorMembers(state="Ok", message=f"Saved as {filename}")
 
 
-def make_driver():
+def make_driver(devicename):
     "Creates the driver"
 
     # create member
@@ -62,10 +60,10 @@ def make_driver():
                                 state="Ok",
                                 blobmembers=[getmember] )
     # create a Device with this vector
-    getblob = ipd.Device( devicename="getblob", properties=[getvector])
+    getblob = ipd.Device( devicename=devicename, properties=[getvector])
 
     # Create the Driver containing this device
-    driver = GetBLOBDriver(getblob)
+    driver = _GetBLOBDriver(getblob)
 
     # and return the driver
     return driver
@@ -73,7 +71,7 @@ def make_driver():
 
 if __name__ == "__main__":
 
-    driver = make_driver()
+    driver = make_driver("getblob")
     server = ipd.IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

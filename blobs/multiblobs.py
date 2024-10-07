@@ -13,7 +13,7 @@ import asyncio
 import indipydriver as ipd
 
 
-class GetBLOBs(ipd.IPyDriver):
+class _GetBLOBs(ipd.IPyDriver):
 
     """IPyDriver is subclassed here."""
 
@@ -21,10 +21,8 @@ class GetBLOBs(ipd.IPyDriver):
         """On receiving data from the client, this is called
            It writes received multiple BLOBs to files"""
 
-        match event:
-
-            case ipd.newBLOBVector(devicename="blobdevice",
-                                   vectorname="blobvector"):
+        if isinstance(event, ipd.newBLOBVector):
+            if event.vectorname == "blobvector":
                 if event.timestamp:
                     timestamp = event.timestamp.strftime('%Y%m%d_%H_%M_%S')
                 else:
@@ -48,7 +46,7 @@ class GetBLOBs(ipd.IPyDriver):
                 await event.vector.send_setVectorMembers(state="Ok", message=f"Saved {timestamp}")
 
 
-def make_driver():
+def make_driver(devicename):
     "Creates the driver"
 
     # create members
@@ -64,16 +62,16 @@ def make_driver():
                                  state="Ok",
                                  blobmembers=members )
     # create a Device with this vector
-    blobdevice = ipd.Device( devicename="blobdevice", properties=[blobvector])
+    blobdevice = ipd.Device( devicename=devicename, properties=[blobvector] )
 
     # Create and return the Driver containing this device
-    return GetBLOBs(blobdevice)
+    return _GetBLOBs(blobdevice)
 
 
 
 if __name__ == "__main__":
 
-    driver = make_driver()
+    driver = make_driver("blobdevice")
     server = ipd.IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

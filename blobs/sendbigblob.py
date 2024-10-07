@@ -4,15 +4,12 @@ Requires a BLOB filepath to be provided. Attempts to send it
 and waits 10 seconds then sends it again. This is to test how the client reacts
 """
 
-import sys
-sys.path.insert(0, "/home/bernie/git/indipydriver")
-
 import asyncio
 import indipydriver as ipd
 
 
 
-class BigBlobDriver(ipd.IPyDriver):
+class _BigBlobDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here to create a driver for the instrument"""
 
@@ -23,10 +20,10 @@ class BigBlobDriver(ipd.IPyDriver):
            This test sends the same blob continuously with ten second
            pauses."""
 
-        blobpath = self.driverdata["blobpath"]
+        devicename, blobpath = self.driverdata["blobinfo"]
         # blobpath is the path to a file
 
-        blobvector = self['bigblob']['blobvector']
+        blobvector = self[devicename]['blobvector']
         while not self.stop:
             blobvector["blobmember"] = blobpath
             # send the blob
@@ -34,7 +31,7 @@ class BigBlobDriver(ipd.IPyDriver):
             await asyncio.sleep(10)
 
 
-def make_driver(blobpath):
+def make_driver(devicename, blobpath):
     "Returns an instance of the driver, blobpath is path to file"
 
     # create blobvector, there is no member value to set at this point
@@ -48,13 +45,13 @@ def make_driver(blobpath):
                                  blobmembers=[blobmember] )
 
     # create a device with this vector
-    bigblob = ipd.Device( devicename="bigblob",
+    bigblob = ipd.Device( devicename=devicename,
                           properties=[blobvector] )
 
     # Create the Driver, containing this device and
     # other objects needed to run the instrument
-    driver = BigBlobDriver( bigblob,                # the device
-                            blobpath=blobpath )     # path of blob to send
+    driver = _BigBlobDriver( bigblob,                # the device
+                             blobinfo=(devicename,blobpath) )
 
     # and return the driver
     return driver
@@ -65,10 +62,10 @@ if __name__ == "__main__":
 
     # set a file path in this call
     blobpath = ""
-    while not blobpath:    
+    while not blobpath:
         blobpath = input("Type in a blob file path:")
 
-    driver = make_driver(blobpath)
+    driver = make_driver("bigblob", blobpath)
     server = ipd.IPyServer(driver)
     # and run the server
     print(f"Running {__file__}")
