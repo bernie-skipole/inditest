@@ -1,12 +1,14 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipyclient",
-#     "indipydriver",
-# ]
-# ///
+
+"""
+Runs the console terminal client and the Thermostat driver together
+"""
 
 import asyncio
+
+# stop anything going to the screen
+import logging
+logger = logging.getLogger()
+logger.addHandler(logging.NullHandler())
 
 from indipyclient.console import ConsoleClient
 from example1 import make_driver
