@@ -44,7 +44,7 @@ class _WindowDriver(ipd.IPyDriver):
         # set snooping
         self.snoop(devicename=snoopdevicename, vectorname="temperaturevector")
 
-        while not self.stop:
+        while not self._stop:
             # every ten seconds send an update on window position
             await asyncio.sleep(10)
             # get the current window status

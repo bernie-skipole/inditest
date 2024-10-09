@@ -60,7 +60,7 @@ class _ThermoDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here, with a method
        to run the thermalcontrol.run_thermostat() method,
-       accept a target temperature, 
+       accept a target temperature,
        and to transmit the temperature to the client"""
 
     async def rxevent(self, event):
@@ -102,7 +102,7 @@ class _ThermoDriver(ipd.IPyDriver):
         controltask = asyncio.create_task(thermalcontrol.run_thermostat())
 
         vector = self[devicename]['temperaturevector']
-        while not self.stop:
+        while not self._stop:
             await asyncio.sleep(10)
             # Send the temperature every 10 seconds
             vector['temperature'] = thermalcontrol.temperature
