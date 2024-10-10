@@ -1,9 +1,3 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
 
 """
 Illustrates an instrument taking measurements, appending them to a BLOB
@@ -27,8 +21,10 @@ class MakeBlobs:
        'minutes', this object is then added to a que, and a new
        io.BytesIO object is created."""
 
-    def __init__(self, minutes=1):
+    def __init__(self, devicename, minutes=1):
         """Set start up values"""
+
+        self.devicename = devicename
 
         # set logtime for minutes in the future
         self.delta = timedelta(minutes=minutes)
@@ -42,6 +38,12 @@ class MakeBlobs:
 
         # measurements will be set in self.currentblob
         self.currentblob = io.BytesIO()
+
+        # shutdown if self._stop is True
+        self._stop = False
+
+    def shutdown(self):
+        self._stop = True
 
 
     def get_blobfile(self):
@@ -71,10 +73,10 @@ class MakeBlobs:
 
     async def poll_measurement(self):
         """This simulates an increasing/decreasing measurement,
-           and adds logs to the io.BytesIO() object."""
+           and adds logs to the io.BytesIO() object every two seconds."""
 
         t = 0
-        while True:
+        while not self._stop:
             await asyncio.sleep(2)
 
             # simulate a varying measurement
@@ -88,7 +90,7 @@ class MakeBlobs:
             self.appendlog(timestamp, value)
 
 
-class InstrumentDriver(ipd.IPyDriver):
+class _BLOBDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here to create a driver for the instrument"""
 
@@ -100,8 +102,13 @@ class InstrumentDriver(ipd.IPyDriver):
         blobcontrol = self.driverdata["blobcontrol"]
         # blobcontrol is a MakeBlobs object
 
-        blobvector = self['instrument']['blobvector']
-        while not self.stop:
+        # start poll_measurement()
+        poll_task = asyncio.create_task(blobcontrol.poll_measurement())
+
+        devicename = blobcontrol.devicename
+
+        blobvector = self[devicename]['blobvector']
+        while not self._stop:
             # if a blobfile is available, send it as a BLOB
             blobfile = blobcontrol.get_blobfile()
             # this returns None if no blobfile is currently available
@@ -110,13 +117,21 @@ class InstrumentDriver(ipd.IPyDriver):
                 # send the blob
                 await blobvector.send_setVectorMembers(members=["blobmember"])
 
-            # ensure this function does
-            # not block, by giving a sleep here
-            await asyncio.sleep(1)
+            # ensure this function does not block, by giving a sleep here
+            # and wait a while before testing if another blob is available
+            # to send
+            await asyncio.sleep(10)
+
+        # loop ended, stop creating blobs
+        blobcontrol.shutdown()
+        # wait for poll_task to end
+        await poll_task
 
 
-def make_driver(blobcontrol):
+def make_driver(devicename, minutes):
     "Returns an instance of the driver"
+
+    blobcontrol = MakeBlobs(devicename, minutes)
 
     # create blobvector, there is no member value to set at this point
     blobmember = ipd.BLOBMember( name="blobmember",
@@ -130,29 +145,21 @@ def make_driver(blobcontrol):
                                  blobmembers=[blobmember] )
 
     # create a device with this vector
-    instrument = ipd.Device( devicename="instrument",
+    blobdevice = ipd.Device( devicename=devicename,
                              properties=[blobvector] )
 
     # Create the Driver, containing this device and
     # other objects needed to run the instrument
-    driver = InstrumentDriver( instrument,                # the device
-                               blobcontrol=blobcontrol )  # MakeBlobs to place in driverdata
+    driver = _BLOBDriver( blobdevice,                # the device
+                          blobcontrol=blobcontrol )  # MakeBlobs to place in driverdata
 
     # and return the driver
     return driver
 
 
-async def main(blobcontrol, server):
-    "Run the instrument and the server async tasks"
-    await asyncio.gather(blobcontrol.poll_measurement(),
-                         server.asyncrun() )
-
 
 if __name__ == "__main__":
-
-    blobcontrol = MakeBlobs(minutes=2) # create BLOBs every two minutes
-    driver = make_driver(blobcontrol)
+    driver = make_driver("BlobMaker", minutes=2) # create BLOBs every two minutes
     server = ipd.IPyServer(driver)
-    # and run them together
     print(f"Running {__file__}")
-    asyncio.run( main(blobcontrol, server) )
+    asyncio.run( server.asyncrun() )

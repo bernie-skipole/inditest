@@ -1,9 +1,4 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
+
 
 """
 Illustrates a driver receiving six files and saving them
