@@ -1,9 +1,4 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
+
 
 """
 sendblob.py should be running on a remote device,
@@ -23,9 +18,10 @@ import indipydriver as ipd
 class LightControl:
     "This times and sets the light value"
 
-    def __init__(self, seconds):
+    def __init__(self, devicename, seconds):
         """Set initial value of light, and the time in
            seconds to wait before setting an alert"""
+        self.devicename = devicename
         self.value = "Idle"
         self._update_time = time.time()
         self.seconds = seconds
@@ -43,7 +39,7 @@ class LightControl:
             self.value = "Alert"
 
 
-class SnoopBLOBDriver(ipd.IPyDriver):
+class _SnoopBLOBDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here. This snoops on 'instrument' and has a single
        light member which goes Ok when a file is received, and Alert if one is
@@ -56,16 +52,16 @@ class SnoopBLOBDriver(ipd.IPyDriver):
         # Send an initial getProperties to snoop on instrument
         # This is necessary to inform IPyServer that this driver
         # wants copies of blob data
-        await self.send_getProperties(devicename="instrument",
-                                      vectorname="blobvector")
+
+        self.snoop(self.driverdata["snoopdevice"], "blobvector", timeout=5)
 
         # get the LightControl object
         lightcontrol = self.driverdata["lightcontrol"]
         # get the light vector
-        lightvector = self['light']['lightvector']
+        lightvector = self[lightcontrol.devicename]['lightvector']
 
         # check lightcontrol
-        while not self.stop:
+        while not self._stop:
             lightcontrol.check_status()
             if lightcontrol.value == "Ok":
                 if lightvector['lightmember'] != "Ok":
@@ -80,9 +76,6 @@ class SnoopBLOBDriver(ipd.IPyDriver):
                 lightvector['lightmember'] = newvalue
                 await lightvector.send_setVector(message="Not receiving BLOB's", state=newvalue)
                 # the instrument could have been turned off, or link disconnected
-                # send another getProperties just in case it is reconnected
-                await self.send_getProperties(devicename="instrument",
-                                              vectorname="blobvector")
                 # and wait a while, so not continuously sending alerts
                 await asyncio.sleep(5)
 
@@ -93,9 +86,11 @@ class SnoopBLOBDriver(ipd.IPyDriver):
         # get the LightControl object
         lightcontrol = self.driverdata["lightcontrol"]
 
-        match event:
-            case ipd.setBLOBVector(devicename="instrument",
-                                   vectorname="blobvector") if "blobmember" in event:
+        # get the devicename of object being snooped
+        snoopdevice = self.driverdata["snoopdevice"]
+
+        if isinstance(event, ipd.setBLOBVector):
+            if event.devicename==snoopdevice and event.vectorname="blobvector" and "blobmember" in event:
                 # A setBLOBVector has been sent from sendblob
                 # and this driver has received a copy, and so can save the file
                 blobvalue = event["blobmember"]
@@ -111,11 +106,11 @@ class SnoopBLOBDriver(ipd.IPyDriver):
                     lightcontrol.blob_ok()
 
 
-def make_driver():
+def make_driver(devicename, snoopdevice, alertseconds):
     "Creates the driver"
 
-    # Create light timer to alert after 150 seconds
-    lightcontrol = LightControl(seconds=150)
+    # Create light timer to alert after alertseconds
+    lightcontrol = LightControl(devicename, seconds=alertseconds)
 
     # create member
     lightmember = ipd.LightMember( name="lightmember",
@@ -128,11 +123,11 @@ def make_driver():
                                    state=lightcontrol.value,
                                    lightmembers=[lightmember] )
     # create a Device with this vector
-    light = ipd.Device( devicename="light", properties=[lightvector])
+    lightdevice = ipd.Device( devicename=devicename, properties=[lightvector])
 
     # Create the Driver containing this device and with
-    # named argument lightcontrol which will be set into driverdata
-    driver = SnoopBLOBDriver(light, lightcontrol=lightcontrol)
+    # named arguments lightcontrol and snoopdevice which will be set into driverdata
+    driver = _SnoopBLOBDriver(lightdevice, lightcontrol=lightcontrol, snoopdevice=snoopdevice)
 
     # and return the driver
     return driver
@@ -140,7 +135,12 @@ def make_driver():
 
 if __name__ == "__main__":
 
-    driver = make_driver()
+    # This driver is for device lightdevice
+    # which snoops on device blobmaker and saves a copy of the blobs
+    # and send an alert if nothing received in 150 seconds
+    # blobs should normally be received every 2 minutes, 120 seconds
+
+    driver = make_driver("lightdevice", "blobmaker", 150)
     server = ipd.IPyServer(driver)
     # make a connection to the remote sendblob service
     server.add_remote(host="raspberrypi",

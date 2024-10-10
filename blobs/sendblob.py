@@ -159,7 +159,7 @@ def make_driver(devicename, minutes):
 
 
 if __name__ == "__main__":
-    driver = make_driver("BlobMaker", minutes=2) # create BLOBs every two minutes
+    driver = make_driver("blobmaker", minutes=2) # create BLOBs every two minutes
     server = ipd.IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run( server.asyncrun() )
