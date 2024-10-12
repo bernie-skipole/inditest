@@ -5,6 +5,10 @@
    command prompt.
 """
 
+import sys
+
+sys.path.insert(0, "/home/bernard/git/indipyclient")
+
 
 import threading, collections
 
@@ -34,18 +38,19 @@ while True:
     value = input("T or Q:")
     if value == "t" or value == "T":
         try:
-            # get latest data received
-            rxitem = rxque[0]
-            temperature = rxitem.snapshot["Thermostat"]["temperaturevector"]["temperature"]
+            # get latest data received on queue
+            rxitem = rxque.popleft()
+            tempvector = rxitem.snapshot["Thermostat"]["temperaturevector"]
+            tempstr = tempvector.getformattedvalue("temperature")
         except (IndexError, KeyError):
-            print("Nothing received yet")
+            print("Waiting")
             continue
         if rxitem.timestamp:
             # get local time
             timestr = rxitem.timestamp.astimezone(tz=None).strftime('%H:%M:%S')
         else:
             timestr = "No timestamp"
-        print(f"{timestr} Temperature: {temperature}")
+        print(f"{timestr} Temperature: {tempstr}")
 
     elif value == "q" or value == "Q":
         break
