@@ -40,8 +40,13 @@ while True:
         except (IndexError, KeyError):
             print("Nothing received yet")
             continue
-        timestamp = rxitem.timestamp.isoformat(sep='T')
-        print(f"{timestamp} Temperature: {temperature}")
+        if rxitem.timestamp:
+            # get local time
+            timestr = rxitem.timestamp.astimezone(tz=None).strftime('%H:%M:%S')
+        else:
+            timestr = "No timestamp"
+        print(f"{timestr} Temperature: {temperature}")
+
     elif value == "q" or value == "Q":
         break
 
