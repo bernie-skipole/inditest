@@ -1,17 +1,3 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
-
-# uncomment to enable logging
-# import logging
-# logger = logging.getLogger()
-# fh = logging.FileHandler("logfile.log")
-# logger.addHandler(fh)
-# logger.setLevel(logging.DEBUG)
-
 
 import asyncio
 

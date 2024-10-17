@@ -90,7 +90,7 @@ class _SnoopBLOBDriver(ipd.IPyDriver):
         snoopdevice = self.driverdata["snoopdevice"]
 
         if isinstance(event, ipd.setBLOBVector):
-            if event.devicename==snoopdevice and event.vectorname="blobvector" and "blobmember" in event:
+            if event.devicename==snoopdevice and event.vectorname=="blobvector" and "blobmember" in event:
                 # A setBLOBVector has been sent from sendblob
                 # and this driver has received a copy, and so can save the file
                 blobvalue = event["blobmember"]

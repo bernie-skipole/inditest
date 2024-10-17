@@ -1,9 +1,3 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
 
 
 # Driver to control a (simulated) LED so this can be run

@@ -1,9 +1,3 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipyclient",
-# ]
-# ///
 
 
 """Connects to server, listens 5 seconds, prints properties, shuts down"""
