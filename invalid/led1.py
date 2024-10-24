@@ -1,9 +1,3 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
 
 """Driver and server to control a (simulated) LED
    This is set to listen on port 7625 instead of 7624
@@ -14,6 +8,10 @@
    with the device in led2.py, this being a test to ensure
    the server detects a duplicate devicename"""
 
+
+
+# Driver to control a (simulated) LED so this can be run
+# on a PC without gpiozero
 
 import asyncio
 import indipydriver as ipd
@@ -33,7 +31,7 @@ class LED:
         self.is_lit = False
 
 
-class LEDDriver(ipd.IPyDriver):
+class _LEDDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here to create an LED driver."""
 
@@ -42,22 +40,24 @@ class LEDDriver(ipd.IPyDriver):
 
         # get the LED object controlling the instrument, which is
         # available in the named arguments dictionary 'self.driverdata'
-        led = self.driverdata["led"]
 
-        match event:
+        ledobject = self.driverdata["ledobj"]
 
-            # event.vector is the vector being requested or altered
-            # event[membername] is the new value
+        # event.vector is the vector being requested or altered
+        # event[membername] is the new value.
 
-            case ipd.newSwitchVector(devicename="led",
-                                     vectorname="ledvector") if 'ledmember' in event:
+        # There is only one device in this driver,
+        # so no need to check devicename
+
+        if isinstance(event, ipd.newSwitchVector):
+            if event.vectorname == "ledvector" and 'ledmember' in event:
                 # a new value has been received from the client
                 ledvalue = event["ledmember"]
                 # turn on or off the led
                 if ledvalue == "On":
-                    led.on()
+                    ledobject.on()
                 elif ledvalue == "Off":
-                    led.off()
+                    ledobject.off()
                 else:
                     # not valid
                     return
@@ -67,14 +67,15 @@ class LEDDriver(ipd.IPyDriver):
                 await event.vector.send_setVector()
 
 
-def make_driver(led):
+def make_driver(devicename, pin):
     "Creates the driver"
 
     # Note that “is_lit” is a property of the LED object
     # and is True if the LED is on, this is used to
     # set up the initial value of ledmember.
 
-    ledvalue = "On" if led.is_lit else "Off"
+    ledobject = LED(pin)
+    ledvalue = "On" if ledobject.is_lit else "Off"
 
     # create switch member
     ledmember = ipd.SwitchMember(name="ledmember",
@@ -89,12 +90,11 @@ def make_driver(led):
                                  state="Ok",
                                  switchmembers=[ledmember] )
     # create a Device with this vector
-    # note the devicename led will duplicate that set in led2.py
-    leddevice = ipd.Device( devicename="led", properties=[ledvector])
+    leddevice = ipd.Device( devicename, properties=[ledvector])
 
-    # Create the Driver containing this device, and the actual
-    # LED object used for instrument control as a named argument
-    driver = LEDDriver(leddevice, led=led)
+    # Create the Driver containing this device, and as named argument
+    # add the LED object used for instrument control
+    driver = _LEDDriver(leddevice, ledobj=ledobject )
 
     # and return the driver
     return driver
@@ -102,10 +102,11 @@ def make_driver(led):
 
 if __name__ == "__main__":
 
-    # set up the LED pin and create and serve the driver
-    led = LED(17)
-    driver = make_driver(led)
-    # set port at 7625 instead of 7624
+    # create and serve the driver
+    # the devicename has to be unique in a network of devices,
+
+    # in this case the devicename is "led", pin 17
+    driver = make_driver("led", 17)
     server = ipd.IPyServer(driver, host="localhost", port=7625, maxconnections=5)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
