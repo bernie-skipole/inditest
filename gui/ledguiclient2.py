@@ -103,26 +103,18 @@ class LEDWindow:
 
 
     def readrxque(self):
-        "Read rxque, and if something available, call self.update(item)"
+        "Read rxque, and if something available, call self.setLED()"
         try:
             item = self.rxque.get_nowait()
         except queue.Empty:
             pass
         else:
-            self.update(item)
+            # Get the snapshot and set the displayed LED value
+            self.snapshot = item.snapshot
+            if self.checkconnected():
+                self.setLED()
         # as this is a timeout call, return True to continue calling
         return True
-
-
-    def update(self, item):
-        """Called on receiving an update,
-           Get the snapshot and set the displayed LED value"""
-        self.snapshot = item.snapshot
-        # check if connected
-        if not self.checkconnected():
-            # Not connected, nothing to do
-            return
-        self.setLED()
 
 
 

@@ -35,10 +35,8 @@ class LEDWidgets:
            Get the snapshot and set the displayed LED value"""
         self.snapshot = item.snapshot
         # check if connected
-        if not self.checkconnected():
-            # Not connected, nothing to do
-            return
-        self.setLED()
+        if self.checkconnected():
+            self.setLED()
 
     def checkconnected(self):
         "Return True if connected, otherwise False"
