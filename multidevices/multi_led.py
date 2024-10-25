@@ -28,38 +28,30 @@ class _LEDDriver(ipd.IPyDriver):
     async def rxevent(self, event):
         "On receiving data from the client, this is called"
 
-        for device in self.devices():
-            devicename = device.devicename
-
-            if event.devicename != devicename:
-                # event is not for this device
-                continue
+        if isinstance(event, ipd.newSwitchVector) and event.devicename in self.driverdata:
 
             # get the LED object associated with this devicename
-            ledobject = self.driverdata[devicename]
+            ledobject = self.driverdata[event.devicename]
 
             # event.vector is the vector being requested or altered
             # event[membername] is the new value.
 
-            if isinstance(event, ipd.newSwitchVector):
-                if event.vectorname == "ledvector" and 'ledmember' in event:
-                    # a new value has been received from the client
-                    ledvalue = event["ledmember"]
-                    # turn on or off the led
-                    if ledvalue == "On":
-                        ledobject.on()
-                    elif ledvalue == "Off":
-                        ledobject.off()
-                    else:
-                        # not valid
-                        return
-                    # and set this new value into the vector
-                    event.vector["ledmember"] = ledvalue
-                    # send the updated vector back to the client
-                    await event.vector.send_setVector()
 
-            # even handled so break from the for loop
-            break
+            if event.vectorname == "ledvector" and 'ledmember' in event:
+                # a new value has been received from the client
+                ledvalue = event["ledmember"]
+                # turn on or off the led
+                if ledvalue == "On":
+                    ledobject.on()
+                elif ledvalue == "Off":
+                    ledobject.off()
+                else:
+                    # not valid
+                    return
+                # and set this new value into the vector
+                event.vector["ledmember"] = ledvalue
+                # send the updated vector back to the client
+                await event.vector.send_setVector()
 
 
 def make_driver(*pins):
