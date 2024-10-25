@@ -36,7 +36,6 @@ class _LEDDriver(ipd.IPyDriver):
             # event.vector is the vector being requested or altered
             # event[membername] is the new value.
 
-
             if event.vectorname == "ledvector" and 'ledmember' in event:
                 # a new value has been received from the client
                 ledvalue = event["ledmember"]
@@ -90,7 +89,8 @@ def make_driver(*pins):
 
 
     # Create the Driver containing these devices, and as named argument
-    # add the devicename:LED object dictionary
+    # add the devicename:LED object dictionary.
+    # This is a convenient way of linking device to controlling object
     driver = _LEDDriver(*devicelist, **objdict )
 
     # and return the driver
