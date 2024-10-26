@@ -32,10 +32,13 @@ class LEDWindow:
         # This is the current working snapshot of the client
         self.snapshot = None
 
-        # create the topwin contents:
+        # create a scrolled window and add it to the topwin:
+
+        self.swin = Gtk.ScrolledWindow()
+        self.topwin.add(self.swin)
 
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.topwin.add(self.box)
+        self.swin.add(self.box)
 
         # connected label, on row 0
         self.clabel = Gtk.Label(label="Not Connected")
