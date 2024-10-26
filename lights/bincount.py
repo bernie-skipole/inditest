@@ -1,9 +1,4 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
+
 
 "sends a vector with four lights binary counting"
 
