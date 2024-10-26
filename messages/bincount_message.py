@@ -1,10 +1,3 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = [
-#     "indipydriver",
-# ]
-# ///
-
 
 """As bincount : sends a vector with four lights binary counting
 
