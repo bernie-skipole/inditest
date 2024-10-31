@@ -7,7 +7,6 @@
    command prompt.
 """
 
-
 import queue, threading
 
 from tkinter import *
