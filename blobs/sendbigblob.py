@@ -7,12 +7,9 @@ and waits 10 seconds then sends it again. This is to test how the client reacts
 import asyncio
 import indipydriver as ipd
 
-
-
 class _BigBlobDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here to create a driver for the instrument"""
-
 
     async def hardware(self):
         """This is a continuously running coroutine which is used
