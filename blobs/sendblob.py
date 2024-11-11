@@ -7,6 +7,10 @@ The indipyclient needs to have BLOBs enabled with a folder set where
 the BLOB files will be saved
 """
 
+# ignore these lines, used for my own testing
+#import sys
+#sys.path.insert(0, "/home/bernie/git/indipydriver")
+
 import asyncio, io, collections, math
 
 from datetime import datetime, timezone, timedelta
