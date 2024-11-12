@@ -4,8 +4,8 @@ A driver sending simulated temperature values every 10 seconds
 """
 
 # ignore these lines, used for my own testing
-# import sys
-# sys.path.insert(0, "/home/bernie/git/indipydriver")
+import sys
+sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 
 import asyncio

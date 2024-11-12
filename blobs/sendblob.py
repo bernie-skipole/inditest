@@ -8,8 +8,8 @@ the BLOB files will be saved
 """
 
 # ignore these lines, used for my own testing
-#import sys
-#sys.path.insert(0, "/home/bernie/git/indipydriver")
+import sys
+sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 import asyncio, io, collections, math
 

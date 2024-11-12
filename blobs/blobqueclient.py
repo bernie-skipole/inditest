@@ -5,6 +5,10 @@ Saves received blobs in folder ./ and if P pressed
 it prints the last filename received
 """
 
+# ignore these lines, used for my own testing
+import sys
+sys.path.insert(0, "/home/bernard/git/indipyclient")
+
 import collections, threading, time
 
 # import the function runqueclient which can
