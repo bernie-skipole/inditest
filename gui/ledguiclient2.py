@@ -7,6 +7,10 @@
    command prompt.
 """
 
+# ignore these, used for testing
+# import sys
+# sys.path.insert(0, "/home/bernard/git/indipyclient")
+
 import queue, threading
 
 import gi
@@ -28,7 +32,7 @@ class LEDWindow:
         self.txque = txque
 
         # request a snapshot
-        self.txque.put('snapshot')
+        self.txque.put((None, None, 'snapshot'))
         # This is the current working snapshot of the client
         self.snapshot = None
 

@@ -7,6 +7,11 @@
    command prompt.
 """
 
+# ignore these, used for testing
+# import sys
+# sys.path.insert(0, "/home/bernard/git/indipyclient")
+
+
 import queue, threading
 
 from tkinter import *
@@ -37,8 +42,9 @@ class LEDWindow:
         self.applicationframe.rowconfigure(1, weight=1)
         self.applicationframe.rowconfigure(2, weight=1)
 
-        # request a snapshot
-        self.txque.put('snapshot')
+        # request a snapshot, devicename and vectorname are None
+        # to indicte a full client snapshot is requested.
+        self.txque.put((None, None, 'snapshot'))
         # This is the current working snapshot of the client
         self.snapshot = None
 
