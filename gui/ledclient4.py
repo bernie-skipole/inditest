@@ -48,6 +48,18 @@ class LedValue(Static):
 class LEDControl(App):
     """A Textual app to manage an INDI controlled LED."""
 
+    CSS = """
+            Screen {
+               align: center middle;
+              }
+
+            .widg {
+               margin:3;
+               text-align:center;
+               width:30;
+              }
+         """
+
     BINDINGS = [("d", "toggle_dark", "Toggle dark mode"),
                 ("t", "toggle_LED", "Toggle LED")]
 
@@ -57,8 +69,7 @@ class LEDControl(App):
 
     def on_mount(self) -> None:
         """Event handler called when widget is added to the app."""
-        header = self.query_one(Header)
-        header.icon = "?"
+        self.query_one(Header).icon = "?"
         # Check the RXQUE every 0.1 of a second
         self.set_interval(1 / 10, self.check_rxque)
 
@@ -82,12 +93,12 @@ class LEDControl(App):
         """Create child widgets for the app."""
         yield Header()
         yield Footer()
-        yield IsConnected("Not Connected").data_bind(LEDControl.connected)
-        yield LedValue("Unknown").data_bind(LEDControl.state)
-        yield Button("Toggle LED")
-
+        yield IsConnected("Not Connected", classes="widg").data_bind(LEDControl.connected)
+        yield LedValue("Unknown", classes="widg").data_bind(LEDControl.state)
+        yield Button("Toggle LED", classes="widg")
 
     def get_system_commands(self, screen: Screen) -> Iterable[SystemCommand]:
+        "Add Toggle command to the pallet"
         yield from super().get_system_commands(screen)
         yield SystemCommand("Toggle", "Toggle the LED", self.action_toggle_LED)
 
@@ -106,17 +117,10 @@ class LEDControl(App):
         elif self.state == "Off":
             TXQUE.put( ("led", "ledvector", {"ledmember": "On"}) )
 
-
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Event handler called when a button is pressed."""
-        if not self.connected:
-            # Not connected, nothing to do
-            return
-        # send instruction to toggle
-        if self.state == "On":
-            TXQUE.put( ("led", "ledvector", {"ledmember": "Off"}) )
-        elif self.state == "Off":
-            TXQUE.put( ("led", "ledvector", {"ledmember": "On"}) )
+        self.action_toggle_LED()
+        return
 
 
 if __name__ == "__main__":
