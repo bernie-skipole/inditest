@@ -1,14 +1,19 @@
 
-import asyncio, queue, threading
+import asyncio, queue, threading, logging
 
 from typing import Iterable
 
 from textual.app import App, ComposeResult, SystemCommand
-from textual.widgets import Header, Footer, Static, Button
+from textual.widgets import Footer, Static, Button
 from textual.reactive import reactive
 from textual.screen import Screen
+from textual.containers import Center
 
 from indipyclient.queclient import runqueclient
+
+# Turn off logging so screen not messed up with messages
+logger = logging.getLogger()
+logger.addHandler(logging.NullHandler())
 
 
 # create two queues
@@ -18,8 +23,12 @@ RXQUE = queue.Queue(maxsize=4)
 TXQUE = queue.Queue(maxsize=4)
 
 
+class Title(Static):
+    "A widget to display a top title."
+
+
 class IsConnected(Static):
-    """A widget to display connected status."""
+    "A widget to display connected status."
 
     connected = reactive(False)
 
@@ -30,7 +39,7 @@ class IsConnected(Static):
 
 
 class LedValue(Static):
-    """A widget to display LED value."""
+    "A widget to display LED state"
 
     state = reactive("Unknown")
 
@@ -49,15 +58,34 @@ class LEDControl(App):
     """A Textual app to manage an INDI controlled LED."""
 
     CSS = """
+
             Screen {
                align: center middle;
-              }
+               }
 
-            .widg {
-               margin:3;
-               text-align:center;
-               width:30;
-              }
+            Title {
+               background: $primary;
+               color: $text;
+               padding-left: 2;
+               dock: top;
+               }
+
+            IsConnected {
+               margin: 1;
+               width: 30;
+               text-align: center;
+               }
+
+            LedValue {
+               margin: 2;
+               width: 30;
+               text-align: center;
+               }
+
+            Button {
+               margin: 1;
+               width: 30;
+               }
          """
 
     BINDINGS = [("d", "toggle_dark", "Toggle dark mode"),
@@ -65,7 +93,6 @@ class LEDControl(App):
                 ("q", "quit", "Quit")]
 
     ENABLE_COMMAND_PALETTE = False
-
 
     state = reactive("Unknown")
     connected = reactive(False)
@@ -93,13 +120,11 @@ class LEDControl(App):
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
-        h = Header()
-        h.icon = ""
-        yield h
-        yield Footer()
+        yield Title("LED Control")
         yield IsConnected("Not Connected", classes="widg").data_bind(LEDControl.connected)
-        yield LedValue("Unknown", classes="widg").data_bind(LEDControl.state)
-        yield Button("Toggle LED", classes="widg")
+        yield LedValue("Unknown").data_bind(LEDControl.state)
+        yield Button("Toggle LED")
+        yield Footer()
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
@@ -114,14 +139,16 @@ class LEDControl(App):
         if not self.connected:
             # Not connected, nothing to do
             return
-        # send instruction to toggle
+        # send instruction to toggle the led onto TXQUE
         if self.state == "On":
             TXQUE.put( ("led", "ledvector", {"ledmember": "Off"}) )
         elif self.state == "Off":
             TXQUE.put( ("led", "ledvector", {"ledmember": "On"}) )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        """Event handler called when a button is pressed."""
+        """Event handler called when a button is pressed. In this case there
+           is only one button, so do not have to be more specific.
+           This calls action_toggle_LED, so is the same action as t being pressed"""
         self.action_toggle_LED()
         return
 
@@ -134,7 +161,7 @@ if __name__ == "__main__":
     # if the LED server is running elsewhere
     clientthread.start()
 
-    # run the terminal LEDControl
+    # run the terminal LEDControl app
     app = LEDControl()
     app.run()
     # When the LEDControl app stops, transmit a None value to shut down the queclient
