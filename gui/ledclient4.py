@@ -61,7 +61,10 @@ class LEDControl(App):
          """
 
     BINDINGS = [("d", "toggle_dark", "Toggle dark mode"),
-                ("t", "toggle_LED", "Toggle LED")]
+                ("t", "toggle_LED", "Toggle LED"),
+                ("q", "quit", "Quit")]
+
+    ENABLE_COMMAND_PALETTE = False
 
 
     state = reactive("Unknown")
@@ -69,7 +72,6 @@ class LEDControl(App):
 
     def on_mount(self) -> None:
         """Event handler called when widget is added to the app."""
-        self.query_one(Header).icon = "?"
         # Check the RXQUE every 0.1 of a second
         self.set_interval(1 / 10, self.check_rxque)
 
@@ -91,20 +93,21 @@ class LEDControl(App):
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
-        yield Header()
+        h = Header()
+        h.icon = ""
+        yield h
         yield Footer()
         yield IsConnected("Not Connected", classes="widg").data_bind(LEDControl.connected)
         yield LedValue("Unknown", classes="widg").data_bind(LEDControl.state)
         yield Button("Toggle LED", classes="widg")
 
-    def get_system_commands(self, screen: Screen) -> Iterable[SystemCommand]:
-        "Add Toggle command to the pallet"
-        yield from super().get_system_commands(screen)
-        yield SystemCommand("Toggle", "Toggle the LED", self.action_toggle_LED)
-
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
         self.dark = not self.dark
+
+    def action_quit(self) -> None:
+        """An action to quit the program."""
+        self.exit(0)
 
     def action_toggle_LED(self) -> None:
         """An action to toggle the LED."""
