@@ -67,7 +67,8 @@ class LEDControl(App):
                }
 
             .widg {
-                   width: auto;
+                   width: 16;
+                   text-align: center;
                    margin: 2;
                   }
 
