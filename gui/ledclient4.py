@@ -23,10 +23,6 @@ RXQUE = queue.Queue(maxsize=4)
 TXQUE = queue.Queue(maxsize=4)
 
 
-class Title(Static):
-    "A widget to display a top title."
-
-
 class IsConnected(Static):
     "A widget to display connected status."
 
@@ -63,29 +59,19 @@ class LEDControl(App):
                align: center middle;
                }
 
-            Title {
+            #title {
                background: $primary;
                color: $text;
                padding-left: 2;
                dock: top;
                }
 
-            IsConnected {
-               margin: 1;
-               width: 30;
-               text-align: center;
-               }
+            .widg {
+                   width: auto;
+                   margin: 2;
+                  }
 
-            LedValue {
-               margin: 2;
-               width: 30;
-               text-align: center;
-               }
 
-            Button {
-               margin: 1;
-               width: 30;
-               }
          """
 
     BINDINGS = [("d", "toggle_dark", "Toggle dark mode"),
@@ -120,10 +106,13 @@ class LEDControl(App):
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
-        yield Title("LED Control")
-        yield IsConnected("Not Connected", classes="widg").data_bind(LEDControl.connected)
-        yield LedValue("Unknown").data_bind(LEDControl.state)
-        yield Button("Toggle LED")
+        yield Static("LED Control", id="title")
+        with Center():
+            yield IsConnected("Not Connected", classes="widg").data_bind(LEDControl.connected)
+        with Center():
+            yield LedValue("Unknown", classes="widg").data_bind(LEDControl.state)
+        with Center():
+            yield Button("Toggle LED")
         yield Footer()
 
     def action_toggle_dark(self) -> None:
