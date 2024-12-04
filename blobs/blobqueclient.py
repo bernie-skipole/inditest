@@ -48,7 +48,7 @@ if __name__ == "__main__":
                 # get latest data received on queue
                 rxitem = rxque[0]
                 vector = rxitem.snapshot["blobmaker"]["blobvector"]
-                filename = vector.member("blobmember").user_string
+                filename = vector.member("blobmember").filename
                 if filename:
                     print(filename)
                 else:
