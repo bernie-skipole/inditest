@@ -8,14 +8,15 @@ the BLOB files will be saved
 """
 
 # ignore these lines, used for my own testing
-import sys
-sys.path.insert(0, "/home/bernard/git/indipydriver")
+# import sys
+# sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 import asyncio, io, collections, math
 
 from datetime import datetime, timezone, timedelta
 
 import indipydriver as ipd
+
 
 class MakeBlobs:
     """This is a simulation containing variables only, normally it
