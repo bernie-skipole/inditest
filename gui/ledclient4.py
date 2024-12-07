@@ -28,10 +28,11 @@ class IsConnected(Static):
 
     connected = reactive(False)
 
-    def render(self) -> str:
-        if self.connected:
-            return "Connected"
-        return "Not Connected"
+    def watch_connected(self, connected:bool) -> None:
+        if connected:
+            self.update("Connected")
+        else:
+            self.update("Not Connected")
 
 
 class LedValue(Static):
@@ -85,7 +86,7 @@ class LEDControl(App):
     connected = reactive(False)
 
     def on_mount(self) -> None:
-        """Event handler called when widget is added to the app."""
+        """Event handler called when mounted."""
         # Check the RXQUE every 0.1 of a second
         self.set_interval(1 / 10, self.check_rxque)
 
