@@ -37,9 +37,6 @@ if __name__ == "__main__":
                 break
         time.sleep(0.5)
 
-    # send an enable blob request
-    txque.append(("blobmaker", "blobvector",  "Also"))
-
     print("Input a P for print last filename, or Q for Quit")
     while True:
         value = input("P or Q:")
