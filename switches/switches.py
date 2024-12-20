@@ -7,7 +7,7 @@
 
 
 """Several SwitchVectors illustrating switch rules
-   OneOfMany AtMostOne AnyOfMany"""
+   OneOfMany AtMostOne AnyOfMany and also readonly"""
 
 
 import asyncio
@@ -33,20 +33,39 @@ class Driver(ipd.IPyDriver):
                 await event.vector.send_setVector()
 
 
+    async def hardware(self):
+        """Send a new ro switch value every second"""
+
+        devicename = self.driverdata['devicename']
+
+        rovector = self[devicename]['ROvector']
+        while not self.stop:
+            # send a new switch value every second
+            for s in range(5):
+                await asyncio.sleep(1)
+                if rovector[f"ROMmember{s}"] == "On":
+                    rovector[f"ROMmember{s}"] = "Off"
+                else:
+                    rovector[f"ROMmember{s}"] = "On"
+                await rovector.send_setVector()
+
+
 def make_driver(devicename):
     "Returns an instance of the driver"
 
     # create ten members with rule OneOfMany
 
-    # One member must be On
-    member = ipd.SwitchMember( name="OOMmember0",
-                               label="Switch 0",
-                               membervalue="On" )
-    oom_members = [member]
-    for s in range(1, 10):
+    oom_members = []
+    for s in range(10):
+        # One member must be On
+        if s:
+            memval = "Off"
+        else:
+            memval = "On"
+
         member = ipd.SwitchMember( name=f"OOMmember{s}",
                                    label=f"Switch {s}",
-                                   membervalue="Off" )
+                                   membervalue=memval )
         oom_members.append(member)
 
 
@@ -92,10 +111,32 @@ def make_driver(devicename):
                                    rule = "AnyOfMany",
                                    switchmembers = aom_members)
 
+    ro_members = []
+    for s in range(5):
+        # One member must be On
+        if s:
+            memval = "Off"
+        else:
+            memval = "On"
+
+        member = ipd.SwitchMember( name=f"ROMmember{s}",
+                                   label=f"Switch {s}",
+                                   membervalue=memval )
+        ro_members.append(member)
+
+
+    ro_vector = ipd.SwitchVector( name = 'ROvector',
+                                   label = "Switch",
+                                   group = 'ReadOnly',
+                                   perm = "ro",
+                                   state = "Ok",
+                                   rule = "OneOfMany",
+                                   switchmembers = ro_members)
+
 
     # create a device with these vectors
     switchingdevice = ipd.Device( devicename=devicename,
-                         properties=[oom_vector, amo_vector, aom_vector] )
+                         properties=[oom_vector, amo_vector, aom_vector, ro_vector] )
 
     # Create the Driver, containing this Device
     driver = Driver( switchingdevice, devicename=devicename)
