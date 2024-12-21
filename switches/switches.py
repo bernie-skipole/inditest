@@ -7,7 +7,7 @@
 
 
 """Several SwitchVectors illustrating switch rules
-   OneOfMany AtMostOne AnyOfMany and also readonly"""
+   OneOfMany AtMostOne AnyOfMany and ReadOnly"""
 
 
 import asyncio
@@ -53,10 +53,10 @@ class Driver(ipd.IPyDriver):
 def make_driver(devicename):
     "Returns an instance of the driver"
 
-    # create ten members with rule OneOfMany
+    # create five members with rule OneOfMany
 
     oom_members = []
-    for s in range(10):
+    for s in range(5):
         # One member must be On
         if s:
             memval = "Off"
@@ -77,9 +77,9 @@ def make_driver(devicename):
                                    rule = "OneOfMany",
                                    switchmembers = oom_members)
 
-    # create ten members with rule AtMostOne
+    # create five members with rule AtMostOne
     amo_members = []
-    for s in range(10):
+    for s in range(5):
         member = ipd.SwitchMember( name=f"AMOmember{s}",
                                    label=f"Switch {s}",
                                    membervalue="Off" )
@@ -94,9 +94,9 @@ def make_driver(devicename):
                                    rule = "AtMostOne",
                                    switchmembers = amo_members)
 
-    # create ten members with rule AnyOfMany
+    # create five members with rule AnyOfMany
     aom_members = []
-    for s in range(10):
+    for s in range(5):
         member = ipd.SwitchMember( name=f"AOMmember{s}",
                                    label=f"Switch {s}",
                                    membervalue="Off" )
@@ -111,9 +111,13 @@ def make_driver(devicename):
                                    rule = "AnyOfMany",
                                    switchmembers = aom_members)
 
+    # create Read Only vector that the client cannot change
+    # this will be continuously altered by the driver hardware method
+    # to simulate an instrument having switches locally controlled
+
     ro_members = []
     for s in range(5):
-        # One member must be On
+        # Set first member On
         if s:
             memval = "Off"
         else:
@@ -124,13 +128,12 @@ def make_driver(devicename):
                                    membervalue=memval )
         ro_members.append(member)
 
-
     ro_vector = ipd.SwitchVector( name = 'ROvector',
                                    label = "Switch",
                                    group = 'ReadOnly',
                                    perm = "ro",
                                    state = "Ok",
-                                   rule = "OneOfMany",
+                                   rule = "AnyOfMany",
                                    switchmembers = ro_members)
 
 

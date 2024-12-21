@@ -19,9 +19,11 @@ class Driver(ipd.IPyDriver):
     async def rxevent(self, event):
         """On receiving data."""
 
+        devicename = self.driverdata['devicename']
+
         match event:
 
-            case ipd.newSwitchVector(devicename='switch',
+            case ipd.newSwitchVector(devicename=devicename,
                                      vectorname='vector'):
                 # get the received values and set them into the vector
                 for membername, membervalue in event.items():
@@ -30,7 +32,7 @@ class Driver(ipd.IPyDriver):
                 await event.vector.send_setVector()
 
 
-def make_driver():
+def make_driver(devicename):
     "Returns an instance of the driver"
 
     # create ten members
@@ -52,11 +54,11 @@ def make_driver():
 
 
     # create a device with this vector
-    switch = ipd.Device( devicename="switch",
+    switch = ipd.Device( devicename=devicename,
                          properties=[vector] )
 
     # Create the Driver, containing this Device
-    driver = Driver( switch )
+    driver = Driver( switch, devicename=devicename)
 
     # and return the driver
     return driver
@@ -64,7 +66,7 @@ def make_driver():
 
 if __name__ == "__main__":
 
-    driver = make_driver()
+    driver = make_driver("switch")
     server = ipd.IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
