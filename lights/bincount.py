@@ -1,4 +1,9 @@
-
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
 
 "sends a vector with four lights binary counting"
 
@@ -18,7 +23,9 @@ class BinDriver(ipd.IPyDriver):
            showing red lights (Alert) for binary 1
            and green lights (Ok) for binary 0"""
 
-        binvector = self['bincounter']['binvector']
+        devicename = self.driverdata['devicename']
+
+        binvector = self[devicename]['binvector']
         while not self.stop:
             # send a new lights count every second
             for n in range(16):
@@ -31,7 +38,7 @@ class BinDriver(ipd.IPyDriver):
                 await binvector.send_setVector()
 
 
-def make_driver():
+def make_driver(devicename):
     "Returns an instance of the driver"
 
     # create four LightMembers, binvalue0 to binvalue3
@@ -49,11 +56,11 @@ def make_driver():
                                  lightmembers=members )
 
     # create a device with this vector
-    bincounter = ipd.Device( devicename="bincounter",
+    bincounter = ipd.Device( devicename=devicename,
                              properties=[binvector] )
 
     # Create the Driver, containing this Device
-    driver = BinDriver( bincounter )
+    driver = BinDriver( bincounter, devicename=devicename )
 
     # and return the driver
     return driver
@@ -62,7 +69,7 @@ def make_driver():
 if __name__ == "__main__":
 
     # serve the driver on localhost, port 7624
-    driver = make_driver()
+    driver = make_driver("bincounter")
     server = ipd.IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
