@@ -13,12 +13,9 @@
    This adds logging, so a logfile is created, for the remote
    link to led1."""
 
-## ignore these, used for development
-#import sys
-#sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 import logging
-led1logger = logging.getLogger('indipydriver.remotelink')
+led1logger = logging.getLogger('indipyclient')
 led1fh = logging.FileHandler("logled1.log")
 led1logger.addHandler(led1fh)
 led1logger.setLevel(logging.DEBUG)

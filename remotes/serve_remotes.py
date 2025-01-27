@@ -3,10 +3,6 @@
    Rather than using remote machines, these three services are all on
    one machine using different ports"""
 
-## ignore these, used for development
-#import sys
-#sys.path.insert(0, "/home/bernard/git/indipydriver")
-
 
 import asyncio
 import indipydriver as ipd
