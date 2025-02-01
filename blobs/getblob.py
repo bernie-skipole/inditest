@@ -1,11 +1,14 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
+
 
 """
 Illustrates a driver receiving a file and saving it
 """
-
-# ignore these lines, used for my own testing
-#import sys
-#sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 import asyncio
 import indipydriver as ipd

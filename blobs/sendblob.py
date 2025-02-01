@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+#     "indipyclient"
+# ]
+# ///
+
+
 
 """
 Illustrates an instrument taking measurements, appending them to a BLOB
@@ -6,10 +15,6 @@ and at regular intervals, sending to a client as BLOB .csv files.
 The indipyclient needs to have BLOBs enabled with a folder set where
 the BLOB files will be saved
 """
-
-# ignore these lines, used for my own testing
-# import sys
-# sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 import asyncio, io, collections, math
 

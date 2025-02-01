@@ -1,13 +1,19 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+# ]
+# ///
 
-"""sendblob.py should be run in another terminal
+
+"""
+Uses queclient to receive blobs
+
+sendblob.py should be run in another terminal
 
 Saves received blobs in folder ./ and if P pressed
 it prints the last filename received
 """
-
-# ignore these lines, used for my own testing
-# import sys
-# sys.path.insert(0, "/home/bernard/git/indipyclient")
 
 import collections, threading, time
 

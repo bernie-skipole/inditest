@@ -46,6 +46,7 @@ manipulates the number and sends it back to the driver.
 
 Examples transmitting and receiving BLOBs
 
+blobqueclient.py Client script using queclient receiving BLOBs\
 sendblob.py Driver sending short files of measurements at regular intervals\
 getblob.py Driver to receive and save a BLOB file\
 multiblobs.py Driver receiving vector with multiple blob members\

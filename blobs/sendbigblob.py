@@ -1,12 +1,17 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+#     "indipyclient"
+# ]
+# ///
+
 
 """
 Requires a BLOB filepath to be provided. Attempts to send it
 and waits 10 seconds then sends it again. This is to test how the client reacts
 """
 
-# ignore these lines, used for my own testing
-# import sys
-# sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 import asyncio
 import indipydriver as ipd
