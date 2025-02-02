@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
+
 
 """As bincount : sends a vector with four lights binary counting
 
@@ -31,7 +38,13 @@ class BinDriver(ipd.IPyDriver):
                 binvector['binvalue2'] = "Alert" if binstring[1] == "1" else "Ok"
                 binvector['binvalue3'] = "Alert" if binstring[0] == "1" else "Ok"
                 state = "Ok" if n else "Alert"
+                # include a message with the vector
                 await binvector.send_setVector(message=f"Count is {n}", state=state)
+                # send a device message
+                await self['bincounter'].send_device_message(message=f"Device message: count is {n}")
+                # send a system message
+                await self.send_message(message=f"System message: count is {n}")
+
 
 
 def make_driver():
