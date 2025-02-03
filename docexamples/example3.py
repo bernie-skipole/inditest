@@ -1,4 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
 
+# Window control snooping on thermostat.
 
 import asyncio
 

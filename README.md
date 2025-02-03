@@ -19,18 +19,32 @@ and you could run a terminal to connect to the created INDI service with:
 uvx indipyterm
 
 
+#### blobs
+
+Examples transmitting and receiving BLOBs
+
+blobqueclient.py Client script using queclient receiving BLOBs\
+getblob.py Driver to receive and save a BLOB file\
+multiblobs.py Driver receiving vector with multiple blob members\
+sendbigblob.py Driver sending a given file at regular intervals\
+sendblob.py Driver creating and sending blocks of measurements at regular intervals\
+snoopremote.py Driver snooping on remote running sendblob.py
+
 
 #### docexamples
+
 The examples used in indipydriver readthedocs documentation
 
+addexdriver.py IPyServer serving executable third part drivers.\
+consoleclient.py Script dedicated to a terminal connecting to a preset host and port\
+driverclient.py combining console client and driver in one script.\
+example1.py A driver sending simulated temperature values every 10 seconds.\
+example2.py Simulated thermostat with settable target.\
+example3.py Window control snooping on thermostat.\
 led.py Raspberry Pi LED driver.\
 simulated\_led.py Simulates gpiozero.LED so can be run without an actual LED\
-example1.py Simulated thermostat driver.\
-example2.py Simulated thermostatwith settable target.\
-example3.py Window control snooping on thermostat.\
-addexdriver.py IPyServer serving executable third part drivers.\
-temperatureclient.py client printing temperature as it is received.\
-driverclient.py combining console client and driver in one script.
+temperatureclient.py client printing temperature as it is received.
+
 
 #### snapshot
 Testing the use of the client snapshot with a threaded function.
@@ -41,16 +55,6 @@ and receives and prints a number.
 threadedclient.py Client which receives a number, takes a snapshot of\
 the client state and passes that to a threaded blocking function which\
 manipulates the number and sends it back to the driver.
-
-#### blobs
-
-Examples transmitting and receiving BLOBs
-
-blobqueclient.py Client script using queclient receiving BLOBs\
-sendblob.py Driver sending short files of measurements at regular intervals\
-getblob.py Driver to receive and save a BLOB file\
-multiblobs.py Driver receiving vector with multiple blob members\
-snoopremote.py Driver snooping on remote running sendblob.py
 
 #### text
 

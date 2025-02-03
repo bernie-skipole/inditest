@@ -1,3 +1,13 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
+
+
+# Simulated thermostat with settable target.
+
 
 import asyncio
 
