@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+#     "indipyclient"
+# ]
+# ///
 
 """
 Runs the console terminal client and the Thermostat driver together

@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
+
 
 """This illustrates IPyServer working with executable drivers
    and requires these simulator drivers to be installed

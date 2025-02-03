@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+# ]
+# ///
+
+
 """Script dedicated to a terminal connecting
    to a set host and port"""
 
