@@ -7,7 +7,6 @@
 # ///
 
 
-
 import asyncio, queue, threading, logging
 
 from typing import Iterable
@@ -28,8 +27,9 @@ logger.addHandler(logging.NullHandler())
 
 class IClient(ipc.IPyClient):
 
-    # Create the IPyClient object that gets the LED status
-    # this inheriting from IPyClient
+    # Define the object that gets the LED value
+    # and posts it to the textual app.
+    # This class inherits from IPyClient
 
     async def rxevent(self, event):
         "This is called whenever data is received"
@@ -71,7 +71,6 @@ class LedValue(Static):
         self.update(state)
 
 
-
 class LedControl(App):
     """A Textual app to manage an INDI controlled LED."""
 
@@ -103,6 +102,7 @@ class LedControl(App):
     state = reactive("Unknown")
     connected = reactive(False)
 
+
     class ConnectionStatus(Message):
         """Message object used for Connection status."""
 
@@ -114,7 +114,7 @@ class LedControl(App):
     class LedStatus(Message):
         """Message object used for LED status."""
 
-        def __init__(self, status: bool) -> None:
+        def __init__(self, status: str) -> None:
             self.status = status
             super().__init__()
 
@@ -155,11 +155,13 @@ class LedControl(App):
             yield Button("Toggle LED")
         yield Footer()
 
+
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode, automatically called when d pressed."""
         self.theme = (
             "textual-dark" if self.theme == "textual-light" else "textual-light"
             )
+
 
     async def action_quit(self) -> None:
         """An action to quit the program, automatically called when q pressed."""
@@ -167,6 +169,7 @@ class LedControl(App):
         # and wait for it to shutdown
         await self.indiclient.stopped.wait()
         self.exit(0)
+
 
     async def action_toggle_LED(self) -> None:
         """An action to toggle the LED, automatically called when t pressed."""
@@ -178,6 +181,7 @@ class LedControl(App):
             await self.indiclient.send_newVector("led", "ledvector", members={"ledmember": "Off"})
         elif self.state == "Off":
             await self.indiclient.send_newVector("led", "ledvector", members={"ledmember": "On"})
+
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         """Event handler called when a button is pressed. In this case there
