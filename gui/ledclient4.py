@@ -29,21 +29,26 @@ logger.addHandler(logging.NullHandler())
 class IClient(ipc.IPyClient):
 
     # Create the IPyClient object that gets the LED status
+    # this inheriting from IPyClient
 
     async def rxevent(self, event):
+        "This is called whenever data is received"
+
+        # get the textual app
         app = self.clientdata['app']
 
         if self.connected:
-            # the connection status
+            # the connection status, post it to the app
             app.post_message(app.ConnectionStatus(True))
         else:
             app.post_message(app.ConnectionStatus(False))
 
         if event.devicename == "led" and event.vectorname == "ledvector" and ("ledmember" in event):
+            # LED value received, post it to the app
             app.post_message(app.LedStatus(event["ledmember"]))
 
 
-
+# Define widgets, and the textual app which will display them
 
 class IsConnected(Static):
     "A widget to display connected status."
@@ -71,7 +76,6 @@ class LedControl(App):
     """A Textual app to manage an INDI controlled LED."""
 
     CSS = """
-
             Screen {
                align: center middle;
                }
@@ -100,7 +104,7 @@ class LedControl(App):
     connected = reactive(False)
 
     class ConnectionStatus(Message):
-        """Connection status."""
+        """Message object used for Connection status."""
 
         def __init__(self, status: bool) -> None:
             self.status = status
@@ -108,7 +112,7 @@ class LedControl(App):
 
 
     class LedStatus(Message):
-        """LED status."""
+        """Message object used for LED status."""
 
         def __init__(self, status: bool) -> None:
             self.status = status
@@ -116,8 +120,8 @@ class LedControl(App):
 
 
     def __init__(self, host="localhost", port=7624):
-        self.indihost = host
-        self.indiport = port
+        # create an instance of IClient, note this app is set into
+        # the IClient clientdata['app'] attribute
         self.indiclient = IClient(indihost=host, indiport=port, app=self)
         super().__init__()
 
@@ -152,23 +156,24 @@ class LedControl(App):
         yield Footer()
 
     def action_toggle_dark(self) -> None:
-        """An action to toggle dark mode."""
+        """An action to toggle dark mode, automatically called when d pressed."""
         self.theme = (
             "textual-dark" if self.theme == "textual-light" else "textual-light"
             )
 
     async def action_quit(self) -> None:
-        """An action to quit the program."""
+        """An action to quit the program, automatically called when q pressed."""
         self.indiclient.shutdown()
         # and wait for it to shutdown
         await self.indiclient.stopped.wait()
         self.exit(0)
 
     async def action_toggle_LED(self) -> None:
-        """An action to toggle the LED."""
+        """An action to toggle the LED, automatically called when t pressed."""
         if not self.indiclient.connected:
             # Not connected, nothing to do
             return
+        # Send a new value to the INDI server
         if self.state == "On":
             await self.indiclient.send_newVector("led", "ledvector", members={"ledmember": "Off"})
         elif self.state == "Off":
