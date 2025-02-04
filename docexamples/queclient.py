@@ -1,14 +1,15 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipyclient",
+# ]
+# ///
 
 """
    Prints temperature on request.
    example1.py should be set running from another
    command prompt.
 """
-
-import sys
-
-sys.path.insert(0, "/home/bernard/git/indipyclient")
-
 
 import threading, collections
 
