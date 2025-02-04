@@ -7,10 +7,9 @@ https://github.com/bernie-skipole/indipydriver
 
 
 Note these examples have Inline script metadata defining their\
-dependencies on indipydriver, and so if copied to your own\
-machine, and if you have a tool such as uv, which will\
-automatically pull in dependencies, you should be able to\
-very simply run the scripts with:
+dependencies, and so if copied to your own machine, and if you\
+have a tool such as uv, which will automatically pull in\
+dependencies, you should be able to very simply run the scripts with:
 
 uv run examplescript.py
 
@@ -42,7 +41,6 @@ example1.py A driver sending simulated temperature values every 10 seconds.\
 example2.py Simulated thermostat with settable target.\
 example3.py Window control snooping on thermostat.\
 led.py Raspberry Pi LED driver.\
-simulated\_led.py Simulates gpiozero.LED so can be run without an actual LED\
 temperatureclient.py client printing temperature as it is received.
 
 

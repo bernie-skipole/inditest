@@ -1,11 +1,32 @@
-
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
 
 # Driver to control an LED on a Raspberry Pi
 
 import asyncio
 import indipydriver as ipd
 
-from gpiozero import LED
+# from gpiozero import LED
+
+# If trying this on a raspberrypi, uncomment the line above
+# and comment out or delete this simulated LED class definition
+
+class LED:
+    "A class to simulate gpiozero.LED"
+
+    def __init__(self, pin):
+        self.pin = pin
+        self.is_lit = False
+
+    def on(self):
+        self.is_lit = True
+
+    def off(self):
+        self.is_lit = False
 
 
 class _LEDDriver(ipd.IPyDriver):
@@ -79,7 +100,7 @@ def make_driver(devicename, pin):
 
 if __name__ == "__main__":
 
-    # create and serve the driver
+    # set up the LED pin and create and serve the driver
     # the devicename has to be unique in a network of devices,
     # and this name and pin could come from script arguments
 
@@ -88,3 +109,4 @@ if __name__ == "__main__":
     server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
+
