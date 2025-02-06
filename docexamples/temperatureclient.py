@@ -22,11 +22,14 @@ class MyClient(ipc.IPyClient):
                 return
             if event.vectorname != "temperaturevector":
                 return
-            # use dictionary get method which returns None
-            # if this member name is not present in the event
+            # use dictionary get method which returns None if the
+            # member name 'temperature' is not present in the event
             value = event.get("temperature")
             if value:
                 print(value)
+                # alternatively to get the formatted string
+                formattedvalue = event.vector.getformattedvalue("temperature")
+                print(formattedvalue)
 
 myclient = MyClient()
 
