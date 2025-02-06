@@ -1,3 +1,9 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
 
 "Two drivers, both with the same devicename"
 

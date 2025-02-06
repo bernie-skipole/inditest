@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
+
 
 """Connects to two remote servers led1.py and led2.py
    Rather than using remote machines, these three services are all on

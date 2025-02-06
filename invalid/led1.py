@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
+
 
 """Driver and server to control a (simulated) LED
    This is set to listen on port 7625 instead of 7624
