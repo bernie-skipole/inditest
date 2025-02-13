@@ -1,6 +1,12 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "indipydriver",
+# ]
+# ///
 
-# Driver to control a bank of (simulated) LEDs so this
-# can be run on a PC without gpiozero
+
+"""Driver to control a bank of (simulated) LEDs"""
 
 import asyncio
 import indipydriver as ipd
