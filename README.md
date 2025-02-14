@@ -17,6 +17,7 @@ and you could run a terminal to connect to the created INDI service with:
 
 uvx indipyterm
 
+If you are running any of the driver scripts on a remote machine, and are connecting across a network, you will have to include host="0.0.0.0" in the IPyServer arguments, otherwise connection will be limited to the default 'localhost'.
 
 #### blobs
 
