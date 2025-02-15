@@ -7,6 +7,14 @@
 # ///
 
 
+"""An example textual terminal which connects
+   to the server created by simulated_led.py
+   and displays the LED status and a toggle switch
+
+   simulated_led.py should be set running from another
+   command prompt.
+"""
+
 import asyncio, queue, threading, logging
 
 from typing import Iterable
