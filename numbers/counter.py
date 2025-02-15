@@ -49,9 +49,8 @@ class CountDriver(ipd.IPyDriver):
                     vector[membername] = event[membername]
                 # transmit the vector back to client to confirm received data
                 # together with a message, which in this example gives the sum
-                # of all vector member values, note vector is a dictionary of membername
-                # to membervalue, so the dictionary method values() can be used.
-                sumvalues = sum(ipd.getfloat(mvalue) for mvalue in vector.values())
+                # of all vector member values
+                sumvalues = sum(vector.getfloatvalue(membername) for membername in vector)
                 await vector.send_setVector(message=f"Received new sum of {sumvalues}")
 
 
