@@ -52,7 +52,7 @@ class ThermalControl:
                 self.heater = "On"
 
 
-class _ThermoDriver(ipd.IPyDriver):
+class ThermoDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here, with a method
        to run the thermalcontrol.run_thermostat() method
@@ -70,7 +70,7 @@ class _ThermoDriver(ipd.IPyDriver):
         controltask = asyncio.create_task(thermalcontrol.run_thermostat())
 
         vector = self[devicename]['temperaturevector']
-        while not self._stop:
+        while not self.stop:
             await asyncio.sleep(10)
             # Send the temperature every 10 seconds
             vector['temperature'] = thermalcontrol.temperature
@@ -90,16 +90,16 @@ def make_driver(devicename, target):
     thermalcontrol = ThermalControl(devicename, target)
 
     # Make a NumberMember holding the temperature value
-    temperaturemember = ipd.NumberMember( name="temperature",
-                                          format='%3.1f', min=-50, max=99,
-                                          membervalue=thermalcontrol.temperature )
+    temperature = ipd.NumberMember( name="temperature",
+                                    format='%3.1f', min=-50, max=99,
+                                    membervalue=thermalcontrol.temperature )
     # Make a NumberVector instance, containing the member.
     temperaturevector = ipd.NumberVector( name="temperaturevector",
                                           label="Temperature",
                                           group="Values",
                                           perm="ro",
                                           state="Ok",
-                                          numbermembers=[temperaturemember] )
+                                          numbermembers=[temperature] )
     # Make a Device with temperaturevector as its only property
     # and with the given devicename
     thermostat = ipd.Device( devicename=devicename,
@@ -107,8 +107,8 @@ def make_driver(devicename, target):
 
     # Create the Driver which will contain this Device,
     # and the instrument controlling object
-    driver = _ThermoDriver( thermostat,
-                            thermalcontrol=thermalcontrol )
+    driver = ThermoDriver( thermostat,
+                           thermalcontrol=thermalcontrol )
 
     # and return the driver
     return driver

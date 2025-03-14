@@ -29,12 +29,17 @@ class LED:
         self.is_lit = False
 
 
-class _LEDDriver(ipd.IPyDriver):
+class LEDDriver(ipd.IPyDriver):
 
     """IPyDriver is subclassed here to create an LED driver."""
 
     async def rxevent(self, event):
         "On receiving data from the client, this is called"
+
+        if event.devicename != "led":
+            # No other device data is expected, ignore anything
+            # without the correct devicename
+            return
 
         # get the LED object controlling the instrument, which is
         # available in the named arguments dictionary 'self.driverdata'
@@ -43,9 +48,6 @@ class _LEDDriver(ipd.IPyDriver):
 
         # event.vector is the vector being requested or altered
         # event[membername] is the new value.
-
-        # There is only one device in this driver,
-        # so no need to check devicename
 
         if isinstance(event, ipd.newSwitchVector):
             if event.vectorname == "ledvector" and 'ledmember' in event:
@@ -92,7 +94,7 @@ def make_driver(devicename, pin):
 
     # Create the Driver containing this device, and as named argument
     # add the LED object used for instrument control
-    driver = _LEDDriver(leddevice, ledobj=ledobject )
+    driver = LEDDriver(leddevice, ledobj=ledobject )
 
     # and return the driver
     return driver
@@ -109,4 +111,3 @@ if __name__ == "__main__":
     server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
-
