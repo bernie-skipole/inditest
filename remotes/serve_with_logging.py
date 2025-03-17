@@ -15,7 +15,7 @@
 
 
 import logging
-led1logger = logging.getLogger('indipyclient')
+led1logger = logging.getLogger('indipydriver.remote')
 led1fh = logging.FileHandler("logled1.log")
 led1logger.addHandler(led1fh)
 led1logger.setLevel(logging.DEBUG)
