@@ -1,8 +1,7 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipydriver",
-#     "indipyclient"
+#     "indipydriver"
 # ]
 # ///
 
@@ -74,5 +73,5 @@ if __name__ == "__main__":
     driver = make_driver("bigblob", blobpath)
     server = ipd.IPyServer(driver)
     # and run the server
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run( server.asyncrun() )

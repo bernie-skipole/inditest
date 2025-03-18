@@ -1,8 +1,7 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipydriver",
-#     "indipyclient"
+#     "indipydriver"
 # ]
 # ///
 
@@ -171,5 +170,5 @@ def make_driver(devicename, minutes):
 if __name__ == "__main__":
     driver = make_driver("blobmaker", minutes=2) # create BLOBs every two minutes
     server = ipd.IPyServer(driver)
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run( server.asyncrun() )

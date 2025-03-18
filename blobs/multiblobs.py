@@ -73,5 +73,5 @@ if __name__ == "__main__":
 
     driver = make_driver("blobdevice")
     server = ipd.IPyServer(driver)
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run(server.asyncrun())

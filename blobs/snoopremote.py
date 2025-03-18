@@ -1,8 +1,7 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "indipydriver",
-#     "indipyclient"
+#     "indipydriver"
 # ]
 # ///
 
@@ -154,5 +153,5 @@ if __name__ == "__main__":
                       port=7624,
                       blob_enable="Also",
                       debug_enable=True)
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run(server.asyncrun())

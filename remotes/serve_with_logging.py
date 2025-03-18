@@ -32,5 +32,5 @@ if __name__ == "__main__":
     # connect to two remote servers
     server.add_remote(host="localhost", port=7625, debug_enable=True)
     server.add_remote(host="localhost", port=7626)
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run(server.asyncrun())

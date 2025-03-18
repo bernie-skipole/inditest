@@ -103,5 +103,5 @@ if __name__ == "__main__":
     driver = make_driver(led)
     # set port at 7625 instead of 7624
     server = ipd.IPyServer(driver, host="localhost", port=7625, maxconnections=5)
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run(server.asyncrun())
