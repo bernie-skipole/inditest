@@ -65,7 +65,7 @@ led1.py As simulated\_led.py but set to listen on port 7625 and with devicename 
 led2.py As simulated\_led.py but set to listen on port 7626 and with devicename led
 
 serve\_remotes.py Connects to two remote servers led1.py and led2.py\
-Rather than using remote machines, these three services are all on one\
+Rather than using remote machines, these services are all on one\
 machine using different ports. The duplicate names on the remote connections\
 should be detected and cause the calling server to shutdown
 
@@ -101,8 +101,10 @@ led1.py As simulated\_led.py but set to listen on port 7625 and with devicename 
 
 led2.py As simulated\_led.py but set to listen on port 7626 and with devicename led2
 
-serve\_remotes.py Connects to two remote servers led1.py and led2.py\
-Rather than using remote machines, these three services are all on\
+sendblob.py As blobs/sendblob.py but set to listen on port 7627
+
+serve\_remotes.py Connects to remote servers led1.py, led2.py and sendblob.py\
+Rather than using remote machines, these services are all on\
 one machine using different ports.
 
 serve\_with\_logging.py This adds logging, so a logfile is created, for the remote link to led1
