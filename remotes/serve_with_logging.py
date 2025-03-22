@@ -7,12 +7,11 @@
 
 
 """Set to connect to two remote servers led1.py and led2.py
-   Rather than using remote machines, these three services are all on
+   Rather than using remote machines, these are on
    one machine using different ports
 
    This adds logging, so a logfile is created, for the remote
    link to led1."""
-
 
 import logging
 led1logger = logging.getLogger('indipydriver.remote')
