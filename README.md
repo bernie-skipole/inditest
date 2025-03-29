@@ -109,6 +109,8 @@ one machine using different ports.
 
 serve\_with\_logging.py This adds logging, so a logfile is created, for the remote link to led1
 
+thirdpartyremote.py Connect to third party 'indiserver' process
+
 #### snapshot
 
 Testing the use of the client snapshot with a threaded function.
