@@ -104,5 +104,5 @@ if __name__ == "__main__":
     driver1 = make_driver("led", 17)
     driver2 = make_driver("led", 18)
     server = ipd.IPyServer(driver1, driver2)
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run(server.asyncrun())
