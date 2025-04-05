@@ -118,5 +118,5 @@ if __name__ == "__main__":
     windowdriver = make_driver("Window", "Thermostat")
 
     server = ipd.IPyServer(thermodriver, windowdriver)
-    print(f"Running {__file__}")
+    print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run( server.asyncrun() )
