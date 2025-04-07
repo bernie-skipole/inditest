@@ -10,6 +10,10 @@
    and requires these simulator drivers to be installed
    using something like "apt install indi-bin"""
 
+# ignore next two lines, used for testing
+# import sys
+# sys.path.insert(0, "/home/bernard/git/indipydriver")
+
 
 import asyncio
 

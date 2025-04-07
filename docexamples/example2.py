@@ -8,6 +8,10 @@
 
 # Simulated thermostat with settable target.
 
+# ignore next two lines, used for testing
+# import sys
+# sys.path.insert(0, "/home/bernard/git/indipydriver")
+
 
 import asyncio
 
