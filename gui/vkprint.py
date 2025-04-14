@@ -65,7 +65,7 @@ def main(vk, channel):
         items = message['data'].split(" ")
         if len(items) != 3:
             continue
-        if items[0] in ("Delete", "Define", "DefineBLOB", "Set", "SetBLOB"):
+        if items[0] in ("Define", "DefineBLOB", "Set", "SetBLOB"):
             devicename = items[1]
             vectorname = items[2]
             membernames  = vk.smembers(f"members:{devicename}:{vectorname}")
