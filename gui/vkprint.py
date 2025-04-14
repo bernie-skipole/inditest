@@ -6,8 +6,10 @@
 # ///
 
 
-# Illustrates how INDI parameters stored in a Valkey server using vkclient.py
-# can be read. This could be used by a 'display' service to show an instruments output
+"""
+Illustrates how INDI parameters stored in a Valkey server using vkclient.py
+can be read. This could be used by a 'display' service to show an instruments output
+"""
 
 
 import pprint

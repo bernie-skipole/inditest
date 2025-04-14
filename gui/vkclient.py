@@ -7,6 +7,14 @@
 # ///
 
 
+"""
+This client uses QueClient to get snapshots of data and saves it to a Valkey server
+
+This could be useful for a display, or multiple displays to continuously show updating values
+
+An example of accessing the valkey server is given in file vkprint.py
+"""
+
 import asyncio
 from indipyclient.queclient import QueClient
 
@@ -115,6 +123,7 @@ async def handle_rxevents(vk, rxque, channel, inc_blob):
                     await vk.sadd(f'properties:{dname}', vname)   # add property name to 'properties:<devicename>'
                     await sendvector(vk, dname, vname, vectdict)
 
+        # publish a note on a channel to indicate a change has occurred
         await vk.publish(channel, f"{eventtype} {devicename if devicename else "None"} {vectorname if vectorname else "None"}")
 
 
@@ -122,7 +131,7 @@ async def main():
     try:
         vk = valkey.Valkey(host='raspberrypi', port=6379)
         await vk.flushdb()
-        txque = asyncio.Queue(maxsize=4)
+        txque = asyncio.Queue(maxsize=4)  # txque is not used in this example
         rxque = asyncio.Queue(maxsize=4)
         client = QueClient(txque, rxque, indihost="localhost", indiport=7624, blobfolder=None)
         task1 = asyncio.create_task(handle_rxevents(vk, rxque, "indievent", False))

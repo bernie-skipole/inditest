@@ -56,6 +56,12 @@ ledclient3.py example Dear PyGui client connecting to the server created by simu
 ledclient4.py example textual terminal which connects to the server created by simulated\_led.py\
 simulated\_led.py simulated LED driver.
 
+vkclient.py This client uses QueClient to get snapshots of data and saves it to a Valkey server\
+This could be useful for a display, or multiple displays to continuously show updating values.
+
+vkprint.py Illustrates how INDI parameters stored in a Valkey server using vkclient.py\
+can be read. This could be used by a 'display' service to show an instruments output.
+
 #### invalid
 
 Duplicate devicenames are not allowed, these tests check if they are detected
