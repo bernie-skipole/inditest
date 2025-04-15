@@ -181,7 +181,7 @@ async def handle_rxevents(vk, rxque, channel, inc_blob, nbr=8):
 
 async def main():
     try:
-        vk = valkey.Valkey(host='raspberrypi', port=6379)
+        vk = valkey.Valkey(host='localhost', port=6379)
         await vk.flushdb()
         txque = asyncio.Queue(maxsize=4)  # txque is not used in this example, but could be used to send data
         rxque = asyncio.Queue(maxsize=4)

@@ -78,5 +78,5 @@ def main(vk, channel):
             print("------------------")
 
 if __name__ == "__main__":
-    vk = valkey.Valkey(host='raspberrypi', port=6379, decode_responses=True)
+    vk = valkey.Valkey(host='localhost', port=6379, decode_responses=True)
     main(vk, "indievent")
