@@ -21,7 +21,11 @@ from indipyclient.queclient import QueClient
 import valkey.asyncio as valkey
 
 
-async def sendvector(vk, devicename, vectorname, vectdict):
+async def _sendvector(vk, devicename, vectorname, vectdict):
+    """Function to save a vector dictionary to valkey
+       Note, boolean values are saved as strings of either 'True' or 'False'
+       None values are saved as the string 'None'
+    """
 
     # Saves the vector attributes to valkey, apart from members
     mapping = {key:value for key,value in vectdict.items() if key != "members"}
@@ -48,25 +52,51 @@ async def sendvector(vk, devicename, vectorname, vectdict):
         await vk.hset(f'memberattributes:{devicename}:{vectorname}:{membername}', mapping=memberatts)
 
 
-async def handle_rxevents(vk, rxque, channel, inc_blob):
-    """On being called when an event is received, this saves any changes to valkey
+async def handle_rxevents(vk, rxque, channel, inc_blob, nbr=8):
+    """On being called when an event is received, this saves data to valkey
 
-       vk is a Valkey connection
-       rxque is an asyncio.Queue providing events which are named tuples with attributes:
+       vk is a Valkey async connection, which should be created using valkey.asyncio.Valkey
+       rxque is an asyncio.Queue which will provide events from a QueClient
+       channel is a pubsub channel string, notifications of an event will be published on this channel
+       inc_blob is True if BLOBs are to be saved in the valkey database, False if not
+       nbr is the number of received system and device messages to keep in valkey lists
 
-       eventtype -  a string, one of Message, getProperties, Delete, Define, DefineBLOB, Set, SetBLOB,
-                    these indicate data is received from the client, and the type of event. It could
-                    also be the string "snapshot", which does not indicate a received event, but is a
-                    response to a snapshot request received from txque, or "TimeOut" which indicates an
-                    expected update has not occurred, or "State" which indicates you have just transmitted
-                    a new vector, and therefore the snapshot will have your vector state set to Busy.
-       devicename - usually the device name causing the event, or None if not applicable.
-       vectorname - usually the vector name causing the event, or None if not applicable.
-       timestamp -  the event timestamp, None for the snapshot request.
-       snapshot -   For anything other than eventtype 'snapshot' it will be a full snapshot of the client.
-                    If the eventtype is 'snapshot' and devicename and vectorname are None, it will be a
-                    client snapshot, if devicename only is given it will be a device snapshot, or if both
-                    devicename and vectorname are given it will be a vector snapshot."""
+       Valkey keys used:
+
+       "messages" - list of system messages, being strings of "timestamp space message", at most nbr items in the list.
+      f"messages:{devicename}" - list of device messages, being strings of "timestamp space message", at most nbr items in the list.
+       "devices" - set of device names
+      f"properties:{devicename}" - set of vector names for the device
+      f"attributes:{devicename}:{vectorname}" - a mapping of each vector attribute with its value, for the given vector
+      f"members:{devicename}:{vectorname}" - a set of member names for the vector
+      f"memberattributes:{devicename}:{vectorname}:{membername}" - a mapping of each member attribute with its value, for the given member
+                                                                   this will include the actual member value
+
+      The attributes referred to above are those indi attributes specified for a vector and member, such as 'label' etc., with a few
+      useful extras such as 'formattedvalue'.
+
+      As events are received on rxque, the Valkey database is populated with keys as given above. Also an event notification
+      will be published using:
+
+      vk.publish(channel, f"{eventtype}")    - if no devicename or vectorname are given in the event, for example a system message.
+      vk.publish(channel, f"{eventtype} {devicename}")  - if a devicename is given, but no vectorname
+      vk.publish(channel, f"{eventtype} {devicename} {vectorname}")  - if the event has both a devicename and vectorname
+
+      This could be used by an appropriate client to listen for events, and only read the database when an event occurs.
+
+      The eventtype is that received from QueClient, it is a string:
+
+      One of Message, getProperties, Delete, Define, DefineBLOB, Set, SetBLOB,
+      these indicate data is received from the client, and the type of event. It could
+      also be the string "snapshot", which does not indicate a received event, but is a
+      response to a snapshot request received from txque, or "TimeOut" which indicates an
+      expected update has not occurred, or "State" which indicates you have just transmitted
+      a new vector, and therefore the vector state will be set to Busy.
+
+"""
+
+    # set nbr to a value used by ltrim to reduce the number of messages in the list
+    nbr = -nbr
 
     while True:
 
@@ -75,6 +105,7 @@ async def handle_rxevents(vk, rxque, channel, inc_blob):
         eventtype = event.eventtype
         devicename = event.devicename
         vectorname = event.vectorname
+        timestamp = event.timestamp
         snapshot = event.snapshot
 
         rxque.task_done()
@@ -84,17 +115,33 @@ async def handle_rxevents(vk, rxque, channel, inc_blob):
 
         if eventtype == "Message":
             if devicename is None:
-                await vk.delete("messages")
+                # system wide message
                 messagelist = snapshot.messages
-                for m in messagelist:
-                    message = f"{m[0].isoformat(sep='T')} {m[1]}"
-                    await vk.rpush("messages", message)
+                # a message consists of a timestamp and string
+                # get the message from the snapshot that this event refers to
+                for message in messagelist:
+                    if message[0] == timestamp:
+                        mt,ms = message
+                        break
+                else:
+                    continue
+                # place <timestamp><space><message string> into list with key 'messages'
+                await vk.rpush("messages", f"{mt.isoformat(sep='T')} {ms}")
+                await vk.ltrim("messages", nbr, -1)
             else:
-                await vk.delete(f"messages:{devicename}")
+                # a device message
                 messagelist = snapshot[devicename].messages
-                for m in messagelist:
-                    message = f"{m[0].isoformat(sep='T')} {m[1]}"
-                    await vk.rpush(f"messages:{devicename}", message)
+                # a message consists of a timestamp and string
+                # get the message from the snapshot that this event refers to
+                for message in messagelist:
+                    if message[0] == timestamp:
+                        mt,ms = message
+                        break
+                else:
+                    continue
+                # place <timestamp><space><message string> into list with key 'messages<devicename>'
+                await vk.rpush(f"messages:{devicename}", f"{mt.isoformat(sep='T')} {ms}")
+                await vk.ltrim(f"messages:{devicename}", nbr, -1)
 
         elif (devicename is not None) and (vectorname is not None):
             if eventtype == "snapshot":
@@ -104,7 +151,7 @@ async def handle_rxevents(vk, rxque, channel, inc_blob):
             # add the device to vk set 'devices'
             await vk.sadd('devices', devicename)
             await vk.sadd(f'properties:{devicename}', vectorname)   # add property name to 'properties:<devicename>'
-            await sendvector(vk, devicename, vectorname, vectdict)
+            await _sendvector(vk, devicename, vectorname, vectdict)
 
         elif (eventtype == "snapshot") and (devicename is not None):
             # add the device to vk set 'devices'
@@ -113,7 +160,7 @@ async def handle_rxevents(vk, rxque, channel, inc_blob):
             for vname in snapshot.keys():
                 vectdict = snapshot[vname].dictdump(inc_blob)
                 await vk.sadd(f'properties:{devicename}', vname)   # add property name to 'properties:<devicename>'
-                await sendvector(vk, devicename, vname, vectdict)
+                await _sendvector(vk, devicename, vname, vectdict)
 
         elif eventtype == "snapshot":
             for dname in snapshot.keys():
@@ -121,17 +168,22 @@ async def handle_rxevents(vk, rxque, channel, inc_blob):
                 for vname in snapshot[dname].keys():
                     vectdict = snapshot[dname][vname].dictdump(inc_blob)
                     await vk.sadd(f'properties:{dname}', vname)   # add property name to 'properties:<devicename>'
-                    await sendvector(vk, dname, vname, vectdict)
+                    await _sendvector(vk, dname, vname, vectdict)
 
         # publish a note on a channel to indicate a change has occurred
-        await vk.publish(channel, f"{eventtype} {devicename if devicename else "None"} {vectorname if vectorname else "None"}")
+        if vectorname:
+            await vk.publish(channel, f"{eventtype} {devicename} {vectorname}")
+        elif devicename:
+            await vk.publish(channel, f"{eventtype} {devicename}")
+        else:
+            await vk.publish(channel, f"{eventtype}")
 
 
 async def main():
     try:
         vk = valkey.Valkey(host='raspberrypi', port=6379)
         await vk.flushdb()
-        txque = asyncio.Queue(maxsize=4)  # txque is not used in this example
+        txque = asyncio.Queue(maxsize=4)  # txque is not used in this example, but could be used to send data
         rxque = asyncio.Queue(maxsize=4)
         client = QueClient(txque, rxque, indihost="localhost", indiport=7624, blobfolder=None)
         task1 = asyncio.create_task(handle_rxevents(vk, rxque, "indievent", False))

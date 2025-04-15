@@ -8,7 +8,9 @@
 
 """
 Illustrates how INDI parameters stored in a Valkey server using vkclient.py
-can be read. This could be used by a 'display' service to show an instruments output
+can be read. This prints valkey keys and contents, and then continues to print
+member attributes as they are received.
+Something similar could be used by a 'display' service to show an instruments output
 """
 
 
@@ -65,16 +67,15 @@ def main(vk, channel):
         items = message['data'].split(" ")
         if len(items) != 3:
             continue
-        if items[0] in ("Define", "DefineBLOB", "Set", "SetBLOB"):
-            devicename = items[1]
-            vectorname = items[2]
-            membernames  = vk.smembers(f"members:{devicename}:{vectorname}")
-            for membername in membernames:
-                key = f"memberattributes:{devicename}:{vectorname}:{membername}"
-                print(f"KEY - '{key}'")
-                mattdict = vk.hgetall(key)
-                pprint.pp(mattdict)
-                print("------------------")
+        devicename = items[1]
+        vectorname = items[2]
+        membernames  = vk.smembers(f"members:{devicename}:{vectorname}")
+        for membername in membernames:
+            key = f"memberattributes:{devicename}:{vectorname}:{membername}"
+            print(f"KEY - '{key}'")
+            mattdict = vk.hgetall(key)
+            pprint.pp(mattdict)
+            print("------------------")
 
 if __name__ == "__main__":
     vk = valkey.Valkey(host='raspberrypi', port=6379, decode_responses=True)
