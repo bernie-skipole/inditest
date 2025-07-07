@@ -52,7 +52,8 @@ ledclient1.py example tkinter gui connecting to the server created by simulated\
 ledclient2.py example pygtk3 gui connecting to the server created by simulated\_led.py\
 ledclient3.py example Dear PyGui client connecting to the server created by simulated\_led.py\
 ledclient4.py example textual terminal which connects to the server created by simulated\_led.py\
-simulated\_led.py simulated LED driver.
+simulated\_led.py simulated LED driver.\
+webterm.py serving indipyterm via a web service so visible in a browser, a textual feature
 
 The following two examples require a Valkey server to be running.
 
