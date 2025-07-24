@@ -10,6 +10,13 @@ Illustrates a driver receiving six files and saving them
 """
 
 import asyncio
+
+import logging, sys
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
+
 import indipydriver as ipd
 
 

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "indipydriver",
 # ]
@@ -10,12 +10,16 @@
    and requires these simulator drivers to be installed
    using something like "apt install indi-bin"""
 
-# ignore next two lines, used for testing
-# import sys
-# sys.path.insert(0, "/home/bernard/git/indipydriver")
 
 
 import asyncio
+
+import logging, sys
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
+
 
 from indipydriver import IPyServer
 

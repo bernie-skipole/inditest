@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "indipydriver",
 # ]
@@ -8,12 +8,13 @@
 
 # Simulated thermostat with settable target.
 
-# ignore next two lines, used for testing
-# import sys
-# sys.path.insert(0, "/home/bernard/git/indipydriver")
-
-
 import asyncio
+
+import logging, sys
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
 
 import indipydriver as ipd
 

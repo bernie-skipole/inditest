@@ -13,6 +13,13 @@ and waits 10 seconds then sends it again. This is to test how the client reacts
 
 
 import asyncio
+
+import logging, sys
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
+
 import indipydriver as ipd
 
 class _BigBlobDriver(ipd.IPyDriver):
