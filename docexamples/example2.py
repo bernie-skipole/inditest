@@ -10,11 +10,11 @@
 
 import asyncio
 
-import logging, sys
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-handler = logging.StreamHandler(sys.stdout)
-logger.addHandler(handler)
+# import logging, sys
+# logger = logging.getLogger()
+# logger.setLevel(logging.INFO)
+# handler = logging.StreamHandler(sys.stdout)
+# logger.addHandler(handler)
 
 import indipydriver as ipd
 
