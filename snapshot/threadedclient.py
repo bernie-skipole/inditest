@@ -7,19 +7,15 @@
 
 import asyncio, collections, threading, time
 
-from indipyclient.queclient import QueClient
+from indipyclient.queclient import runqueclient
 
 
 
-# a blocking function to be run in a thread
-
-def numberdoubler(myclient, txque, rxque):
+def numberdoubler(txque, rxque):
     """get item from rxque, manipulate it, and send a value
-       back to the driver in txque.
-       as a test, make this blocking and run it in a thread"""
+       back to the driver in txque. Use CTRL-C to stop"""
     try:
-        while not myclient.stop:
-            # this loop stops when myclient stops
+        while True:
             try:
                 event = rxque.popleft()
             except IndexError:
@@ -29,13 +25,13 @@ def numberdoubler(myclient, txque, rxque):
                 continue
             if 'txvalue' not in event.snapshot['Counter']['txcount']:
                 continue
-            # get the value sent by the driver
+            # get the value sent by the driver, available in the snapshot
             value = float(event.snapshot['Counter']['txcount']['txvalue'])
             # manipulate it, in this example just multiply by two
             # and transmit manipulated value back in vector rxvector
             txque.append( ('Counter', 'rxvector',  {'rxvalue':value * 2}) )
     finally:
-        # if this stops, shutdown myclient
+        # if this stops, shutdown queclient
         txque.append(None)
 
 
@@ -45,14 +41,18 @@ if __name__ == "__main__":
     txque = collections.deque()
     # create queue where client will put events
     rxque = collections.deque()
-    # create a QueClient object
-    myclient = QueClient(txque,rxque)
 
-    # run numberdoubler in its own thread
-    doubler = threading.Thread(target=numberdoubler, args=(myclient, txque, rxque))
-    doubler.start()
+    # run a queclient in its own thread
+    clientthread = threading.Thread(target=runqueclient, args=(txque, rxque))
+
+    # The args argument could also have hostname and port specified
+    # if the server is running elsewhere
+    clientthread.start()
+
     print(f"Running {__file__}")
-    # run myclient.asyncrun()
-    asyncio.run(myclient.asyncrun())
-    # and wait for the doubler thread to stop
-    doubler.join()
+
+    # call blocking function
+    numberdoubler(txque, rxque)
+
+    # and wait for the client thread to stop
+    clientthread.join()
