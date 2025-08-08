@@ -7,61 +7,52 @@
 
 import asyncio, collections, threading, time
 
-import indipyclient as ipc
-
-
-class MyClient(ipc.IPyClient):
-
-    async def rxevent(self, event):
-        "Gets the value as it is received and create a snapshot"
-
-        if isinstance(event, ipc.setNumberVector):
-            if event.devicename != "Counter":
-                return
-            if event.vectorname != "txcount":
-                return
-            # create snapshot
-            snap = self.snapshot()
-            # snap is a copy of devices and vectors
-            # put this snapshot into dque, to be read by a function
-            # running in a thread
-            self.clientdata['snapque'].append(snap)
+from indipyclient.queclient import QueClient
 
 
 
 # a blocking function to be run in a thread
 
-def numberdoubler(myclient, snapque):
-    """get item from snapque, manipulate it, and send a value
-       back to the driver.
+def numberdoubler(myclient, txque, rxque):
+    """get item from rxque, manipulate it, and send a value
+       back to the driver in txque.
        as a test, make this blocking and run it in a thread"""
     try:
         while not myclient.stop:
+            # this loop stops when myclient stops
             try:
-                snap = snapque.popleft()
+                event = rxque.popleft()
             except IndexError:
                 time.sleep(0.1)
                 continue
+            if event.devicename != 'Counter' or event.vectorname != 'txcount':
+                continue
+            if 'txvalue' not in event.snapshot['Counter']['txcount']:
+                continue
             # get the value sent by the driver
-            value = float(snap['Counter']['txcount']['txvalue'])
+            value = float(event.snapshot['Counter']['txcount']['txvalue'])
             # manipulate it, in this example just multiply by two
-            # and transmit manipulated value back
-            myclient.send_newVector('Counter', 'rxvector',  members={'rxvalue':value * 2})
+            # and transmit manipulated value back in vector rxvector
+            txque.append( ('Counter', 'rxvector',  {'rxvalue':value * 2}) )
     finally:
         # if this stops, shutdown myclient
-        myclient.shutdown()
+        txque.append(None)
 
 
 if __name__ == "__main__":
 
-    # create queue where client will put snapshots
-    snapque = collections.deque()
-    # create a myclient object
-    myclient = MyClient(snapque = snapque)
+    # create queue where updated data will be transmitted
+    txque = collections.deque()
+    # create queue where client will put events
+    rxque = collections.deque()
+    # create a QueClient object
+    myclient = QueClient(txque,rxque)
 
     # run numberdoubler in its own thread
-    clientapp = threading.Thread(target=numberdoubler, args=(myclient, snapque),)
-    clientapp.start()
+    doubler = threading.Thread(target=numberdoubler, args=(myclient, txque, rxque))
+    doubler.start()
     print(f"Running {__file__}")
     # run myclient.asyncrun()
     asyncio.run(myclient.asyncrun())
+    # and wait for the doubler thread to stop
+    doubler.join()
