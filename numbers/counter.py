@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "indipydriver"
 # ]
@@ -12,6 +12,15 @@
 
 
 import asyncio
+
+import logging, sys
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
+
+
+
 import indipydriver as ipd
 
 
