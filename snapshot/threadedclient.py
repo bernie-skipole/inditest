@@ -20,12 +20,14 @@ def numberdoubler(txque, rxque):
         except IndexError:
             time.sleep(0.1)
             continue
+        print(event.eventtype)
         if event.devicename != 'Counter' or event.vectorname != 'txcount':
             continue
-        if 'txvalue' not in event.snapshot['Counter']['txcount']:
+        try:
+            # get the value sent by the driver, available in the snapshot
+            value = float(event.snapshot['Counter']['txcount']['txvalue'])
+        except (IndexError, KeyError):
             continue
-        # get the value sent by the driver, available in the snapshot
-        value = float(event.snapshot['Counter']['txcount']['txvalue'])
         # manipulate it, in this example just multiply by two
         # and transmit manipulated value back in vector rxvector
         txque.append( ('Counter', 'rxvector',  {'rxvalue':value * 2}) )
