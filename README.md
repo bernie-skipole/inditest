@@ -36,6 +36,7 @@ snoopremote.py Driver snooping on remote running sendblob.py
 The examples used in indipydriver readthedocs documentation
 
 addexdriver.py IPyServer serving executable third part drivers.\
+clientevent.py  client illustrating create_clientevent.\
 example1.py A driver sending simulated temperature values every 10 seconds.\
 example2.py Simulated thermostat with settable target.\
 example3.py Window control snooping on thermostat.\
