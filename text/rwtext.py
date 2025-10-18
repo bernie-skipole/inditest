@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=2.5.0",
 # ]
 # ///
 
@@ -23,8 +23,6 @@ async def delay_instrument(vector, value):
     # having processed, set the vector value, and transmit this new value
     vector['tovalue'] = value
     await vector.send_setVector(message="Delayed value sent back")
-
-
 
 
 
@@ -65,13 +63,8 @@ class RWDriver(ipd.IPyDriver):
                 # create a task, in this case run 'delay_instrument'
                 task = asyncio.create_task(delay_instrument(event.vector, value))
 
-                # Add task to the 'background_tasks' set. This creates a strong reference.
-                background_tasks = self.driverdata['background_tasks']
-                background_tasks.add(task)
-                # To prevent keeping references to finished tasks forever,
-                # make each task remove its own reference from the set after
-                # completion:
-                task.add_done_callback(background_tasks.discard)
+                self.run_background_task(task)
+
                 # As this task is now running in the background, this rxevent method
                 # can now end, and will not block further functionality of the driver.
 
@@ -122,9 +115,8 @@ def make_driver():
                                     state = "Ok",
                                     textmembers = [timeoutmember])
 
-    # set a timeout of eight seconds
-    timeoutvector.timeout = "8"
-
+    # set a vector timeout of eight seconds
+    timeoutvector.timeout = 8
 
     # create a device with these vectors
     rwtext = ipd.Device( devicename="rwtext",
@@ -134,8 +126,8 @@ def make_driver():
 
     # This driver operates an instrument by running background tasks
     # store these tasks in the driver to stop them being garbage collected
-    background_tasks = set()
-    driver = RWDriver( rwtext, background_tasks=background_tasks )
+
+    driver = RWDriver( rwtext )
 
     # and return the driver
     return driver
