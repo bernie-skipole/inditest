@@ -2,6 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = [
 #     "indipydriver>=2.5.0",
+#     "indipyserver",
 # ]
 # ///
 
@@ -12,6 +13,8 @@
 import asyncio
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 
 async def delay_instrument(vector, value):
@@ -136,6 +139,6 @@ def make_driver():
 if __name__ == "__main__":
 
     driver = make_driver()
-    server = ipd.IPyServer(driver)
+    server = IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

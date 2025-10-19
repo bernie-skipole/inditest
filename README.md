@@ -144,5 +144,6 @@ OneOfMany AtMostOne AnyOfMany and ReadOnly
 
 Examples transmitting and receiving text
 
-rwtext.py Driver with ten rw members, also sends values every ten seconds\
+rwtext.py TextVector with ten members, reading and writing\
+Together with another vector controlling a longer 15 second task\
 txrxtext.py Driver transmitting text vector with multiple members
