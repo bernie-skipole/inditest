@@ -1,8 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver>=2.5.0",
-#     "indipyserver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -63,10 +63,8 @@ class RWDriver(ipd.IPyDriver):
                 # value, then sends an acknowledgement back to the client
                 # In this example, this is simulated by the 'delay_instrument' function
 
-                # create a task, in this case run 'delay_instrument'
-                task = asyncio.create_task(delay_instrument(event.vector, value))
-
-                self.run_background_task(task)
+                # create a job to run in the background
+                self.add_background(delay_instrument(event.vector, value))
 
                 # As this task is now running in the background, this rxevent method
                 # can now end, and will not block further functionality of the driver.
