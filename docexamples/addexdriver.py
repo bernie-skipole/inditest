@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipyserver",
 # ]
 # ///
 
@@ -21,7 +21,7 @@ handler = logging.StreamHandler(sys.stdout)
 logger.addHandler(handler)
 
 
-from indipydriver import IPyServer
+from indipyserver import IPyServer
 
 server = IPyServer(host="localhost",
                    port=7624,

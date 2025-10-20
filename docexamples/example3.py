@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -16,6 +17,8 @@ import asyncio
 # logger.addHandler(handler)
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 
 class WindowControl:
@@ -123,6 +126,6 @@ if __name__ == "__main__":
     # make the window driver
     windowdriver = make_driver("Window", "Thermostat")
 
-    server = ipd.IPyServer(thermodriver, windowdriver)
+    server = IPyServer(thermodriver, windowdriver)
     print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run( server.asyncrun() )
