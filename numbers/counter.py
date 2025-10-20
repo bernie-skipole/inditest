@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver"
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -19,9 +20,9 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(sys.stdout)
 logger.addHandler(handler)
 
-
-
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 
 class CountDriver(ipd.IPyDriver):
@@ -122,6 +123,6 @@ if __name__ == "__main__":
 
     # serve the driver on localhost, port 7624
     driver = make_driver()
-    server = ipd.IPyServer(driver)
+    server = IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
