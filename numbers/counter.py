@@ -93,11 +93,14 @@ def make_driver():
     # wo rxvector
 
     # create ten NumberMembers, rxmember0 to rxmember9
-    # with initial values 0
+    # with initial values 0, and can only be incremented in steps of 0.5
     rxmembers= []
     for m in range(10):
         rxmembers.append( ipd.NumberMember( name = f"rxmember{m}",
                                             label = f"Input Value",
+                                            min = "-10",
+                                            max = "10",
+                                            step = "0.5",
                                             format = "%4.2f" )  )
 
     # create a vector containing these members

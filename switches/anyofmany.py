@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -11,6 +12,8 @@
 import asyncio
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 
 class Driver(ipd.IPyDriver):
@@ -67,6 +70,6 @@ def make_driver(devicename):
 if __name__ == "__main__":
 
     driver = make_driver("switch")
-    server = ipd.IPyServer(driver)
+    server = IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
