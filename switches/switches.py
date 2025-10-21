@@ -37,13 +37,14 @@ class Driver(ipd.IPyDriver):
 
 
     async def hardware(self):
-        """Send a new ro switch value every second"""
+        """Send  new ro and rw switch values every second"""
 
         devicename = self.driverdata['devicename']
 
         rovector = self[devicename]['ROvector']
+        aomvector = self[devicename]['AOMvector']
         while not self.stop:
-            # send a new switch value every second
+            # send a new switch values every second
             for s in range(5):
                 await asyncio.sleep(1)
                 if rovector[f"ROMmember{s}"] == "On":
@@ -51,6 +52,13 @@ class Driver(ipd.IPyDriver):
                 else:
                     rovector[f"ROMmember{s}"] = "On"
                 await rovector.send_setVector()
+                if aomvector[f"AOMmember{s}"] == "On":
+                    aomvector[f"AOMmember{s}"] = "Off"
+                else:
+                    aomvector[f"AOMmember{s}"] = "On"
+                await aomvector.send_setVector()
+
+
 
 
 def make_driver(devicename):
@@ -109,7 +117,7 @@ def make_driver(devicename):
     aom_vector = ipd.SwitchVector( name = 'AOMvector',
                                    label = "Switch",
                                    group = 'AnyOfMany',
-                                   perm = "wo",
+                                   perm = "rw",
                                    state = "Ok",
                                    rule = "AnyOfMany",
                                    switchmembers = aom_members)
