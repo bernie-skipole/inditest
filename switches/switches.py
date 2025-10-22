@@ -52,11 +52,14 @@ class Driver(ipd.IPyDriver):
                 else:
                     rovector[f"ROMmember{s}"] = "On"
                 await rovector.send_setVector()
-                if aomvector[f"AOMmember{s}"] == "On":
-                    aomvector[f"AOMmember{s}"] = "Off"
-                else:
-                    aomvector[f"AOMmember{s}"] = "On"
-                await aomvector.send_setVector()
+                if not s:
+                    # every five seconds
+                    for p in range(5):
+                        if aomvector[f"AOMmember{p}"] == "On":
+                            aomvector[f"AOMmember{p}"] = "Off"
+                        else:
+                            aomvector[f"AOMmember{p}"] = "On"
+                        await aomvector.send_setVector()
 
 
 
