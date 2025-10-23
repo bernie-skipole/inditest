@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -11,6 +12,7 @@
 import asyncio
 import indipydriver as ipd
 
+from indipyserver import IPyServer
 
 class LED:
     "A class to simulate gpiozero.LED"
@@ -108,6 +110,6 @@ if __name__ == "__main__":
     # create and serve the driver
     # in this case a driver operating pins 16,17 and 18
     driver = make_driver(16,17,18)
-    server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
+    server = IPyServer(driver, host="localhost", port=7624, maxconnections=5)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

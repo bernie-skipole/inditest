@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -30,6 +31,8 @@ import asyncio, io, collections, math
 from datetime import datetime, timezone, timedelta
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 class MakeBlobs:
     """This is a simulation containing variables only, normally it
@@ -650,6 +653,6 @@ if __name__ == "__main__":
     numberdriver = make_number_driver("numbers")
     textdriver = make_text_driver("textdevice")
     blobdriver = make_blob_driver("blobmaker", 1)
-    server = ipd.IPyServer(switchdriver, lightdriver, numberdriver, textdriver, blobdriver)
+    server = IPyServer(switchdriver, lightdriver, numberdriver, textdriver, blobdriver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())
