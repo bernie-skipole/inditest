@@ -91,6 +91,31 @@ def make_driver(devicename):
                                    rule = "OneOfMany",
                                    switchmembers = oom_members)
 
+    # Duplicate the above, with different vectorname, but same member names
+    # to test that same membernames do not screw things up
+
+    oom_members2 = []
+    for s in range(5):
+        # One member must be On
+        if s:
+            memval = "Off"
+        else:
+            memval = "On"
+
+        member = ipd.SwitchMember( name=f"OOMmember{s}",
+                                   label=f"Switch {s}",
+                                   membervalue=memval )
+        oom_members2.append(member)
+
+
+    oom_vector2 = ipd.SwitchVector( name = 'OOMvector2',
+                                   label = "Switch",
+                                   group = 'OneOfMany',
+                                   perm = "wo",
+                                   state = "Ok",
+                                   rule = "OneOfMany",
+                                   switchmembers = oom_members2)
+
     # create five members with rule AtMostOne
     amo_members = []
     for s in range(5):
@@ -153,7 +178,7 @@ def make_driver(devicename):
 
     # create a device with these vectors
     switchingdevice = ipd.Device( devicename=devicename,
-                         properties=[oom_vector, amo_vector, aom_vector, ro_vector] )
+                         properties=[oom_vector, oom_vector2, amo_vector, aom_vector, ro_vector] )
 
     # Create the Driver, containing this Device
     driver = Driver( switchingdevice, devicename=devicename)
