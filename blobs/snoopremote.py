@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver"
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -27,6 +28,8 @@ handler = logging.StreamHandler(sys.stdout)
 logger.addHandler(handler)
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 class LightControl:
     "This times and sets the light value"
@@ -154,7 +157,7 @@ if __name__ == "__main__":
     # blobs should normally be received every 2 minutes, 120 seconds
 
     driver = make_driver("lightdevice", "blobmaker", 150)
-    server = ipd.IPyServer(driver)
+    server = IPyServer(driver)
     # make a connection to the remote sendblob service
     server.add_remote(host="raspberrypi",
                       port=7624,

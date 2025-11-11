@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -19,6 +20,8 @@ import asyncio
 # logger.addHandler(handler)
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 
 class _GetBLOBDriver(ipd.IPyDriver):
@@ -80,6 +83,6 @@ def make_driver(devicename):
 if __name__ == "__main__":
 
     driver = make_driver("getblob")
-    server = ipd.IPyServer(driver)
+    server = IPyServer(driver)
     print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run(server.asyncrun())

@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -12,6 +13,7 @@
 
 import asyncio
 import indipydriver as ipd
+from indipyserver import IPyServer
 
 
 class LED:
@@ -105,6 +107,6 @@ if __name__ == "__main__":
 
     # in this case the devicename is "led", pin 17
     driver = make_driver("led", 17)
-    server = ipd.IPyServer(driver, host="localhost", port=7624, maxconnections=5)
+    server = IPyServer(driver, host="localhost", port=7624, maxconnections=5)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

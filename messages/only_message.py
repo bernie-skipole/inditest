@@ -1,12 +1,15 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
 import asyncio
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 
 async def sendmessage(server, message):
@@ -18,7 +21,7 @@ async def sendmessage(server, message):
 
 async def main():
     "Create the server with a repeating message"
-    server = ipd.IPyServer()
+    server = IPyServer()
     await asyncio.gather( server.asyncrun(), sendmessage(server, "Hello") )
 
 

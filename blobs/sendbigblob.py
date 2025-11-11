@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver"
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -21,6 +22,8 @@ handler = logging.StreamHandler(sys.stdout)
 logger.addHandler(handler)
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 class _BigBlobDriver(ipd.IPyDriver):
 
@@ -78,7 +81,7 @@ if __name__ == "__main__":
         blobpath = input("Type in a blob file path:")
 
     driver = make_driver("bigblob", blobpath)
-    server = ipd.IPyServer(driver)
+    server = IPyServer(driver)
     # and run the server
     print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run( server.asyncrun() )
