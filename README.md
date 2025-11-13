@@ -30,6 +30,14 @@ sendbigblob.py Driver sending a given file at regular intervals\
 sendblob.py Driver creating and sending blocks of measurements at regular intervals\
 snoopremote.py Driver snooping on remote running sendblob.py
 
+#### deletingvectors
+
+Examples of vectors being deleted and re-enabled
+
+switches.py Driver with two switch vectors, the RO vector has switches counting\
+and after 5 seconds it is deleted, after another 5 seconds it is re-enabled.\
+Clients should see it dissapearing and reappearing.
+
 
 #### docexamples
 

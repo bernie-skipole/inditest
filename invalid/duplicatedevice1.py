@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -12,6 +13,8 @@
 
 import asyncio
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 
 class LED:
@@ -103,6 +106,6 @@ if __name__ == "__main__":
     # this should fail to run
     driver1 = make_driver("led", 17)
     driver2 = make_driver("led", 18)
-    server = ipd.IPyServer(driver1, driver2)
+    server = IPyServer(driver1, driver2)
     print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run(server.asyncrun())
