@@ -34,9 +34,11 @@ snoopremote.py Driver snooping on remote running sendblob.py
 
 Examples of vectors being deleted and re-enabled
 
-switches.py Driver with two switch vectors, the RO vector has switches counting\
-and after 5 seconds it is deleted, after another 5 seconds it is re-enabled.\
-Clients should see it dissapearing and reappearing.
+switches.py Driver with three switch vectors, with two RO vectors having switches counting\
+and after 5 seconds the vectors are deleted, after another 5 seconds re-enabled.\
+Clients should see the two dissapearing and reappearing.\
+One RO vector shares a group with another WO vector, so clients should see that group and vector remaining\
+The other RO vector is in its own group, so that group dissapears with the vector
 
 
 #### docexamples
