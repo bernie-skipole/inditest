@@ -1,9 +1,35 @@
 # inditest
-Contains example and test scripts for indipydriver
+Contains example and test scripts for the suite of 'indipy' programs
 
 See
 
+## indipyserver
+
+https://github.com/bernie-skipole/indipyserver
+
+https://pypi.org/project/indipyserver/
+
+https://indipyserver.readthedocs.io
+
+## indipydriver
+
 https://github.com/bernie-skipole/indipydriver
+
+https://pypi.org/project/indipydriver
+
+https://indipydriver.readthedocs.io
+
+## indipyweb
+
+https://github.com/bernie-skipole/indipyweb
+
+https://pypi.org/project/indipyweb/
+
+## indipyterm
+
+https://github.com/bernie-skipole/indipyterm
+
+https://pypi.org/project/indipyterm/
 
 
 Note these examples have Inline script metadata defining their\
@@ -38,7 +64,7 @@ switches.py Driver with three switch vectors, with two RO vectors having switche
 and after 5 seconds the vectors are deleted, after another 5 seconds re-enabled.\
 Clients should see the two dissapearing and reappearing.\
 One RO vector shares a group with another WO vector, so clients should see that group and vector remaining\
-The other RO vector is in its own group, so that group dissapears with the vector
+The other RO vector is in its own group, so that group dissapears with the vector.
 
 
 #### docexamples
