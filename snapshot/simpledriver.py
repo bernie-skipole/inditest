@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -9,6 +10,8 @@
 import asyncio
 
 import indipydriver as ipd
+
+from indipyserver import IPyServer
 
 class CounterDriver(ipd.IPyDriver):
     """IPyDriver is subclassed here
@@ -90,6 +93,6 @@ def make_driver():
 if __name__ == "__main__":
 
     driver = make_driver()
-    server = ipd.IPyServer(driver)
+    server = IPyServer(driver)
     print(f"Running {__file__}")
     asyncio.run(server.asyncrun())

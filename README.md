@@ -3,15 +3,9 @@ Contains example and test scripts for the suite of 'indipy' programs
 
 See
 
-## indipyserver
-
-https://github.com/bernie-skipole/indipyserver
-
-https://pypi.org/project/indipyserver/
-
-https://indipyserver.readthedocs.io
-
 ## indipydriver
+
+Provides classes you use to create a driver for your instrumentation which sets, updates and reads data.
 
 https://github.com/bernie-skipole/indipydriver
 
@@ -19,7 +13,29 @@ https://pypi.org/project/indipydriver
 
 https://indipydriver.readthedocs.io
 
+## indipyserver
+
+Provides a class to serve your driver (or multiple drivers) on a port
+
+https://github.com/bernie-skipole/indipyserver
+
+https://pypi.org/project/indipyserver/
+
+https://indipyserver.readthedocs.io
+
+## indipyclient
+
+Connects to an INDI port, decodes the INDI protocol and presents the received data as Python classes
+
+https://github.com/bernie-skipole/indipyclient
+
+https://pypi.org/project/indipyclient
+
+https://indipyclient.readthedocs.io
+
 ## indipyweb
+
+INDI client, connects to an INDI port, and then acts as a web server, users can connect with their browser to display and control the instrument parameters
 
 https://github.com/bernie-skipole/indipyweb
 
@@ -27,15 +43,17 @@ https://pypi.org/project/indipyweb/
 
 ## indipyterm
 
+INDI terminal client, connects to an INDI port and presents a terminal display.
+
 https://github.com/bernie-skipole/indipyterm
 
 https://pypi.org/project/indipyterm/
 
 
-Note these examples have Inline script metadata defining their\
-dependencies, and so if copied to your own machine, and if you\
-have a tool such as uv, which will automatically pull in\
-dependencies, you should be able to very simply run the scripts with:
+Note many of the examples given here have Inline script metadata defining\
+their dependencies, and so if copied to your own machine, and if you have\
+a tool such as uv, which will automatically pull in dependencies, you\
+should be able to very simply run the scripts with:
 
 uv run examplescript.py
 

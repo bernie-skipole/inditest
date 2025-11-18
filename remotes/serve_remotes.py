@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver",
+#     "indipyserver"
 # ]
 # ///
 
@@ -11,12 +11,12 @@
 
 
 import asyncio
-import indipydriver as ipd
+from indipyserver import IPyServer, version
 
 
 if __name__ == "__main__":
 
-    server = ipd.IPyServer(host="localhost", port=7624, maxconnections=5)
+    server = IPyServer(host="localhost", port=7624, maxconnections=5)
 
     # connect to remote servers, note blob enabled on all links
     # so a client connected to any server can receive blobs, even though
@@ -25,5 +25,5 @@ if __name__ == "__main__":
     server.add_remote(host="localhost", port=7626, blob_enable=True)
     server.add_remote(host="localhost", port=7627, blob_enable=True)
     # Note blobs are enabled on the link to sendblob.py
-    print(f"Running {__file__} with indipydriver version {ipd.version}")
+    print(f"Running {__file__} with indipyserver version {version}")
     asyncio.run(server.asyncrun())

@@ -1,13 +1,11 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver>=3.0.2",
 #     "indipyserver"
 # ]
 # ///
 
 import asyncio
-import indipydriver as ipd
 
 from indipyserver import IPyServer
 

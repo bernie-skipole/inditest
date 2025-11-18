@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "indipydriver"
+#     "indipydriver>=3.0.2",
+#     "indipyserver"
 # ]
 # ///
 
@@ -21,6 +22,7 @@ import asyncio, io, collections, math
 from datetime import datetime, timezone, timedelta
 
 import indipydriver as ipd
+from indipyserver import IPyServer
 
 
 class MakeBlobs:
@@ -172,6 +174,6 @@ def make_driver(devicename, minutes):
 if __name__ == "__main__":
     driver = make_driver("blobmaker", minutes=2) # create BLOBs every two minutes
     # set port at 7627 instead of 7624
-    server = ipd.IPyServer(driver, host="localhost", port=7627, maxconnections=5)
+    server = IPyServer(driver, host="localhost", port=7627, maxconnections=5)
     print(f"Running {__file__} with indipydriver version {ipd.version}")
     asyncio.run( server.asyncrun() )
