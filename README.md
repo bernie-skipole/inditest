@@ -49,6 +49,14 @@ https://github.com/bernie-skipole/indipyterm
 
 https://pypi.org/project/indipyterm/
 
+## indipyconsole
+
+Another INDI terminal client, connects to an INDI port and presents a terminal display. This gives a cruder output, and only runs on Linux. However it has no dependencies, and if the source code is copied the package could be run (with the -m option) without a virtual environment.
+
+https://github.com/bernie-skipole/indipyconsole
+
+https://pypi.org/project/indipyconsole/
+
 
 Note many of the examples given here have Inline script metadata defining\
 their dependencies, and so if copied to your own machine, and if you have\
