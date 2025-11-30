@@ -7,8 +7,8 @@
 # ]
 # ///
 
-# A single script to run the thermostat and window drivers
-# and the indipyweb service.
+# A single script to run the thermostat and window drivers,
+# indipyserver and the indipyweb service.
 
 import asyncio, subprocess, sys
 

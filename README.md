@@ -102,7 +102,6 @@ clientevent.py  client illustrating create_clientevent.\
 example1.py A driver sending simulated temperature values every 10 seconds.\
 example2.py Simulated thermostat with settable target.\
 example3.py Window control snooping on thermostat.\
-example4.py Running drivers,server and serving as web pages in one script.\
 led.py Raspberry Pi LED driver.\
 printmembers.py client printing vectorname, membername and value.\
 queclient.py uses queclient in one thread, prints received temperature on request in main thread.\
@@ -126,6 +125,14 @@ This could be useful for a display, or multiple displays continuously showing up
 
 vkprint.py Illustrates how INDI parameters stored in a Valkey server using vkclient.py\
 can be read. This could be used by a 'display' service to show an instruments output.
+
+#### indipyweb
+
+Examples working with indipyweb
+
+singlescript.py Running drivers,server and serving as web pages in one script.\
+getjson.py Every 10 seconds this example calls an indipyweb service running on\
+a device 'raspberry5' which is serving a Thermostat device, and prints the temperature.
 
 #### invalid
 
