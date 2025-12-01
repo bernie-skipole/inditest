@@ -132,7 +132,8 @@ Examples working with indipyweb
 
 singlescript.py Running drivers,server and serving as web pages in one script.\
 getjson.py Every 10 seconds this example calls an indipyweb service running on\
-a device 'raspberry5' which is serving a Thermostat device, and prints the temperature.
+a remote device which is serving a Thermostat, and prints the temperature.\
+sshtunnel - doc describing an SSH tunnel used to encrypt the client-server connection.
 
 #### invalid
 
