@@ -102,6 +102,7 @@ clientevent.py  client illustrating create_clientevent.\
 example1.py A driver sending simulated temperature values every 10 seconds.\
 example2.py Simulated thermostat with settable target.\
 example3.py Window control snooping on thermostat.\
+example4.py Illustrating delegation to Device objects.\
 led.py Raspberry Pi LED driver.\
 printmembers.py client printing vectorname, membername and value.\
 queclient.py uses queclient in one thread, prints received temperature on request in main thread.\
