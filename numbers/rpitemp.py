@@ -61,7 +61,7 @@ class RPITempDevice(ipd.Device):
                 vector['celsius'] = temperature
                 vector['fahrenheit'] = 32 + temperature * 9.0/5.0
                 # and transmit it to the client
-                await vector.send_setVector()  # change to vector with two members, centgrade and farenheiht
+                await vector.send_setVector()  # change to vector with two members, celsius and farenheiht
 
 
  
@@ -92,10 +92,9 @@ def make_driver(devicename):
     # Make a Device with temperaturevector as its only property
     # and with the given devicename
     rpi = RPITempDevice( devicename=devicename,
-                             properties=[temperaturevector] )
+                         properties=[temperaturevector] )
 
     # Create the Driver which will contain this Device,
-    # and the instrument controlling object
     driver = RPITempDriver( rpi )
 
     # and return the driver
