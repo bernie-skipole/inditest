@@ -173,7 +173,8 @@ multi\_led.py - driver controlling three LEDs
 
 Examples transmitting and receiving numbers
 
-counter.py Driver transmitting incrementing integers, and receiving floats.
+counter.py Driver transmitting incrementing integers, and receiving floats.\
+rpitemp.py Driver reporting temperature of a Raspberry Pi
 
 #### remotes
 
