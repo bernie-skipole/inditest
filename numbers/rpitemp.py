@@ -75,12 +75,12 @@ def make_driver(devicename):
     # Make a NumberMember holding the temperature value in degrees Celsius
     celsius = ipd.NumberMember( name="celsius",
                                 label= "Celsius",
-                                format='%3.1f', min=-50, max=99,
+                                format='%3.1f',
                                 membervalue=current_temperature )
     # Make a NumberMember holding the temperature value in degrees Fahrenheit
     fahrenheit = ipd.NumberMember( name="fahrenheit",
                                    label="Fahrenheit",
-                                   format='%3.1f', min=-50, max=99,
+                                   format='%3.1f',
                                    membervalue=32 + current_temperature * 9.0/5.0)
     # Make a NumberVector instance, containing the members.
     temperaturevector = ipd.NumberVector( name="temperaturevector",
