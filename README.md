@@ -174,7 +174,10 @@ multi\_led.py - driver controlling three LEDs
 Examples transmitting and receiving numbers
 
 counter.py Driver transmitting incrementing integers, and receiving floats.\
-rpitemp.py Driver reporting temperature of a Raspberry Pi
+rpitemp.py Driver reporting temperature of a Raspberry Pi\
+rpitemp2.py Driver reporting temperature of a Raspberry Pi, and creating and serving\
+a four hour temperature SVG chart. This illustrates creating background tasks to do\
+the work. Uses minilineplot for the chart creation.
 
 #### remotes
 
