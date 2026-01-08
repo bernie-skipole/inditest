@@ -45,14 +45,22 @@ def get_temp() -> float|None:
 
 
 def get_chart(history, hours=4):
-    "Given history deque, create a chart"
+    "Given history deque, create a chart using minilineplot"
     # get maximums and minimums
     if len(history) < 2:
         return
-    points = []
-    # get latest timestamp
+    points = []  # this will be a list of tuples to plot
+                 # each tuple will be (unix_timestamp, temperature)
+                 # where unix_timestamp will be in seconds, temperature in Centigrade
+
+    # This complicates the chart, since time values are in seconds, but the chart axis
+    # is labelled in hours, which are modulo 24, local time, daylight saving etc....
+
+    # Make an x axis of the most recent four hours measured in the history deque
+    # get latest timestamp from history
     lasttimestruct = time.localtime(history[-1][0])
-    # seconds at last hour
+    # sechour will be the timestamp of the hour of the last measurement
+    # (found by setting minutes and seconds to zero)
     sechour = time.mktime((lasttimestruct.tm_year,
                            lasttimestruct.tm_mon,
                            lasttimestruct.tm_mday,
@@ -62,12 +70,15 @@ def get_chart(history, hours=4):
                            lasttimestruct.tm_wday,
                            lasttimestruct.tm_yday,
                            lasttimestruct.tm_isdst))
+    # Then add an hours worth of seconds, to get maxts - the chart x axis rightmost seconds value
     maxts = round(sechour + 3600.0)
-    mints = round(maxts - (3600 * hours))   # hours back from maxts
-    # create time strings
+    mints = round(maxts - (3600 * hours))   # hours back from maxts - the chart x axis leftmost value
+    # create the hour strings for the x axis labels
     xstrings = []
     for seconds in range(mints, maxts+3600, 3600):
         xstrings.append(str(time.localtime(seconds).tm_hour)) 
+
+    # ensure only values with timestamps greater than mints are passed to minilineplot
     for ts, tmp in history:
         if ts >= mints:
             points.append((ts, tmp))
@@ -81,50 +92,27 @@ def get_chart(history, hours=4):
                              title = "Temperature - Time (hours)",
                              description = f"Temperature to : {time.strftime('%a %d %b %Y, %I:%M%p', lasttimestruct)}"
                             )
-
+    # The method axis.auto_y() inspects the chart values
+    # and creates ymax and ymin for the Y axis (temperature) of the chart
     axis.auto_y()
     if axis.ymax < 60.0:
-        axis.ymax = 60.0  # ymax is 60 or greater
+        axis.ymax = 60.0  # ymax is set to at least 60, but can go greater than that
     if axis.ymin > 40.0:
-        axis.ymin = 40.0  # ymin is 40 or less
+        axis.ymin = 40.0  # ymin is set to at most 40, but can go less than that
 
+    # The above creates consistently sized charts, with the y axis of 40 to 60 degrees
+    # but will still create charts with increased y axis values if temperature goes outside these ranges.
+
+    # and return an SVG image as a bytes object
     return axis.to_bytes()
 
 
 ########################################
-# Doing this somewhat differently by
-# creating a number of background tasks
+# create a number of background tasks
 ########################################
 
-
-async def send_chart(device, history):
-    "This is set as a background task"
-    chartrequestvector = device["chartrequestvector"]
-    chartvector = device['chartvector']
-    while not device.stop:
-        # every two seconds, check if a request for a chart has come in
-        await asyncio.sleep(2)
-        # If request vector is On, create and send a chart
-        if chartrequestvector["chartrequest"] != "On":
-            continue
-        chartbytes = get_chart(history)
-        if chartbytes is None:
-            # no chart is available
-            chartrequestvector["chartrequest"] = 'Off'
-            # send the updated vector back to the client
-            await chartrequestvector.send_setVector(message="Chart unavailable, please try again later", state="Ok")
-            continue
-        chartvector["chartmember"] = chartbytes
-        # send the blob, BLOBs use the send_setVectorMembers method
-        await chartvector.send_setVectorMembers(members=["chartmember"])
-        # and turn the switch Off again
-        chartrequestvector["chartrequest"] = 'Off'
-        # send the updated switch vector back to the client
-        await chartrequestvector.send_setVector(message=" ", state="Ok")
-
-
 async def send_temperature(device):
-    "This is set as a background task to transmit temperature every 10 seconds"
+    "This will be set as a background task to transmit temperature every 10 seconds"
     temperaturevector = device['temperaturevector']
     while not device.stop:
         await asyncio.sleep(10)
@@ -138,11 +126,11 @@ async def send_temperature(device):
 
 
 async def store_temperature(device, history):
-    "This is set as a background task, to store temperature in history every minute"
+    "This will be set as a background task, to store temperature in history every minute"
     while not device.stop:
         await asyncio.sleep(60)
         temperature = get_temp()
-        # store the temperature in history
+        # store the temperature in history, together with a unix timestamp
         if temperature is not None:
             history.append((time.time(), temperature))
 
@@ -150,7 +138,7 @@ async def store_temperature(device, history):
 
 class RPITempDriver(ipd.IPyDriver):
 
-    """IPyDriver is subclassed here"""
+    """IPyDriver is subclassed here, delgates tasks to Device objects"""
 
     async def rxevent(self, event):
         """On receiving data, this is called, it sends any received events
@@ -169,7 +157,9 @@ class RPITempDriver(ipd.IPyDriver):
 
 class RPITempDevice(ipd.Device):
 
-    """Device is subclassed here, to transmit the temperature to the client"""
+    """Device is subclassed here, to transmit the temperature to the client
+       The history deque is set as a named argument, and is available as self.devicedata['history']"""
+
 
     async def devrxevent(self, event):
         "On receiving data, this is called by the drivers rxevent method"
@@ -182,47 +172,68 @@ class RPITempDevice(ipd.Device):
 
         if event.vectorname == "chartrequestvector" and 'chartrequest' in event:
             # a request has been received from the client
+            chartrequestvector = event.vector
             switchvalue = event["chartrequest"]
-            if switchvalue == "On":
-                # So received a switch value of On, respond with the On value
-                event.vector["chartrequest"] = 'On'
-                # send the updated vector back to the client
-                await event.vector.send_setVector(message="Generating Chart", state="Busy")
-            else:
+            if switchvalue != "On":
                 # This should not normally be received, however, just in case it is
                 # set 'Off' into the vector
-                event.vector["chartrequest"] = 'Off'
+                chartrequestvector["chartrequest"] = 'Off'
+                # send the updated switch vector back to the client
+                await chartrequestvector.send_setVector(message=" ", state="Ok")
+                return
+
+            # So received a switch value of On, respond with the On value
+            chartrequestvector["chartrequest"] = 'On'
+            # send the updated vector back to the client, so the client sees the switch turned On
+            await chartrequestvector.send_setVector(message="Generating Chart", state="Busy")
+
+            # wait two seconds so the client gets feedback of a switch turning On
+            await asyncio.sleep(2)
+
+            # get the deque object which holds temperature measurements for the last four hours
+            history = self.devicedata['history']
+
+            # and create an SVG image as a bytes object
+            chartbytes = get_chart(history)
+            if chartbytes is None:
+                # no chart is available, turn the request switch Off
+                chartrequestvector["chartrequest"] = 'Off'
                 # send the updated vector back to the client
-                await event.vector.send_setVector(message=" ", state="Ok")
+                await chartrequestvector.send_setVector(message="Chart unavailable, please try again later", state="Ok")
+                return
+
+            # The chartvector will hold the SVG BLOB
+            chartvector = self['chartvector']
+
+            chartvector["chartmember"] = chartbytes
+            # send the blob, BLOBs use the send_setVectorMembers method
+            await chartvector.send_setVectorMembers(members=["chartmember"])
+            # and turn the switch Off again
+            chartrequestvector["chartrequest"] = 'Off'
+            # send the updated switch vector back to the client
+            await chartrequestvector.send_setVector(message="Done", state="Ok")
 
 
 
     async def devhardware(self):
         """This coroutine is added as a background task by the driver's
-           hardware method."""
+           hardware method. In this case it adds two more background tasks"""
 
-        # deque object to hold last four hours
+        # get the deque object which will hold temperature measurements for the last four hours
         history = self.devicedata['history']
 
-        # start a background task, checking if a chart needs to be transmitted
-        self.add_background(send_chart(self, history))
-
-        # start another sending temperature updates
+        # task sending temperature updates every ten seconds
         self.add_background(send_temperature(self))
 
-        # and another adding temperature values to history
+        # and another adding temperature values to history every minute
         self.add_background(store_temperature(self, history))
-
-
-
-            
 
 
  
 def make_driver(devicename):
     "Returns an instance of the driver"
 
-    # create a deque object to hold several hours of data
+    # create a deque object to hold several hours of data, measured at one minute intervals
     # four hours is 240 minutes, five hours is 300
     history = deque(maxlen=300)
 
@@ -248,7 +259,6 @@ def make_driver(devicename):
                                           state="Ok",
                                           numbermembers=[celsius, fahrenheit] )
 
-
     # create switch member
     chartswitchmember = ipd.SwitchMember(name="chartrequest",
                                          label="Chart Request",
@@ -273,8 +283,8 @@ def make_driver(devicename):
                                   state="Ok",
                                   blobmembers=[chartmember] )
 
-    # Make a Device with these vectors
-    # and with the given devicename, the history deque is set into the Device
+    # Make a Device with these vectors and with the given devicename,
+    # the history deque is set into the Device as a named argument
     rpi = RPITempDevice( devicename=devicename,
                          properties=[temperaturevector, chartswitchvector, chartvector],
                          history = history )
