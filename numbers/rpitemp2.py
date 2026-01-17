@@ -3,7 +3,7 @@
 # dependencies = [
 #     "indipydriver>=3.0.4",
 #     "indipyserver",
-#     "minilineplot"
+#     "minilineplot>=0.0.7"
 # ]
 # ///
 
@@ -44,54 +44,25 @@ def get_temp() -> float|None:
 #    return 49.0 + random.randint(0, 20)/10.0  # float 49 + (0 to 2.0)
 
 
-def get_chart(history, hours=4):
+def get_chart(history, hours=1):
     "Given history deque, create a chart using minilineplot"
     # get maximums and minimums
     if len(history) < 2:
         return
-    points = []  # this will be a list of tuples to plot
-                 # each tuple will be (unix_timestamp, temperature)
-                 # where unix_timestamp will be in seconds, temperature in Centigrade
 
-    # This complicates the chart, since time values are in seconds, but the chart axis
-    # is labelled in hours, which are modulo 24, local time, daylight saving etc....
-
-    # Make an x axis of the most recent four hours measured in the history deque
-    # get latest timestamp from history
-    lasttimestruct = time.localtime(history[-1][0])
-    # sechour will be the timestamp of the hour of the last measurement
-    # (found by setting minutes and seconds to zero)
-    sechour = time.mktime((lasttimestruct.tm_year,
-                           lasttimestruct.tm_mon,
-                           lasttimestruct.tm_mday,
-                           lasttimestruct.tm_hour,
-                           0,
-                           0,
-                           lasttimestruct.tm_wday,
-                           lasttimestruct.tm_yday,
-                           lasttimestruct.tm_isdst))
-    # Then add an hours worth of seconds, to get maxts - the chart x axis rightmost seconds value
-    maxts = round(sechour + 3600.0)
-    mints = round(maxts - (3600 * hours))   # hours back from maxts - the chart x axis leftmost value
-    # create the hour strings for the x axis labels
-    xstrings = []
-    for seconds in range(mints, maxts+3600, 3600):
-        xstrings.append(str(time.localtime(seconds).tm_hour)) 
-
-    # ensure only values with timestamps greater than mints are passed to minilineplot
-    for ts, tmp in history:
-        if ts >= mints:
-            points.append((ts, tmp))
+    # get last time measurement
+    latest = time.localtime(history[-1][0])
 
     # make chart
-    line = minilineplot.Line(values = points, color="red")
+    line = minilineplot.Line(values = history, color="red")
     axis = minilineplot.Axis(lines = [line],
-                             xstrings = xstrings,
-                             xmin = mints,
-                             xmax = maxts,
-                             title = "Temperature - Time (hours)",
-                             description = f"Temperature to : {time.strftime('%a %d %b %Y, %I:%M%p', lasttimestruct)}"
+                             title = "Temperature - Time",
+                             description = f"Temperature to : {time.strftime('%a %d %b %Y, %I:%M%p', latest)}"
                             )
+
+    # The method auto_time_x(hourspan = 4, localtime = True) sets the x axis as a time axis
+    axis.auto_time_x(hourspan = hours)
+
     # The method axis.auto_y() inspects the chart values
     # and creates ymax and ymin for the Y axis (temperature) of the chart
     axis.auto_y()
