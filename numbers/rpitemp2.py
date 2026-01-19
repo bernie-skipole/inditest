@@ -20,28 +20,28 @@ import indipydriver as ipd
 from indipyserver import IPyServer
 
 
-def get_temp() -> float|None:
-    "Return the temperature, return None on error"
-    try:
-        # cp is a CompletedProcess object
-        cp = subprocess.run(["/usr/bin/vcgencmd", "measure_temp"], capture_output=True)
-        # cp.stdout is a bytestring such as b"temp=50.0'C", So just extract the number part
-        m = re.search(rb'-?\d*\.?\d+', cp.stdout)
-        if m.group() is None:
-            # nothing matching a number has been found
-            return
-        # convert to float
-        floattemp = float(m.group())
-    except Exception:
-        return
-    return floattemp
+#def get_temp() -> float|None:
+#    "Return the temperature, return None on error"
+#    try:
+#        # cp is a CompletedProcess object
+#        cp = subprocess.run(["/usr/bin/vcgencmd", "measure_temp"], capture_output=True)
+#        # cp.stdout is a bytestring such as b"temp=50.0'C", So just extract the number part
+#        m = re.search(rb'-?\d*\.?\d+', cp.stdout)
+#        if m.group() is None:
+#            # nothing matching a number has been found
+#            return
+#        # convert to float
+#        floattemp = float(m.group())
+#    except Exception:
+#        return
+#    return floattemp
 
 
 ######## for testing on non-rpi
-#import random
-#def get_temp() -> float|None:
-#    "Return the temperature, return None on error"
-#    return 49.0 + random.randint(0, 20)/10.0  # float 49 + (0 to 2.0)
+import random
+def get_temp() -> float|None:
+    "Return the temperature, return None on error"
+    return 49.0 + random.randint(0, 20)/10.0  # float 49 + (0 to 2.0)
 
 
 def get_chart(history, hours=1):
@@ -248,7 +248,7 @@ def make_driver(devicename):
                                   label="Temperature Chart",
                                   blobformat = ".svg" )
     chartvector = ipd.BLOBVector( name="chartvector",
-                                  label="Four Hour temperature chart",
+                                  label="Temperature chart",
                                   group="Values",
                                   perm="ro",
                                   state="Ok",
