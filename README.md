@@ -1,5 +1,5 @@
 # inditest
-Contains example and test scripts for the suite of 'indipy' programs
+Contains example and test scripts for the following suite of Python INDI programs
 
 See
 
