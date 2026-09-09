@@ -157,6 +157,7 @@ bincount.py Driver sending a vector with four lights binary counting
 
 #### messages
 
+allvaluesfalse.py Illustrates sending vectors without members that have not changed.\
 bincount\_message.py As bincount.py with an additional messages\
 only\_message.py Server with no drivers, but sending a message every two seconds.
 
