@@ -213,9 +213,10 @@ vectorjson.py client which creates and prints a json dump of the received vector
 
 Examples transmitting and receiving switch information
 
-anyofmany.py Driver with one vector and multiple anyofmany switches
+anyofmany.py Driver with one vector and multiple anyofmany switches\
 switches.py Several SwitchVectors illustrating switch rules\
-OneOfMany AtMostOne AnyOfMany and ReadOnly
+OneOfMany AtMostOne AnyOfMany and ReadOnly\
+switchidle.py A single switch, with idle sent after switch is turned off
 
 #### text
 
