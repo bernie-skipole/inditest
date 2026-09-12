@@ -175,6 +175,7 @@ multi\_led.py - driver controlling three LEDs
 Examples transmitting and receiving numbers
 
 counter.py Driver transmitting incrementing integers, and receiving floats.\
+numberalert.py Driver transmitting changing numbers and receiving a target value.\
 rpitemp.py Driver reporting temperature of a Raspberry Pi\
 rpitemp2.py Driver reporting temperature of a Raspberry Pi, and creating and\
 serving a temperature SVG chart. This illustrates creating background tasks to\

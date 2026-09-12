@@ -1,5 +1,9 @@
 # /// script
 # requires-python = ">=3.11"
+# dependencies = [
+#     "indipydriver>=3.1.0",
+#     "indipyserver"
+# ]
 # ///
 
 
