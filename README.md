@@ -225,4 +225,5 @@ Examples transmitting and receiving text
 
 rwtext.py TextVector with ten members, reading and writing\
 Together with another vector controlling a longer 15 second task\
+status.py Random integers change state on two ro text values\
 txrxtext.py Driver transmitting text vector with multiple members
