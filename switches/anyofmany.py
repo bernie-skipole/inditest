@@ -32,7 +32,10 @@ class Driver(ipd.IPyDriver):
                 for membername, membervalue in event.items():
                     event.vector[membername] = membervalue
                 # transmit the vector back to client to confirm received
-                await event.vector.send_setVector()
+                # even with allvalues False, if there has beeen no switch change
+                # this should still send an ok acknowledgement
+                # (test of indipydriver version 3.1.1)
+                await event.vector.send_setVector(allvalues=False)
 
 
 def make_driver(devicename):
