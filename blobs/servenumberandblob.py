@@ -9,6 +9,10 @@
 
 """
 Serves an incrementing number and a file whenever a switch On is submitted
+
+This example was created, together with clientnumberandblob.py, to test the
+scenario where a client sets enable blob to Only on a property, and to ensure
+that other properties (the changing numbers) are unaffected.
 """
 
 import asyncio
@@ -24,37 +28,38 @@ class _Driver(ipd.IPyDriver):
 
     async def rxevent(self, event):
         """On receiving a switch from the client, this is called
-           It sends the source file of this code"""
-
-        # event.vector is the vector being requested or altered
-        # event[membername] is the new value
+           It sends the source file of this code as the BLOB"""
 
         if isinstance( event, ipd.newSwitchVector ):
             if event.vectorname == "getfileswitch" and 'getfilenow' in event:
                 if event['getfilenow'] == "On":
+                    # return the switch On value
                     event.vector['getfilenow'] = 'On'
                     await event.vector.send_setVector(state='Ok')
-                    # send the file
+                    # send the file, so first obtain the blobvector
                     blobvector = self['blobgetter']['blobvector']
                     blobvector["blobmember"] = __file__
                     # send the blob
                     await blobvector.send_setVectorMembers(members=["blobmember"])
+                    # set the switch to Off again
+                    await asyncio.sleep(0.2)
                     event.vector['getfilenow'] = 'Off'
                     await event.vector.send_setVector(state='Idle')
                 else:
                     # so switch is Off, accept it, but do not send a blob
                     event.vector['getfilenow'] = 'Off'
                     await event.vector.send_setVector(state='Ok')
+                    # after the acknowledgement, set the state back to idle
                     await asyncio.sleep(0.5)
                     await event.vector.send_setVector(state='Idle')
                    
 
     async def hardware(self):
-        """Sends a counting vector"""
+        """Sends a counting number vector"""
 
         countvector = self['blobgetter']['countvector']
         while not self.stop:
-            # send incrementing count every second
+            # send an incrementing count every second
             await asyncio.sleep(1)
             currentvalue = countvector["count"]
             countvector["count"] = int(currentvalue) + 1
@@ -65,7 +70,7 @@ class _Driver(ipd.IPyDriver):
 def make_driver():
     "Creates the driver"
 
-    # ro counter
+    # number counter
     count = ipd.NumberMember( name = "count",
                               label = "Counter",
                               format = "%d",
@@ -79,14 +84,14 @@ def make_driver():
 
     # create switch
     getfilenow = ipd.SwitchMember( name='getfilenow',
-                                  label=f"Get File",
+                                  label="Get File",
                                   membervalue='Off' )
     getfileswitch = ipd.SwitchVector( name = 'getfileswitch',
                                    label = "File Getter",
                                    group = 'File',
                                    perm = "wo",
                                    state = "Idle",
-                                   rule = "OneOfMany",
+                                   rule = "AtMostOne",
                                    switchmembers = [getfilenow])
 
     # create blob
