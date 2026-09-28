@@ -79,7 +79,7 @@ getblob.py Driver to receive and save a BLOB file\
 multiblobs.py Driver receiving vector with multiple blob members\
 sendbigblob.py Driver sending a given file at regular intervals\
 sendblob.py Driver creating and sending blocks of measurements at regular intervals\
-servenumberandblob.py sends BLOBs on receiving a switch, while sending a counter\ 
+servenumberandblob.py sends BLOBs on receiving a switch, while sending a counter\
 snoopremote.py Driver snooping on remote running sendblob.py
 
 #### deletingvectors
