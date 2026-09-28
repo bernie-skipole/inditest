@@ -3,7 +3,7 @@ Contains example and test scripts for the following suite of Python INDI program
 
 See
 
-## indipydriver
+#### indipydriver
 
 Provides classes you use to create a driver for your instrumentation which sets, updates and reads data.
 
@@ -13,7 +13,7 @@ https://pypi.org/project/indipydriver
 
 https://indipydriver.readthedocs.io
 
-## indipyserver
+#### indipyserver
 
 Provides a class to serve your driver (or multiple drivers) on a port
 
@@ -23,7 +23,7 @@ https://pypi.org/project/indipyserver/
 
 https://indipyserver.readthedocs.io
 
-## indipyclient
+#### indipyclient
 
 Connects to an INDI port, decodes the INDI protocol and presents the received data as Python classes
 
@@ -33,7 +33,7 @@ https://pypi.org/project/indipyclient
 
 https://indipyclient.readthedocs.io
 
-## indipyweb
+#### indipyweb
 
 INDI client, connects to an INDI port, and then acts as a web server, users can connect with their browser to display and control the instrument parameters
 
@@ -41,7 +41,7 @@ https://github.com/bernie-skipole/indipyweb
 
 https://pypi.org/project/indipyweb/
 
-## indipyterm
+#### indipyterm
 
 INDI terminal client, connects to an INDI port and presents a terminal display.
 
@@ -49,7 +49,7 @@ https://github.com/bernie-skipole/indipyterm
 
 https://pypi.org/project/indipyterm/
 
-## indipyconsole
+#### indipyconsole
 
 Another INDI terminal client, connects to an INDI port and presents a terminal display. This gives a cruder output, and only runs on Linux. However it has no dependencies, and if the source code is copied the package could be run (with the -m option) without a virtual environment.
 
@@ -57,11 +57,9 @@ https://github.com/bernie-skipole/indipyconsole
 
 https://pypi.org/project/indipyconsole/
 
+### The Examples
 
-Note many of the examples given here have Inline script metadata defining\
-their dependencies, and so if copied to your own machine, and if you have\
-a tool such as uv, which will automatically pull in dependencies, you\
-should be able to very simply run the scripts with:
+Most of the examples given here have Inline script metadata defining their dependencies, and so if copied to your own machine, and if you have a tool such as uv, which will automatically pull in dependencies, you should be able to very simply run the scripts with:
 
 uv run examplescript.py
 
@@ -76,10 +74,12 @@ If you are running any of the driver scripts on a remote machine, and are connec
 Examples transmitting and receiving BLOBs
 
 blobqueclient.py Client script using queclient receiving BLOBs\
+clientnumberandblob.py Client sending 'Only' as an enableBLOB value\
 getblob.py Driver to receive and save a BLOB file\
 multiblobs.py Driver receiving vector with multiple blob members\
 sendbigblob.py Driver sending a given file at regular intervals\
 sendblob.py Driver creating and sending blocks of measurements at regular intervals\
+servenumberandblob.py sends BLOBs on receiving a switch, while sending a counter\ 
 snoopremote.py Driver snooping on remote running sendblob.py
 
 #### deletingvectors
