@@ -15,6 +15,14 @@
 import asyncio
 import indipyclient as ipc
 
+########## You could add debug logging
+import logging, sys
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
+########################################
+
 
 class MyClient(ipc.IPyClient):
 
@@ -47,5 +55,9 @@ class MyClient(ipc.IPyClient):
 
 
 myclient = MyClient()
+
+######## If you want debug logging to include the xml
+myclient.debug_verbosity(3)
+########
 
 asyncio.run(myclient.asyncrun())
