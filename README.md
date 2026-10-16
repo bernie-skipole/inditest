@@ -73,6 +73,7 @@ If you are running any of the driver scripts on a remote machine, and are connec
 
 Examples transmitting and receiving BLOBs
 
+blobclient.py Uses all defaults to make a call to localhost and set incoming BLOBs to the local folder\
 blobqueclient.py Client script using queclient receiving BLOBs\
 clientnumberandblob.py Client sending 'Only' as an enableBLOB value\
 getblob.py Driver to receive and save a BLOB file\
