@@ -133,6 +133,7 @@ can be read. This could be used by a 'display' service to show an instruments ou
 Examples working with indipyweb
 
 singlescript.py Running drivers,server and serving as web pages in one script.\
+singlescript2.py Another one script example, all running in a single async loop.\
 getjson.py Every 10 seconds this example calls an indipyweb service running on\
 a remote device which is serving a Thermostat, and prints the temperature.\
 sshtunnel - doc describing an SSH tunnel used to encrypt the client-server connection.
